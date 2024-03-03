@@ -1,0 +1,896 @@
+---
+title: "Figure2"
+format: html
+editor: visual
+---
+
+## Figure2
+
+```{r load_in}
+#| message: false
+library(seqinr)
+library(stringi)
+library(svMisc)
+library(tidyverse)
+library(data.table)
+library(openxlsx)
+library(ggpubr)
+library(scales)
+library(xlsx)
+library(treeio)
+library(ggtree)
+library(ade4)
+library(aplot)
+source("../../Utilities.R")
+
+meta_path <- "../../Metadata/"
+metadata <- openxlsx::read.xlsx(paste0(meta_path, "Final_Cohort_Metadata_v5.xlsx"), sheet = 1)
+
+duplicated_proteins <- read_csv(paste0(meta_path, "duplicated_proteins.csv"))
+human_duplicated_proteins <- read_csv(paste0(meta_path, "human_duplicated_or_removed_proteins.csv")) %>%
+  dplyr::rename("uniprot" = 1)
+final_cohort_naming <- list.files("../../Viral_Proteomes/Final_Cohort")
+final_cohort_naming <- paste0(gsub(".fasta.gz", "_12mer_3mis_hits.tsv", final_cohort_naming))
+
+
+out_dir <- "../output/"
+```
+
+## Random Scramble Processing
+
+```{r perm_1_processing}
+#| eval: false
+setwd("../../../epitope_alignment/Results/Permutation_exp1")
+Sys.time()
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+final_cohort_naming <- list.files("../../Viral_Proteomes/Final_Cohort")
+final_cohort_naming <- paste0(gsub(".fasta.gz", "", final_cohort_naming))
+files_to_read <- files_to_read[gsub("-[1-9].*", "", files_to_read) %in% paste0("Full_Scramble_", final_cohort_naming)]
+
+out_final <- data.frame(mismatches = c("0", "1", "2", "3", "Proteome Length", "Number of Proteins"))
+out_protein_final <- data.frame()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " Pathogen number:",match(active_file, files_to_read), "/", length(files_to_read)))
+  active_data <- fread(active_file, nThread = 10)
+
+  if(nrow(active_data) == 0){
+    out_final[,gsub("_12mer_3mis_hits.tsv", "", active_file)] <- c(0,0,0,0,NA,NA)
+      data <- try(seqinr::read.fasta(file = paste0("../../Viral_Proteomes/Final_Cohort/", gsub("Full_Scramble_", "", gsub("-[1-9].*", "", active_file)), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
+    if(class(data) == "try-error"){
+        PLength <- "Error"
+        PCount <- "Error"
+    } else {
+       PLength <- nchar(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+      PCount <- length(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+    }
+
+      out_final[6, ncol(out_final)] <- sum(PLength)
+      out_final[5, ncol(out_final)] <- PCount
+
+    next
+  }
+
+  active_data$uniprot <- sapply(strsplit(active_data$target_seqname, split="\\|"), function(x) paste(x[2]))
+  active_data$viral_id <- sapply(strsplit(active_data$query_seqname, split="\\|"), function(x) paste(x[2]))
+  ## Filter out any duplicated proteins, identified in 
+  ## ../../Scripts/Duplicate_Protein_Screen.R
+  active_data <- active_data %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    as.data.frame()
+  active_data$mismatches <- apply(active_data, 1, function(x){DNA_Diff(x[1], x[6])})
+  active_data$mismatches <- factor(active_data$mismatches, c("0", "1", "2", "3"))
+  active_data <- as.data.frame(active_data)
+  out <- as.data.frame(table(active_data$mismatches))
+  colnames(out) <- c("mismatches", gsub("_12mer_3mis_hits.tsv", "", active_file))
+
+  ############## Count Proteome Length ##############
+  data <- try(seqinr::read.fasta(file = paste0("../../Viral_Proteomes/Final_Cohort/", gsub("Full_Scramble_", "", gsub("-[1-9].*", "", active_file)), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
+    if(class(data) == "try-error"){
+        PLength <- "Error"
+        PCount <- "Error"
+      } else {
+       PLength <- nchar(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+      PCount <- length(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+    }
+
+  out_final <- merge(out_final, out, by = "mismatches", all.x = T)
+  out_final[6, ncol(out_final)] <- sum(PLength)
+  out_final[5, ncol(out_final)] <- PCount
+
+}
+
+write.csv(out_final, "../../../Analysis/Figure2/output/12mer_perm1_random_scramble.csv", row.names = F)
+```
+
+## Random Scramble Graphs
+
+```{r perm1_graphing_1}
+#| warning: false
+out_final <- read.csv("../output/12mer_perm1_random_scramble.csv")
+colnames(out_final) <- gsub("\\.", "-", colnames(out_final))
+true_counts <- read.csv("../../Key_Data/12mer_proteome_everything.csv", row.names = 1) %>%
+  as.data.frame() 
+colnames(true_counts) <- gsub("\\.", "-", colnames(true_counts))
+true_counts[is.na(true_counts)] <- 0
+
+random_scram_results <- t(true_counts[1:4,]) %>% as.data.frame() %>%
+  rownames_to_column("Species") %>%
+  filter(Species != "mismatches") %>%
+  dplyr::rename("0"="1","1"="2","2"="3","3"="4") %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`,`1`,`2`,`3`),
+         `2` = sum(`0`, `1`, `2`),
+         `1` = sum(`0`, `1`)) %>%
+  ungroup() %>%
+  pivot_longer(cols = -Species) %>%
+  left_join(
+    t(out_final[1:4,]) %>% as.data.frame() %>%
+      rownames_to_column("Species") %>%
+      filter(Species != "mismatches") %>%
+      dplyr::rename("0"="1","1"="2","2"="3","3"="4") %>%
+      mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+      rowwise() %>%
+      mutate(`3` = sum(`0`,`1`,`2`,`3`),
+             `2` = sum(`0`, `1`, `2`),
+             `1` = sum(`0`, `1`)) %>%
+      ungroup() %>%
+      pivot_longer(cols = -Species) %>%
+      dplyr::rename(value_rand = value) %>%
+      mutate(Species = gsub("-[1-9].*", "", Species)) %>%
+      group_by(Species, name) %>%
+      dplyr::summarize(value_rand = mean(value_rand)) %>%
+      mutate(Species = gsub("Full_Scramble_", "", Species)), by = c("Species", "name")
+  )  %>%
+  dplyr::rename("mismatches" = "name") %>%
+  mutate(FC = (value+10) / (value_rand + 10))
+
+gg1 <- random_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  inner_join(metadata) %>%
+   mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  dplyr::rename("label" = "Taxon.mnemonic") %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(mismatches, label, fill=FC)) + geom_tile() +
+  theme_classic() +
+  xlab("Number of Mismatches") +
+    scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+                       limits=c(0.2, 32), oob = scales::squish, trans = "log",
+                       breaks = c(0.25, 0.5, 1, 2, 4, 8, 16, 32)) +
+  theme(axis.title.y = element_blank(),
+        axis.text.y =element_text(size=7),
+        axis.title.x=element_text(size=9),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) 
+gg1
+```
+
+```{r perm1_graphing_2}
+#| warning: false
+taxa <- metadata %>% as.data.frame() %>%
+  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  column_to_rownames("Taxon.mnemonic") %>%
+  filter(superkingdom == "Viruses") %>%
+  dplyr::select(family, order, class, phylum, kingdom) %>%
+  as.data.frame()
+taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
+taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
+
+check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
+rownames(check) <- rownames(taxa)
+check <- check[complete.cases(check),]
+tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
+
+tax.phy <- as.phylo(tmp)
+
+
+gg_tree <- ggtree(tax.phy, branch.length='none')
+gg_tree[["data"]] <- gg_tree[["data"]] %>% 
+  left_join(metadata %>%
+               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
+
+gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
+   scale_fill_manual(values = Family_palette_v2)
+
+gg1 %>% insert_left(gg_tree,width = 0.2) 
+#ggsave(paste0(out_dir, "random_heatmap.pdf"), width = 4, height =12)
+
+```
+
+```{r perm1_graphing_3, fig.height = 3, fig.width = 4}
+#| warning: false
+
+testing_data <- random_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(grepl("Virus", Taxonomic.lineage)) %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic"))
+
+wt <- compare_means(data = testing_data, formula = FC ~ Chronic.or.Acute,
+              group.by = c("mismatches"), method = "wilcox.test")%>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+write.xlsx(wt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+gg3_perm1 <- random_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic") | grepl("Bacteria", Taxonomic.lineage)) %>%
+  mutate(Chronic.or.Acute = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Chronic.or.Acute)) %>%
+  group_by(`Chronic.or.Acute`, mismatches) %>%
+  mutate(FC = ifelse(is.na(FC), 0, FC)) %>%
+  dplyr::summarize(mean_value = mean(FC), count = n(), sd = sd(FC)) %>%
+  mutate(value_stderr = sd/sqrt(count)) %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(x=mismatches, y=mean_value, color = `Chronic.or.Acute`)) +
+    geom_hline(yintercept = 1, linetype = "dashed")  +
+    geom_point() +
+    geom_line(aes(group = `Chronic.or.Acute`)) +
+    theme_classic() +
+    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=mismatches), width=.1)+
+    xlab("Number of mismatches") +
+  scale_color_manual(values =c("#1975EE", "#E78305", "black")) +
+  ylab("Fold Change of\nActual over Permutation 1") +
+  scale_y_continuous(trans = log2_trans(),
+     breaks = trans_breaks("log2", function(x) round(2^x, 3)))+
+  annotate("text", x= c(1,2,3,4), y= c(3, 5, 4, 1),
+           label = wt$p.adj.star, size = 6, lineheight = 0.5) +
+  theme(legend.position = "none")
+gg3_perm1
+#ggsave(paste0(out_dir, "random_scram_chronicity.pdf"), width = 4, height = 3)
+
+
+testing_data <- random_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(!is.na(Family_Viral_Zone)) %>%
+  mutate(Family = Family_Viral_Zone) %>%
+  mutate(Herpesviridae = ifelse(Family == "Herpesviridae", "Herpesviridae", "Non-Herpesviridae")) %>%
+  mutate(Poxviridae = ifelse(Family == "Poxviridae", "Poxviridae", "Non-Poxviridae"))
+
+## These results are used to manually add stars to the graph below in illustrator
+kt <- compare_means(data = testing_data, formula = FC ~ Family,
+              group.by = c("mismatches"), method = "kruskal.test")
+wt.p <- compare_means(data = testing_data, formula = FC ~ Poxviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+wt.h <- compare_means(data = testing_data, formula = FC ~ Herpesviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesviridae", "Poxviridae")), formula = FC ~ Poxviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA)))) %>%
+  mutate(group1 = "Herpesviridae")
+write.xlsx(kt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.p, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.h, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.hp, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+
+gg4_perm1 <- random_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(!is.na(Family_Viral_Zone)) %>%
+  mutate(Family = Family_Viral_Zone) %>%
+  group_by(Family, mismatches) %>%
+  mutate(FC = ifelse(is.na(FC), 0, FC)) %>%
+  dplyr::summarize(mean_value = mean(FC), count = n(), sd = sd(FC)) %>%
+  filter(count > 4) %>%
+  mutate(value_stderr = sd/sqrt(count)) %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(x=mismatches, y=mean_value, color = `Family`)) +
+    geom_hline(yintercept = 1, linetype = "dashed")  +
+    geom_point() +
+    geom_line(aes(group = `Family`)) +
+    theme_classic() +
+    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=mismatches), width=.1)+
+    xlab("Number of mismatches") +
+  scale_color_manual(values =Family_palette_v2) +
+  ylab("Fold Change of\nActual over Permutation 1")+
+  scale_y_continuous(trans = log2_trans(),
+     breaks = trans_breaks("log2", function(x) round(2^x, 3)))+
+  annotate("text", x= c(0.9,1.9,2.9,3.9), y= c(14, 21, 25, 3),
+           label = wt.h$p.adj.star, size = 5, lineheight = 0.3,
+           color = Family_palette_v2["Herpesviridae"]) +
+  annotate("text", x= c(1.1,2.1,3.1,4.1), y= c(14, 21, 25, 3),
+           label = wt.p$p.adj.star, size = 5, lineheight = 0.3,
+           color = Family_palette_v2["Poxviridae"]) +
+  geom_errorbar(inherit.aes = FALSE, aes(x=0.85, ymin = 3.666667, ymax = 10.3103821),
+                color = "gray", width = 0.1) +
+  annotate("text", x= c(0.75, 1.8, 2.8, 3.8), y= c(6),
+           label = wt.hp$p.adj.star, size = 5, lineheight = 0.3,
+           color = "gray")+
+  theme(legend.position = "none")
+  
+gg4_perm1
+#ggsave(paste0(out_dir, "random_scram_family.pdf"), width = 4, height = 3)
+
+
+ggarrange(gg3_perm1, gg4_perm1, ncol = 2, nrow = 1, common.legend = TRUE)
+#ggsave(paste0(out_dir, "random_scram_combined.pdf"), width = 5, height = 3)
+```
+
+## Reverse Processing
+
+```{r perm_2_processing}
+#| eval: false
+setwd("../../../epitope_alignment/Results/Permutation_exp2")
+Sys.time()
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+final_cohort_naming <- list.files("../../Viral_Proteomes/Final_Cohort")
+final_cohort_naming <- paste0(gsub(".fasta.gz", "_12mer_3mis_hits.tsv", final_cohort_naming))
+files_to_read <- files_to_read[files_to_read %in% paste0("Reversed_", final_cohort_naming)]
+
+out_final <- data.frame(mismatches = c("0", "1", "2", "3", "Proteome Length", "Number of Proteins"))
+out_protein_final <- data.frame()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " Pathogen number:",match(active_file, files_to_read), "/", length(files_to_read)))
+  active_data <- fread(active_file)
+
+  if(nrow(active_data) == 0){
+    out_final[,gsub("_12mer_3mis_hits.tsv", "", active_file)] <- c(0,0,0,0,NA,NA)
+      data <- try(seqinr::read.fasta(file = paste0("../../Viral_Proteomes/Final_Cohort/", gsub("Reversed_", "", gsub("_12mer_3mis_hits.tsv", "", active_file)), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
+    if(class(data) == "try-error"){
+        PLength <- "Error"
+        PCount <- "Error"
+    } else {
+      PLength <- nchar(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+      PCount <- length(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+    }
+
+      out_final[6, ncol(out_final)] <- sum(PLength)
+      out_final[5, ncol(out_final)] <- PCount
+
+    next
+  }
+
+  ### This line is what makes the results unique!!
+  active_data$uniprot <- sapply(strsplit(active_data$target_seqname, split="\\|"), function(x) paste(x[2]))
+  active_data$viral_id <- sapply(strsplit(active_data$query_seqname, split="\\|"), function(x) paste(x[2]))
+  ## Filter out any duplicated proteins, identified in 
+  ## ../../Scripts/Duplicate_Protein_Screen.R
+  active_data <- active_data %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    as.data.frame()
+  active_data$mismatches <- apply(active_data, 1, function(x){DNA_Diff(x[1], x[6])})
+  active_data$mismatches <- factor(active_data$mismatches, c("0", "1", "2", "3"))
+  active_data <- as.data.frame(active_data)
+  out <- as.data.frame(table(active_data$mismatches))
+  colnames(out) <- c("mismatches", gsub("_12mer_3mis_hits.tsv", "", active_file))
+
+  ############## Count Proteome Length ##############
+   #browser()
+  data <- try(seqinr::read.fasta(file = paste0("../../Viral_Proteomes/Final_Cohort/", gsub("Reversed_", "", gsub("_12mer_3mis_hits.tsv", "", active_file)), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
+    if(class(data) == "try-error"){
+        PLength <- "Error"
+        PCount <- "Error"
+      } else {
+       PLength <- nchar(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+       PCount <- length(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+    }
+
+  out_final <- merge(out_final, out, by = "mismatches", all.x = T)
+  out_final[6, ncol(out_final)] <- sum(PLength)
+  out_final[5, ncol(out_final)] <- PCount
+
+}
+
+write.csv(out_final, "../../../Analysis/Figure2/output/12mer_perm2_reverse.csv", row.names = F)
+```
+
+## Reverse Proteomes Graphs
+
+```{r perm2_graphing_1}
+#| warning: false
+out_final <- read.csv("../output/12mer_perm2_reverse.csv")
+true_counts <- read.csv("../../Key_Data/12mer_proteome_everything.csv", row.names = 1) %>% as.data.frame()
+true_counts[is.na(true_counts)] <- 0
+
+reverse_results <- t(true_counts[1:4,]) %>% as.data.frame() %>%
+  rownames_to_column("Species") %>%
+  filter(Species != "mismatches") %>%
+  dplyr::rename("0"="1","1"="2","2"="3","3"="4") %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`,`1`,`2`,`3`),
+         `2` = sum(`0`, `1`, `2`),
+         `1` = sum(`0`, `1`)) %>%
+  ungroup() %>%
+  pivot_longer(cols = -Species) %>%
+  left_join(
+    t(out_final[1:4,]) %>% as.data.frame() %>%
+      rownames_to_column("Species") %>%
+      filter(Species != "mismatches") %>%
+      dplyr::rename("0"="1","1"="2","2"="3","3"="4") %>%
+      mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+      rowwise() %>%
+      mutate(`3` = sum(`0`,`1`,`2`,`3`),
+             `2` = sum(`0`, `1`, `2`),
+             `1` = sum(`0`, `1`)) %>%
+      ungroup() %>%
+      pivot_longer(cols = -Species) %>%
+      dplyr::rename(value_rev = value) %>%
+      mutate(Species = gsub("Reversed_", "", Species)), by = c("Species", "name")
+  )  %>%
+  dplyr::rename("mismatches" = "name") %>%
+  mutate(FC = (value+10) / (value_rev + 10))
+
+gg2 <- reverse_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  inner_join(metadata) %>%
+   mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  dplyr::rename("label" = "Taxon.mnemonic") %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(mismatches, label, fill=FC)) + geom_tile() +
+  theme_classic() +
+  xlab("Number of Mismatches") +
+    scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+                       limits=c(0.2, 32), oob = scales::squish, trans = "log",
+                       breaks = c(0.25, 0.5, 1, 2, 4, 8, 16, 32)) +
+  theme(axis.title.y = element_blank(),
+        axis.text.y =element_blank(),#element_text(size=7),
+        axis.title.x=element_text(size=9),
+        panel.border = element_rect(colour = "black", fill=NA, size=1))
+gg2
+```
+
+```{r, perm2_graphing_2, fig.height=10, fig.width = 5}
+#| warning: false
+taxa <- metadata %>% as.data.frame() %>%
+  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  filter(superkingdom == "Viruses") %>%
+  ##filter(Proteome.ID %in% out_protein_final$`Proteome ID`) %>%
+  column_to_rownames("Taxon.mnemonic") %>%
+  dplyr::select(family, order, class, phylum, kingdom) %>%
+  as.data.frame()
+taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
+taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
+
+check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
+rownames(check) <- rownames(taxa)
+check <- check[complete.cases(check),]
+tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
+
+tax.phy <- as.phylo(tmp)
+
+
+gg_tree <- ggtree(tax.phy, branch.length='none')
+gg_tree[["data"]] <- gg_tree[["data"]] %>% 
+  left_join(metadata %>%
+               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
+
+gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
+   scale_fill_manual(values = Family_palette_v2)
+
+gg2 %>% insert_left(gg_tree,width = 0.2) 
+#ggsave(paste0(out_dir, "reversed_heatmap.pdf"), width = 5, height =10)
+
+#gg2 %>% insert_left(gg1) %>% insert_left(gg_tree,width = 0.2)
+#ggsave(paste0(out_dir, "perm1-2_heatmap.pdf"), width = 5, height =10)
+```
+
+```{r, perm2_graphing_3}
+#| warning: false
+
+testing_data <- reverse_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(grepl("Virus", Taxonomic.lineage)) %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic"))
+
+wt <- compare_means(data = testing_data, formula = FC ~ Chronic.or.Acute,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+write.xlsx(wt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+
+gg3_perm2 <- reverse_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic") | grepl("Bacteria", Taxonomic.lineage)) %>%
+  mutate(Chronic.or.Acute = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Chronic.or.Acute)) %>%
+  group_by(`Chronic.or.Acute`, mismatches) %>%
+  mutate(FC = ifelse(is.na(FC), 0, FC)) %>%
+  dplyr::summarize(mean_value = mean(FC), count = n(), sd = sd(FC)) %>%
+  mutate(value_stderr = sd/sqrt(count)) %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(x=mismatches, y=mean_value, color = `Chronic.or.Acute`)) +
+    geom_hline(yintercept = 1, linetype = "dashed") +
+    geom_point() +
+    geom_line(aes(group = `Chronic.or.Acute`)) +
+    theme_classic() +
+    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=mismatches), width=.1)+
+    xlab("Number of mismatches") +
+  scale_color_manual(values =c("#1975EE", "#E78305", "black")) +
+  ylab("Fold Change of\nActual over Permutation 2")+
+  scale_y_continuous(trans = log2_trans(),
+     breaks = trans_breaks("log2", function(x) round(2^x, 3))) +
+  annotate("text", x= c(1,2,3,4), y= c(2.9, 4.8, 3.8, 1.1),
+           label = wt$p.adj.star, size = 6, lineheight = 0.5) +
+  theme(legend.position = "none")
+gg3_perm2
+#ggsave(paste0(out_dir, "reverse_chronicity.pdf"), width = 4, height = 3)
+
+
+testing_data <- reverse_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(!is.na(Family_Viral_Zone)) %>%
+  mutate(Family = Family_Viral_Zone) %>%
+  mutate(Herpesviridae = ifelse(Family == "Herpesviridae", "Herpesviridae", "Non-Herpesviridae")) %>%
+  mutate(Poxviridae = ifelse(Family == "Poxviridae", "Poxviridae", "Non-Poxviridae"))
+
+## These results are used to manually add stars to the graph below in illustrator
+kt <- compare_means(data = testing_data, formula = FC ~ Family,
+              group.by = c("mismatches"), method = "kruskal.test")
+wt.p <- compare_means(data = testing_data, formula = FC ~ Poxviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+wt.h <- compare_means(data = testing_data, formula = FC ~ Herpesviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesviridae", "Poxviridae")), formula = FC ~ Poxviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(group1 = "Herpesviridae")
+write.xlsx(kt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.p, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.h, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.hp, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+
+gg4_perm2 <- reverse_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(!is.na(Family_Viral_Zone)) %>%
+  mutate(Family = Family_Viral_Zone) %>%
+  group_by(Family, mismatches) %>%
+  mutate(FC = ifelse(is.na(FC), 0, FC)) %>%
+  dplyr::summarize(mean_value = mean(FC), count = n(), sd = sd(FC)) %>%
+  filter(count > 4) %>%
+  mutate(value_stderr = sd/sqrt(count)) %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(x=mismatches, y=mean_value, color = `Family`))  +
+    geom_hline(yintercept = 1, linetype = "dashed") +
+    geom_point() +
+    geom_line(aes(group = `Family`)) +
+    theme_classic() +
+    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=mismatches), width=.1)+
+    xlab("Number of mismatches") +
+  scale_color_manual(values =Family_palette_v2) +
+  ylab("Fold Change of\nActual over Permutation 2")+
+  scale_y_continuous(trans = log2_trans(),
+     breaks = trans_breaks("log2", function(x) round(2^x, 3))) +
+  annotate("text", x= c(0.9,1.9,2.9,3.9), y= c(14, 21, 13, 3),
+           label = wt.h$p.adj.star, size = 6, lineheight = 0.3,
+           color = Family_palette_v2["Herpesviridae"]) +
+  annotate("text", x= c(1.1,2.1,3.1,4.1), y= c(14, 21, 13, 3),
+           label = wt.p$p.adj.star, size = 6, lineheight = 0.3,
+           color = Family_palette_v2["Poxviridae"])+
+  theme(legend.position = "none")
+gg4_perm2
+#ggsave(paste0(out_dir, "reverse_family.pdf"), width = 4, height = 3)
+
+
+#ggarrange(gg3_perm2, gg4_perm2, ncol = 2, nrow = 1, common.legend = TRUE)
+#ggsave(paste0(out_dir, "reverse_combined.pdf"), width = 5, height = 3)
+```
+
+## Class Scramble Processing
+
+```{r perm_3_processing}
+#| eval: false
+setwd("../../../epitope_alignment/Results/Permutation_exp3")
+Sys.time()
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Virus"], collapse = "|"), files_to_read)]
+
+out_final <- data.frame(mismatches = c("0", "1", "2", "3", "Proteome Length", "Number of Proteins"))
+out_protein_final <- data.frame()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " Pathogen number:",match(active_file, files_to_read), "/", length(files_to_read)))
+  active_data <- fread(active_file, nThread = 10)
+
+  if(nrow(active_data) == 0){
+    out_final[,gsub("_12mer_3mis_hits.tsv", "", active_file)] <- c(0,0,0,0,NA,NA)
+      data <- try(seqinr::read.fasta(file = paste0("../../Viral_Proteomes/Final_Cohort/", gsub("AAClass_Scramble_", "", gsub("-[1-9].*", "", active_file)), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
+    if(class(data) == "try-error"){
+        PLength <- "Error"
+        PCount <- "Error"
+    } else {
+       PLength <- nchar(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+      PCount <- length(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+    }
+
+      out_final[6, ncol(out_final)] <- sum(PLength)
+      out_final[5, ncol(out_final)] <- PCount
+
+    next
+  }
+
+  ### This line is what makes the results unique!!
+  active_data$uniprot <- sapply(strsplit(active_data$target_seqname, split="\\|"), function(x) paste(x[2]))
+  active_data$viral_id <- sapply(strsplit(active_data$query_seqname, split="\\|"), function(x) paste(x[2]))
+  ## Filter out any duplicated proteins, identified in 
+  ## ../../Scripts/Duplicate_Protein_Screen.R
+  active_data <- active_data %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    as.data.frame()
+  active_data$mismatches <- apply(active_data, 1, function(x){DNA_Diff(x[1], x[6])})
+  active_data$mismatches <- factor(active_data$mismatches, c("0", "1", "2", "3"))
+  active_data <- as.data.frame(active_data)
+  out <- as.data.frame(table(active_data$mismatches))
+  colnames(out) <- c("mismatches", gsub("_12mer_3mis_hits.tsv", "", active_file))
+
+  ############## Count Proteome Length ##############
+   #browser()
+  data <- try(seqinr::read.fasta(file = paste0("../../Viral_Proteomes/Final_Cohort/", gsub("AAClass_Scramble_", "", gsub("-[1-9].*", "", active_file)), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
+    if(class(data) == "try-error"){
+        PLength <- "Error"
+        PCount <- "Error"
+      } else {
+      PLength <- nchar(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+      PCount <- length(data[!sapply(strsplit(names(data), split="\\|"), function(x) paste(x[2])) %in% duplicated_proteins$viral_uniprot])
+    }
+
+  out_final <- merge(out_final, out, by = "mismatches", all.x = T)
+  out_final[6, ncol(out_final)] <- sum(PLength)
+  out_final[5, ncol(out_final)] <- PCount
+
+}
+
+write.csv(out_final, "../../../Analysis/Figure2/output/12mer_perm3_class_scramble.csv", row.names = F)
+```
+
+## Class Scramble Graphs
+
+```{r perm3_graphing_1}
+#| warning: false
+out_final <- read.csv("../output/12mer_perm3_class_scramble.csv")
+colnames(out_final) <- gsub("\\.","-", colnames(out_final))
+
+true_counts <- read.csv("../../Key_Data/12mer_proteome_everything.csv", row.names = 1) %>% as.data.frame()
+true_counts[is.na(true_counts)] <- 0
+colnames(true_counts) <- gsub("\\.","-", colnames(true_counts))
+
+class_scram_results <- t(true_counts[1:4,]) %>% as.data.frame() %>%
+  rownames_to_column("Species") %>%
+  filter(Species != "mismatches") %>%
+  dplyr::rename("0"="1","1"="2","2"="3","3"="4") %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`,`1`,`2`,`3`),
+         `2` = sum(`0`, `1`, `2`),
+         `1` = sum(`0`, `1`)) %>%
+  ungroup() %>%
+  pivot_longer(cols = -Species) %>%
+  left_join(
+    t(out_final[1:4,]) %>% as.data.frame() %>%
+      rownames_to_column("Species") %>%
+      filter(Species != "mismatches") %>%
+      dplyr::rename("0"="1","1"="2","2"="3","3"="4") %>%
+      mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+      rowwise() %>%
+      mutate(`3` = sum(`0`,`1`,`2`,`3`),
+             `2` = sum(`0`, `1`, `2`),
+             `1` = sum(`0`, `1`)) %>%
+      ungroup() %>%
+      pivot_longer(cols = -Species) %>%
+      dplyr::rename(value_rand = value) %>%
+      mutate(Species = gsub("-[1-9].*", "", Species)) %>%
+      group_by(Species, name) %>%
+      dplyr::summarize(value_rand = mean(value_rand)) %>%
+      mutate(Species = gsub("AAClass_Scramble_", "", Species)), by = c("Species", "name")
+  )  %>%
+  dplyr::rename("mismatches" = "name") %>%
+  mutate(FC = (value+10) / (value_rand + 10))
+
+gg3 <- class_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  inner_join(metadata) %>%
+   mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  dplyr::rename("label" = "Taxon.mnemonic") %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(mismatches, label, fill=FC)) + geom_tile() +
+  theme_classic() +
+  xlab("Number of Mismatches") +
+  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+                       limits=c(0.2, 32), oob = scales::squish, trans = "log",
+                       breaks = c(0.25, 0.5, 1, 2, 4, 8, 16, 32)) +
+  theme(axis.title.y = element_blank(),
+        axis.text.y =element_blank(),
+        axis.title.x=element_text(size=9),
+        panel.border = element_rect(colour = "black", fill=NA, size=1))
+gg3
+```
+
+```{r perm3_graphing_2}
+#| warning: false
+taxa <- metadata %>% as.data.frame() %>%
+  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  ##filter(Proteome.ID %in% out_protein_final$`Proteome ID`) %>%
+  filter(superkingdom == "Viruses") %>%
+  column_to_rownames("Taxon.mnemonic") %>%
+  dplyr::select(family, order, class, phylum, kingdom) %>%
+  as.data.frame()
+taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
+taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
+
+check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
+rownames(check) <- rownames(taxa)
+check <- check[complete.cases(check),]
+tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
+
+tax.phy <- as.phylo(tmp)
+
+
+gg_tree <- ggtree(tax.phy, branch.length='none')
+gg_tree[["data"]] <- gg_tree[["data"]] %>% 
+  left_join(metadata %>%
+               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
+
+gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
+   scale_fill_manual(values = Family_palette_v2)
+
+#gg3 %>% insert_left(gg_tree,width = 0.2) 
+#ggsave(paste0(out_dir, "class_scramble_heatmap.pdf"), width = 4, height =12)
+gg3 %>% insert_left(gg2) %>% insert_left(gg1) %>% insert_left(gg_tree,width = 0.4)
+ggsave(paste0(out_dir, "Figure3B.pdf"), width = 5, height =13)
+
+```
+
+```{r, perm3_graphing_3}
+#| warning: false
+
+testing_data <- class_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(grepl("Virus", Taxonomic.lineage)) %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic"))
+
+wt <- compare_means(data = testing_data, formula = FC ~ Chronic.or.Acute,
+              group.by = c("mismatches"), method = "wilcox.test")%>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+write.xlsx(wt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+
+gg3_perm3 <- class_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic") | grepl("Bacteria", Taxonomic.lineage)) %>%
+  mutate(Chronic.or.Acute = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Chronic.or.Acute)) %>%
+  group_by(`Chronic.or.Acute`, mismatches) %>%
+  mutate(FC = ifelse(is.na(FC), 0, FC)) %>%
+  dplyr::summarize(mean_value = mean(FC), count = n(), sd = sd(FC)) %>%
+  mutate(value_stderr = sd/sqrt(count)) %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(x=mismatches, y=mean_value, color = `Chronic.or.Acute`)) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+    geom_point() +
+    geom_line(aes(group = `Chronic.or.Acute`)) +
+    theme_classic() +
+    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=mismatches), width=.1)+
+    xlab("Number of mismatches") +
+  scale_color_manual(values =c("#1975EE", "#E78305", "black")) +
+  ylab("Fold Change of\nActual over Permutation 3")+
+  theme(legend.position = "none")
+gg3_perm3
+#ggsave(paste0(out_dir, "class_scram_chronicity.pdf"), width = 4, height = 3)
+
+
+testing_data <- class_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(!is.na(Family_Viral_Zone)) %>%
+  mutate(Family = Family_Viral_Zone) %>%
+  mutate(Herpesviridae = ifelse(Family == "Herpesviridae", "Herpesviridae", "Non-Herpesviridae")) %>%
+  mutate(Poxviridae = ifelse(Family == "Poxviridae", "Poxviridae", "Non-Poxviridae"))
+
+## These results are used to manually add stars to the graph below in illustrator
+kt <- compare_means(data = testing_data, formula = FC ~ Family,
+              group.by = c("mismatches"), method = "kruskal.test")
+wt.p <- compare_means(data = testing_data, formula = FC ~ Poxviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+wt.h <- compare_means(data = testing_data, formula = FC ~ Herpesviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
+                                                        ifelse(p.adj<=0.05, "*", NA))))
+wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesviridae", "Poxviridae")), formula = FC ~ Poxviridae,
+              group.by = c("mismatches"), method = "wilcox.test") %>%
+  mutate(group1 = "Herpesviridae")
+
+write.xlsx(kt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.p, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.h, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.hp, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+
+gg4_perm3 <- class_scram_results %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
+  left_join(metadata) %>%
+  filter(!is.na(Family_Viral_Zone)) %>%
+  mutate(Family = Family_Viral_Zone) %>%
+  group_by(Family, mismatches) %>%
+  mutate(FC = ifelse(is.na(FC), 0, FC)) %>%
+  dplyr::summarize(mean_value = mean(FC), count = n(), sd = sd(FC)) %>%
+  filter(count > 4) %>%
+  mutate(value_stderr = sd/sqrt(count)) %>%
+  mutate(mismatches =ifelse(mismatches != "0",  paste0("≤", mismatches), mismatches)) %>%
+  mutate(mismatches = factor(mismatches, c("0", "≤1", "≤2", "≤3"))) %>%
+  ggplot(aes(x=mismatches, y=mean_value, color = `Family`)) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+    geom_point() +
+    geom_line(aes(group = `Family`)) +
+    theme_classic() +
+    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=mismatches), width=.1)+
+    xlab("Number of mismatches") +
+  scale_color_manual(values =Family_palette_v2) +
+  ylab("Fold Change of\nActual over Permutation 3") +
+   scale_y_continuous(trans = log2_trans(),
+     breaks = trans_breaks("log2", function(x) round(2^x, 3))) +
+  annotate("text", x= c(0.9,1.9,2.9,3.9), y= c(3,3,3,3),
+           label = wt.h$p.adj.star, size = 6, lineheight = 0.3,
+           color = Family_palette_v2["Herpesviridae"]) +
+  annotate("text", x= c(1.1,2.1,3.1,4.1), y= c(3,3,3,3),
+           label = wt.p$p.adj.star, size = 6, lineheight = 0.3,
+           color = Family_palette_v2["Poxviridae"])+
+  theme(legend.position = "none")
+gg4_perm3
+#ggsave(paste0(out_dir, "class_scram_family.pdf"), width = 4, height = 3)
+
+
+#ggarrange(gg3_perm3, gg4_perm3, ncol = 2, nrow = 1, common.legend = TRUE)
+#ggsave(paste0(out_dir, "class_scram_combined.pdf"), width = 5, height = 3)
+```
+
+## Panel Assembly
+
+```{r}
+#| warning: false
+ggarrange(gg3_perm1, gg4_perm1,
+          gg3_perm2, gg4_perm2,
+          gg3_perm3, gg4_perm3,
+          ncol = 2, nrow = 3, align = "hv")
+ggsave(paste0(out_dir, "Figure2C-E.pdf"), width = 5, height = 7)
+
+```
