@@ -1,0 +1,12 @@
+This is a folder to house the script used to evoke the k-mer alignment. For example:
+
+>Example.sh
+for file in $(ls -Sr ../Viral_Proteomes/Final_Cohort/*.gz); do
+file_name=${file/.fasta.gz/}}
+file_name=${file_name/"../"}
+    if [ ! -f "../Results/Complete_Final_Set/${file_name}_12mer_3mis_hits.tsv" ]; then
+        echo "julia ../fasta_kmer_locations_threaded_query_tracking.jl ../Human_Proteome/homo_sapiens_proteome.fasta.gz $file 12 3 > ../Results/Complete_Final_Set/${file_name}_12mer_3mis_hits.tsv" >> Example.sh;
+    fi
+done
+
+
