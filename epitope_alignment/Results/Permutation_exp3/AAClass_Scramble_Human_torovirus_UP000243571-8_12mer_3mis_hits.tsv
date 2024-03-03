@@ -1,0 +1,7 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+STVTVSMTYSVP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	184	tr|K7EPW4|K7EPW4_HUMAN RNA polymerase II subunit A C-terminal domain phosphatase (Fragment) OS=Homo sapiens OX=9606 GN=CTDP1 PE=1 SV=1	27	STATVSMVHSVP
+STVTVSMTYSVP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	184	tr|A0A0J9YWB6|A0A0J9YWB6_HUMAN RNA polymerase II subunit A C-terminal domain phosphatase (Fragment) OS=Homo sapiens OX=9606 GN=CTDP1 PE=1 SV=1	146	STATVSMVHSVP
+STVTVSMTYSVP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	184	tr|A0A0J9YWJ4|A0A0J9YWJ4_HUMAN RNA polymerase II subunit A C-terminal domain phosphatase (Fragment) OS=Homo sapiens OX=9606 GN=CTDP1 PE=1 SV=1	78	STATVSMVHSVP
+STVTVSMTYSVP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	184	tr|K7EJD2|K7EJD2_HUMAN RNA polymerase II subunit A C-terminal domain phosphatase (Fragment) OS=Homo sapiens OX=9606 GN=CTDP1 PE=1 SV=1	78	STATVSMVHSVP
+STVTVSMTYSVP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	184	tr|A0A0A0MR03|A0A0A0MR03_HUMAN RNA polymerase II subunit A C-terminal domain phosphatase OS=Homo sapiens OX=9606 GN=CTDP1 PE=1 SV=1	27	STATVSMVHSVP
+STVTVSMTYSVP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	184	sp|Q9Y5B0|CTDP1_HUMAN RNA polymerase II subunit A C-terminal domain phosphatase OS=Homo sapiens OX=9606 GN=CTDP1 PE=1 SV=3	146	STATVSMVHSVP

@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+VNAANENLAHGGGLAKAL	sp|P0C6X1|R1AB_CVH22 Replicase polyprotein 1ab OS=Human coronavirus 229E OX=11137 GN=rep PE=1 SV=1	1301	sp|Q8IXQ6|PARP9_HUMAN Protein mono-ADP-ribosyltransferase PARP9 OS=Homo sapiens OX=9606 GN=PARP9 PE=1 SV=2	136	VNAANEDLLHGGGLALAL
+VNAANENLAHGGGLAKAL	sp|P0C6U2|R1A_CVH22 Replicase polyprotein 1a OS=Human coronavirus 229E OX=11137 GN=1a PE=1 SV=1	1301	sp|Q8IXQ6|PARP9_HUMAN Protein mono-ADP-ribosyltransferase PARP9 OS=Homo sapiens OX=9606 GN=PARP9 PE=1 SV=2	136	VNAANEDLLHGGGLALAL

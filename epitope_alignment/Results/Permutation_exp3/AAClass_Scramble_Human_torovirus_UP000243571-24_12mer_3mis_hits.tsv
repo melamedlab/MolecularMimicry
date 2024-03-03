@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+SSPSTPKSADIP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	52	sp|Q9H211|CDT1_HUMAN DNA replication factor Cdt1 OS=Homo sapiens OX=9606 GN=CDT1 PE=1 SV=3	78	SSPSTPEAPDIP

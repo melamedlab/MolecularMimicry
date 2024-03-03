@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+QLVPPGSLIKPG	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	145	tr|F5H450|F5H450_HUMAN Frizzled-10 OS=Homo sapiens OX=9606 GN=FZD10 PE=4 SV=1	319	QLLPPGSLGHPG

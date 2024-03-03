@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+GFYSDGNPIGHR	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	239	sp|O43298|ZBT43_HUMAN Zinc finger and BTB domain-containing protein 43 OS=Homo sapiens OX=9606 GN=ZBTB43 PE=1 SV=1	327	GERSDGNLIGHR

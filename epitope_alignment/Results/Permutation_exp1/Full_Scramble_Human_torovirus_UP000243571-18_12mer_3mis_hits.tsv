@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+FGTKNKGNDHDF	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	188	sp|Q9UJ78|ZMYM5_HUMAN Zinc finger MYM-type protein 5 OS=Homo sapiens OX=9606 GN=ZMYM5 PE=1 SV=4	144	PGTKNKTNDLDF
+GTKNKGNDHDFL	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	189	sp|Q9UJ78|ZMYM5_HUMAN Zinc finger MYM-type protein 5 OS=Homo sapiens OX=9606 GN=ZMYM5 PE=1 SV=4	145	GTKNKTNDLDFS

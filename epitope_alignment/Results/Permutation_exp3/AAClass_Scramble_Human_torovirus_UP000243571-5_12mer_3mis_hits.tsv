@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+ICPRFSQHTGSS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	66	sp|Q92968|PEX13_HUMAN Peroxisomal membrane protein PEX13 OS=Homo sapiens OX=9606 GN=PEX13 PE=1 SV=2	55	ILPRPSQQTGSS

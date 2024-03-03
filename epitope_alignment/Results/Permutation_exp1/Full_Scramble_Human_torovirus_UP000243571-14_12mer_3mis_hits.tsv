@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+SISPVCQDFVKF	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	272	sp|Q9UG01|IF172_HUMAN Intraflagellar transport protein 172 homolog OS=Homo sapiens OX=9606 GN=IFT172 PE=1 SV=2	1722	SHSPVCQDVLKF
+SISPVCQDFVKF	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	272	tr|A0A6Q8PGJ2|A0A6Q8PGJ2_HUMAN Intraflagellar transport protein 172 homolog OS=Homo sapiens OX=9606 GN=IFT172 PE=1 SV=1	1700	SHSPVCQDVLKF

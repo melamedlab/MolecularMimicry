@@ -1,0 +1,6 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+NGCGVERMFFEG	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	96	sp|Q13401|PM2P3_HUMAN Putative postmeiotic segregation increased 2-like protein 3 OS=Homo sapiens OX=9606 GN=PMS2P3 PE=5 SV=2	146	NGCGVEEENFEG
+NGCGVERMFFEG	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	96	sp|Q13670|PM2PB_HUMAN Putative postmeiotic segregation increased 2-like protein 11 OS=Homo sapiens OX=9606 GN=PMS2P11 PE=5 SV=1	217	NGCGVEEENFEG
+NGCGVERMFFEG	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	96	sp|O95744|PM2P2_HUMAN Putative postmeiotic segregation increased 2-like protein 2 OS=Homo sapiens OX=9606 GN=PMS2P2 PE=5 SV=1	133	NGCGVEEENFEG
+NGCGVERMFFEG	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	96	sp|A4D2B8|PM2P1_HUMAN Putative postmeiotic segregation increased 2-like protein 1 OS=Homo sapiens OX=9606 GN=PMS2P1 PE=5 SV=1	271	NGCGVEEENFEG
+NGCGVERMFFEG	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	96	sp|P54278|PMS2_HUMAN Mismatch repair endonuclease PMS2 OS=Homo sapiens OX=9606 GN=PMS2 PE=1 SV=2	71	NGCGVEEENFEG

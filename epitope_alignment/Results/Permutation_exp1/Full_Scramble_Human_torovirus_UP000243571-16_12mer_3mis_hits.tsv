@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+ALTSSTDFSSFS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	69	tr|K7ELL6|K7ELL6_HUMAN Protein IL-40 (Fragment) OS=Homo sapiens OX=9606 GN=C17orf99 PE=4 SV=1	3	ALTSLTAASSFS

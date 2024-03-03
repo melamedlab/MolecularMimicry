@@ -1,0 +1,6 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+IDLPNSACPKFS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	60	tr|H0Y3X7|H0Y3X7_HUMAN Probable ATP-dependent DNA helicase HFM1 (Fragment) OS=Homo sapiens OX=9606 GN=HFM1 PE=1 SV=1	547	ISLSNSAMPKFS
+IDLPNSACPKFS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	60	sp|A2PYH4|HFM1_HUMAN Probable ATP-dependent DNA helicase HFM1 OS=Homo sapiens OX=9606 GN=HFM1 PE=2 SV=2	1335	ISLSNSAMPKFS
+PSTPHTIDLPNS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	54	tr|F8WEH8|F8WEH8_HUMAN Sterol regulatory element-binding protein cleavage-activating protein OS=Homo sapiens OX=9606 GN=SCAP PE=1 SV=2	175	PSTPHTITLQPS
+PSTPHTIDLPNS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	54	tr|A0A0A0MTG6|A0A0A0MTG6_HUMAN Sterol regulatory element-binding protein cleavage-activating protein OS=Homo sapiens OX=9606 GN=SCAP PE=1 SV=1	109	PSTPHTITLQPS
+PSTPHTIDLPNS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	54	sp|Q12770|SCAP_HUMAN Sterol regulatory element-binding protein cleavage-activating protein OS=Homo sapiens OX=9606 GN=SCAP PE=1 SV=4	482	PSTPHTITLQPS

@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+KYHLFILQGVAD	tr|A0A0K0KBV7|A0A0K0KBV7_HUTV Membrane protein (Fragment) OS=Human torovirus OX=67605 PE=4 SV=1	5	tr|A0A2R8YFM9|A0A2R8YFM9_HUMAN Uncharacterized protein CFAP92 OS=Homo sapiens OX=9606 GN=CFAP92 PE=1 SV=2	729	KTHLFILEGLAD
+KYHLFILQGVAD	tr|A0A0K0KBV7|A0A0K0KBV7_HUTV Membrane protein (Fragment) OS=Human torovirus OX=67605 PE=4 SV=1	5	sp|Q6ZUG5|YC006_HUMAN Uncharacterized protein FLJ43738 OS=Homo sapiens OX=9606 PE=2 SV=1	275	KTHLFILEGLAD

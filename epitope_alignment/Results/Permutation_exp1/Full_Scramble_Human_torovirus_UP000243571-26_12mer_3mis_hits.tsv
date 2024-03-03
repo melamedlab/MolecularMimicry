@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+GNTTFDPELISS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	27	sp|Q9UFH2|DYH17_HUMAN Dynein heavy chain 17, axonemal OS=Homo sapiens OX=9606 GN=DNAH17 PE=1 SV=3	3222	GNPTFDPEFIRS
+GNTTFDPELISS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	27	tr|K7ELN3|K7ELN3_HUMAN Dynein heavy chain 17, axonemal (Fragment) OS=Homo sapiens OX=9606 GN=DNAH17 PE=1 SV=1	423	GNPTFDPEFIRS

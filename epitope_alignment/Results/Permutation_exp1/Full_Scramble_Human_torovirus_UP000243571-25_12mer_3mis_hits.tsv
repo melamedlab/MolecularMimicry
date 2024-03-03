@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+QVSEANPSVLNM	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	280	sp|Q71RS6|NCKX5_HUMAN Sodium/potassium/calcium exchanger 5 OS=Homo sapiens OX=9606 GN=SLC24A5 PE=1 SV=1	287	QVSEDPPSVFNM
+GGTSGGDYGTTG	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	247	sp|Q9C0A1|ZFHX2_HUMAN Zinc finger homeobox protein 2 OS=Homo sapiens OX=9606 GN=ZFHX2 PE=1 SV=3	2047	GGTSGGPGGGTG

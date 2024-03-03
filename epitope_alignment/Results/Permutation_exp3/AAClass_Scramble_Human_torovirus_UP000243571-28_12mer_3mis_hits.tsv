@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+LSPYYGPGKVSS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	28	tr|F5H114|F5H114_HUMAN Pleckstrin homology domain-containing family B member 1 (Fragment) OS=Homo sapiens OX=9606 GN=PLEKHB1 PE=1 SV=1	126	LSCYYGPGGVPS
+TNHSGSTLFITL	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	71	sp|Q8IVG5|SAM9L_HUMAN Sterile alpha motif domain-containing protein 9-like OS=Homo sapiens OX=9606 GN=SAMD9L PE=1 SV=2	605	TNHSISTLNIEL

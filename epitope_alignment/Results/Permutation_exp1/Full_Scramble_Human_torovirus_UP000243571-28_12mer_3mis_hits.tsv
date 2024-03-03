@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+GFGSSMSPNSVS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	192	sp|Q5VYM1|CI131_HUMAN Uncharacterized protein C9orf131 OS=Homo sapiens OX=9606 GN=C9orf131 PE=2 SV=3	642	GRGSSPSSNSVS

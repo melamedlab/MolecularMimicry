@@ -1,0 +1,9 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+AEDEEEEDEDEEEEEEEQ	sp|P03277|CAPSH_ADE02 Hexon protein OS=Human adenovirus C serotype 2 OX=10515 GN=L3 PE=1 SV=3	146	sp|Q5TCY1|TTBK1_HUMAN Tau-tubulin kinase 1 OS=Homo sapiens OX=9606 GN=TTBK1 PE=1 SV=2	739	EEDEEEEEEDEEEEEEEE
+AEDEEEEDEDEEEEEEEQ	sp|P03277|CAPSH_ADE02 Hexon protein OS=Human adenovirus C serotype 2 OX=10515 GN=L3 PE=1 SV=3	146	sp|P46060|RAGP1_HUMAN Ran GTPase-activating protein 1 OS=Homo sapiens OX=9606 GN=RANGAP1 PE=1 SV=1	376	AEEEEEEDEEEEEEEEEE
+VYSPVSEPEPEPEPEPEP	sp|P03254|E1A_ADE02 Early E1A protein OS=Human adenovirus C serotype 2 OX=10515 PE=1 SV=1	183	sp|P14635|CCNB1_HUMAN G2/mitotic-specific cyclin-B1 OS=Homo sapiens OX=9606 GN=CCNB1 PE=1 SV=1	90	VPVPVSEPVPEPEPEPEP
+VYSPVSEPEPEPEPEPEP	sp|P03254|E1A_ADE02 Early E1A protein OS=Human adenovirus C serotype 2 OX=10515 PE=1 SV=1	183	tr|E9PC90|E9PC90_HUMAN G2/mitotic-specific cyclin-B1 (Fragment) OS=Homo sapiens OX=9606 GN=CCNB1 PE=1 SV=1	90	VPVPVSEPVPEPEPEPEP
+VYSPVSEPEPEPEPEPEP	sp|P03254|E1A_ADE02 Early E1A protein OS=Human adenovirus C serotype 2 OX=10515 PE=1 SV=1	183	tr|D6RHI0|D6RHI0_HUMAN G2/mitotic-specific cyclin-B1 (Fragment) OS=Homo sapiens OX=9606 GN=CCNB1 PE=1 SV=1	90	VPVPVSEPVPEPEPEPEP
+EDEEEEDEDEEEEEEEQN	sp|P03277|CAPSH_ADE02 Hexon protein OS=Human adenovirus C serotype 2 OX=10515 GN=L3 PE=1 SV=3	147	sp|Q5TCY1|TTBK1_HUMAN Tau-tubulin kinase 1 OS=Homo sapiens OX=9606 GN=TTBK1 PE=1 SV=2	740	EDEEEEEEDEEEEEEEEE
+VAEDEEEEDEDEEEEEEE	sp|P03277|CAPSH_ADE02 Hexon protein OS=Human adenovirus C serotype 2 OX=10515 GN=L3 PE=1 SV=3	145	sp|Q5TCY1|TTBK1_HUMAN Tau-tubulin kinase 1 OS=Homo sapiens OX=9606 GN=TTBK1 PE=1 SV=2	738	EEEDEEEEEEDEEEEEEE
+VAEDEEEEDEDEEEEEEE	sp|P03277|CAPSH_ADE02 Hexon protein OS=Human adenovirus C serotype 2 OX=10515 GN=L3 PE=1 SV=3	145	sp|P46060|RAGP1_HUMAN Ran GTPase-activating protein 1 OS=Homo sapiens OX=9606 GN=RANGAP1 PE=1 SV=1	375	EAEEEEEEDEEEEEEEEE

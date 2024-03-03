@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+SYATSFGPNYEI	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	152	sp|Q5VT06|CE350_HUMAN Centrosome-associated protein 350 OS=Homo sapiens OX=9606 GN=CEP350 PE=1 SV=1	2424	SGATSFGSNEEI
+SYATSFGPNYEI	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	152	tr|H0Y7F7|H0Y7F7_HUMAN Centrosome-associated protein 350 (Fragment) OS=Homo sapiens OX=9606 GN=CEP350 PE=1 SV=1	599	SGATSFGSNEEI

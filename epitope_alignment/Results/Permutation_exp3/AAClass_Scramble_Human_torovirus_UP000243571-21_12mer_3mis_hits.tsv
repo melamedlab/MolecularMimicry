@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+DPGAYQISTWGK	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	260	sp|Q9Y5G9|PCDG4_HUMAN Protocadherin gamma-A4 OS=Homo sapiens OX=9606 GN=PCDHGA4 PE=1 SV=2	9	DPGAPQASTEGK

@@ -1,0 +1,3 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+KPLSPFYGPGKI	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	26	sp|Q99954|SMR3A_HUMAN Submaxillary gland androgen-regulated protein 3A OS=Homo sapiens OX=9606 GN=SMR3A PE=1 SV=2	65	PPLSPPYGPGRI
+PLSPFYGPGKIS	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	27	sp|Q99954|SMR3A_HUMAN Submaxillary gland androgen-regulated protein 3A OS=Homo sapiens OX=9606 GN=SMR3A PE=1 SV=2	66	PLSPPYGPGRIP

@@ -1,0 +1,2 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+SVPSHNPGICSP	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV	157	tr|F5H7C8|F5H7C8_HUMAN Complement C1r subcomponent-like protein OS=Homo sapiens OX=9606 GN=C1RL PE=1 SV=1	176	SVPSHDPGIFKP
