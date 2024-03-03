@@ -150,13 +150,13 @@ for(active_file in files_to_read){
     left_join(tissue_organ_map %>% dplyr::rename("ensembl_gene_id" = "Gene")) %>%
      #filter(mismatches == 3) %>%
      filter(Level != "Low") %>%
-     filter(Level != "NA") %>% ## TODO decide if this is a problem
+     filter(Level != "NA") %>% 
      distinct(query, query_seqname, query_start, Tissue, `New Name`) 
   
   if(nrow(active_data) == 0){
     next
   }
-  #### TODO Add removal of overlapping enzyme products
+  
   final_data <- active_data %>%
     distinct(query, query_seqname, query_start, `New Name`)
   final_data2 <- active_data %>%

@@ -510,13 +510,13 @@ Joining with `by = join_by(Proteome.ID)`</code></pre>
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(tissue_organ_map <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">"ensembl_gene_id"</span> <span class="ot">=</span> <span class="st">"Gene"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>     <span class="co">#filter(mismatches == 3) %&gt;%</span></span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>     <span class="fu">filter</span>(Level <span class="sc">!=</span> <span class="st">"Low"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>     <span class="fu">filter</span>(Level <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span> <span class="do">## </span><span class="al">TODO</span><span class="do"> decide if this is a problem</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>     <span class="fu">filter</span>(Level <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>     <span class="fu">distinct</span>(query, query_seqname, query_start, Tissue, <span class="st">`</span><span class="at">New Name</span><span class="st">`</span>) </span>
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">nrow</span>(active_data) <span class="sc">==</span> <span class="dv">0</span>){</span>
 <span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">next</span></span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### </span><span class="al">TODO</span><span class="do"> Add removal of overlapping enzyme products</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  final_data <span class="ot">&lt;-</span> active_data <span class="sc">%&gt;%</span></span>
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(query, query_seqname, query_start, <span class="st">`</span><span class="at">New Name</span><span class="st">`</span>)</span>
 <span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  final_data2 <span class="ot">&lt;-</span> active_data <span class="sc">%&gt;%</span></span>
