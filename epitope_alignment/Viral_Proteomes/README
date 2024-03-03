@@ -1,0 +1,1 @@
+This folder houses the aligned data for the actual viral proteomes, the permuted proteomes, and the actual viral proteomes aligned to the phip-seq library. Please note that permutation 1 and 2 data are combined in the "Permutation_Experiment" folder, with permutation 2 set aside in the "Reversed" subdirectory.
