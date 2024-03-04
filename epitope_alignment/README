@@ -1,0 +1,7 @@
+This contains code written by Dennis Wylie to map short aligned peptides between two proteomes and exports as a csv. The code takes a few arguments explained below:
+
+julia fasta_kmer_locations.jl UP000005640_9606.fasta.gz UP000000354_694009.fasta.gz 10 1 > covid_10mer_1mis_hits.tsv
+
+julia calls the language and the fasta_kmer_locations.jl is the main script that call the supporting skewsuffixarray.jl and bwt.jl. The first argument is the target proteome to align to (human), and the second is the query (in this case viral). The 3 argument in the length of the kmers being looked for, and the fourth argument is the number of mismatches allowed. Downstream I'll use BLOSUM scores to suppliment and refine the mismatching, so I use a high general threshold at this step.
+
+On 2/1/2022, Dennis sent a new version that also provides information on the query's source in the original fasta. There is both a single threaded and multithreaded version. This can be distinguished by query being in the file name.
