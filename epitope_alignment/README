@@ -1,4 +1,4 @@
-This contains code written by Dennis Wylie to map short aligned peptides between two proteomes and exports as a csv. The code takes a few arguments explained below:
+This contains code written by Dennis Wylie (UT Austin) to map short aligned peptides between two proteomes and exports as a csv. The code takes a few arguments explained below:
 
 julia fasta_kmer_locations.jl UP000005640_9606.fasta.gz UP000000354_694009.fasta.gz 10 1 > covid_10mer_1mis_hits.tsv
 
