@@ -1,3 +1,14 @@
-To have all resources used in this study, please download them from their original source:
+To obtain the files for this folder, you can download them from the following links:
 
+Files from the Human Protein Atlas
+proteinatlas_2023-10-15.tsv: https://utexas.box.com/v/proteinatlas-2023-10
 
+From data released with Vazquez et al. eLife (2022)
+peptide_gene_mapping.csv: https://utexas.box.com/v/phipseq-mapping
+
+From data released with Zamecnik et al. BioRxiv (2023)
+rpk-count-tables directory: https://utexas.box.com/v/Zamecnik-rpk-count-tables
+
+From Gabrielsen et al Transcriptomes of antigen presenting cells in human thymus, PLoS One. (2019)
+Please download Supplemental Table 3 from the link below and named the file "Gabrielsen_I_et_al_2019_TableS3.xlsx"
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0218858
