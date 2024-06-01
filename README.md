@@ -1,5 +1,6 @@
 # Molecular Mimicry as a Mechanism of Viral Immune Evasion and Autoimmunity
 <a href="https://zenodo.org/doi/10.5281/zenodo.11411891"><img src="https://zenodo.org/badge/764360678.svg" alt="DOI"></a>
+
 This is the repository for the paper "Molecular Mimicry as a Mechanism of Viral Immune Evasion and Autoimmunity" currently pre-printed at BioRxiv. Below is a brief summary of the repository structure.
 
 All analysis outside of the alignment including Figure assembly and statistical testing is in the "Analysis" folder. All k-mer alignment is in the epitope_alignment folder. Within both of these directories, there were several instances of files being too large to be housed on github. In these instances we have included a link to where the files are housed on Box if you desired the exact file used in this manuscript. The only instances were we did not do this are for some files in the "Databases" folder under "Analysis" which were from other sources/manuscripts. There we have reported where to retrieve the file from.
