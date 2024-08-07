@@ -1,0 +1,24 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: Maguire
+  given-names: Cole
+  orcid: https://orcid.org/0000-0001-8986-9762
+- family-names: Wang
+  given-names: Chumeng
+- family-names: Ramasamy
+  given-names: Akshara
+- family-names: Fonken
+  given-names: Cara
+- family-names: Morse
+  given-names: Brinkley
+- family-names: Lopez
+  given-names: Nathan
+- family-names: Wylie
+  given-names: Dennis
+- family-names: Melamed
+  given-names: Esther
+title: Molecular Mimicry as a Mechanism of Viral Immune Evasion and
+Autoimmunity 
+version: v1.0.0
+date-released: 2024-06-01
