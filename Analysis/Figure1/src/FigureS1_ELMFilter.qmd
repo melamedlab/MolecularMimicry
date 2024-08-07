@@ -1,10 +1,10 @@
 ---
-title: "Figure1"
+title: "FigureS1"
 format: html
 editor: visual
 ---
 
-## Figure 1
+## Figure S1
 
 ```{r load_in}
 #| message: false
@@ -96,6 +96,39 @@ tissue_organ_map_condensed <- tissue_organ_map %>%
 out_dir <- "../output/"
 ```
 
+## ELM location identification
+
+```{r}
+#| eval: false
+## This takes a while to run, the generated file is already on the github (so could be and by default is a skipped chunk)
+files_to_read <- list.files("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/")
+elm_instance_df <- data.frame()
+for(active_virus in files_to_read){
+  print(paste0("On ", match(active_virus, files_to_read), " virus out of ", length(files_to_read)))
+  print(active_virus)
+  active_virus_proteome <- seqinr::read.fasta(file = paste0("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/", active_virus), as.string = T, seqtype = "AA")
+  for(active_protein in active_virus_proteome){
+    for(active_elm_class in elm_classes$Regex){
+      
+      tmp <- stringr::str_locate_all(active_protein[1], active_elm_class)
+      tmp <- as.data.frame(tmp)
+      if(nrow(tmp) == 0){next} ## was originally active_elm_class by accident
+      tmp <- as.data.frame(tmp) %>%
+        mutate(viral_protein = attr(active_protein,"Annot"),
+               Regex = active_elm_class,
+               File_name = active_virus,
+               Proteome.ID = gsub(".*_UP", "UP", gsub(".fasta.gz", "", active_virus)))
+      elm_instance_df <- rbind.data.frame(elm_instance_df, tmp)
+    }
+  }
+}
+
+elm_instance_df <- elm_instance_df %>%
+  left_join(elm_classes %>% distinct(Accession, ELMIdentifier, FunctionalSiteName, Description, Regex, Probability))
+ 
+fwrite(elm_instance_df, "/stor/work/Melamed_COVID/Cole/git_clones/MolecularMimicry/Analysis/Key_Data/elm_labeled_viral_sequences_v2.csv.gz")
+```
+
 ## 8mer Data Annotation
 
 ```{r data_annotate_8mer}
@@ -174,6 +207,18 @@ for(active_file in files_to_read){
 library(seqinr)
 library(stringi)
 library(svMisc)
+mode = "tight_elm"
+kmer_length = 8
+elm_instance_df <- fread("../../Key_Data/elm_labeled_viral_sequences_v2.csv.gz")
+elm_db_expand <- elm_instance_df %>% distinct(viral_protein, start, end, Regex) %>%
+                  mutate(viral_protein = gsub(">", "", viral_protein)) %>%
+  rowwise() %>%
+  do(data.frame(query_seqname = .$viral_protein, query_start =(.$start-(kmer_length-1)):.$end)) %>%
+  mutate(in_elm = TRUE) %>%
+  distinct() %>%
+  arrange(query_seqname)
+
+
 Sys.time()
 files_to_read <- list.files("../../8mer_annotated",full.names = TRUE)
 files_to_read <- files_to_read[grepl(".csv.gz", files_to_read)]
@@ -214,6 +259,11 @@ for(active_file in files_to_read){
            ec_number.human, ec_number.viral,
            enzyme_number.same, external_gene_name)
   
+   if(mode == "tight_elm"){
+    active_data <- active_data %>%
+      anti_join(elm_db_expand, by = c("query_seqname", "query_start"))
+  } 
+  
   active_data$reaction.same[is.na(active_data$reaction.same)] <- FALSE
   active_data$catalytic_activity.same[is.na(active_data$catalytic_activity.same)] <- FALSE
   
@@ -226,6 +276,7 @@ for(active_file in files_to_read){
   out <- as.data.frame(table(active_data$mismatches))
   if(nrow(out) == 0){out <- data.frame(mismatches = c(0,1,2,3), V2 = c(0,0,0,0))}
   colnames(out) <- c("mismatches", gsub("_8mer_3mis_hits.csv.gz", "", active_file))
+  
   
   out_protein <- active_data %>%
      distinct(query, query_seqname, query_start, mismatches) %>%
@@ -286,10 +337,10 @@ for(active_file in files_to_read){
 }
 
 Sys.time()
-write.csv(out_final, "../../Key_Data/8mer_proteome_everything.csv")
-write.csv(out_protein_final, "../../Key_Data/8mer_proteome_protein_everything.csv")
-write.csv(out_protein_final_min, "../../Key_Data/8mer_proteome_protein_everything_min.csv")
-write.csv(out_protein_final_count, "../../Key_Data/8mer_proteome_protein_everything_count.csv")
+# write.csv(out_final, "../../Key_Data/8mer_proteome_everything_elmfilter_regex.csv")
+# write.csv(out_protein_final, "../../Key_Data/8mer_proteome_protein_everything_elmfilter_regex.csv")
+# write.csv(out_protein_final_min, "../../Key_Data/8mer_proteome_protein_everything_min_elmfilter_regex.csv")
+# write.csv(out_protein_final_count, "../../Key_Data/8mer_proteome_protein_everything_count_elmfilter_regex.csv")
 
 ```
 
@@ -302,7 +353,7 @@ setwd("../../../epitope_alignment/Results/Complete_Final_Set/")
 files_to_read <- list.files()
 files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
 files_completed <- list.files("../../../Analysis/12mer_annotated/")
-files_to_read <- files_to_read[!gsub(".tsv", "", files_to_read) %in% gsub(".csv.gz", "", files_completed)]
+#files_to_read <- files_to_read[!gsub(".tsv", "", files_to_read) %in% gsub(".csv.gz", "", files_completed)]
 
 files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID, collapse = "|"), files_to_read)]
 
@@ -353,10 +404,10 @@ for(active_file in files_to_read){
            active_site.viral, binding_site.viral, dna_binding.viral,
            ec_number.viral, catalytic_activity.same, reaction.human,
            reaction.viral, reaction.same,
-           enzyme_number.same) %>%
+           enzyme_number.same, human_variants) %>%
     as.data.frame()
   Sys.time()
-  fwrite(active_data_subset, paste0("../../../Analysis/12mer_annotated/", gsub(".tsv", ".csv.gz", active_file)), row.names = FALSE, compress = "gzip", nThread = 12)
+  ##fwrite(active_data_subset, paste0("../../../Analysis/12mer_annotated/", gsub(".tsv", ".csv.gz", active_file)), row.names = FALSE, compress = "gzip", nThread = 12)
   rm(active_data, active_data_subset)
   gc()
 }
@@ -370,9 +421,11 @@ for(active_file in files_to_read){
 library(seqinr)
 library(stringi)
 library(svMisc)
+elm_instance_df <- fread("../../Key_Data/elm_labeled_viral_sequences_v2.csv.gz")
 setwd("../../12mer_annotated/")
+mode = "tight_elm"
+kmer_length = 12
 
-elm_filter = TRUE; elm_mode = "regex_motiff"
 Sys.time()
 files_to_read <- list.files()
 files_to_read <- files_to_read[grepl(".csv.gz", files_to_read)]
@@ -385,7 +438,7 @@ out_protein_final_count <- data.frame()
 for(active_file in files_to_read){
   print(paste0("Starting ", active_file, " Pathogen number:",match(active_file, files_to_read), "/", length(files_to_read)))
   active_data <- fread(active_file, nThread = 18) %>% as.data.frame()
- 
+
   if(nrow(active_data) == 0){
     out_final[,gsub("_12mer_3mis_hits.csv.gz", "", active_file)] <- c(0,0,0,0,NA,NA)
       data <- try(seqinr::read.fasta(file = paste0("../../epitope_alignment/Viral_Proteomes/Final_Cohort/", gsub("_12mer_3mis_hits.csv.gz", "", active_file), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
@@ -426,17 +479,18 @@ for(active_file in files_to_read){
   if(nrow(out) == 0){out <- data.frame(mismatches = c(0,1,2,3), V2 = c(0,0,0,0))}
   colnames(out) <- c("mismatches", gsub("_12mer_3mis_hits.csv.gz", "", active_file))
 
-  if(elm_filter){
-    if(elm_mode == "regex_motiff"){
-      for(motiff_i in unique(elm_classes$Regex)){
-        active_data <- active_data %>%
-          filter(!grepl(motiff_i, paste0(".*", query, ".*")))
-        ## browser()
-      }
-    } else if (elm_mode == "human_uniprot"){
-      
-    }
-  }
+  if(mode == "tight_elm"){
+    active_data <- active_data %>%
+      mutate(query_end = query_start + (kmer_length-1)) %>%
+      left_join(elm_instance_df %>% distinct(viral_protein, start, end, Regex) %>%
+                  mutate(viral_protein = gsub(">", "", viral_protein)),
+                by = c("query_seqname" = "viral_protein")) %>%
+      mutate(in_elm = ((query_start >= start & query_start <= end) | (query_end >= start & query_end <= end))) %>%
+      group_by(query, query_seqname, query_start, mismatches, external_gene_name) %>%
+      slice_max(in_elm) %>%
+      distinct(query, query_seqname, query_start, mismatches, external_gene_name, in_elm) %>%
+      filter(!in_elm)
+  } 
   
   out_protein <- active_data %>%
      distinct(query, query_seqname, query_start, mismatches) %>%
@@ -580,7 +634,11 @@ for(active_file in files_to_read){
 library(seqinr)
 library(stringi)
 library(svMisc)
+elm_instance_df <- fread("../../Key_Data/elm_labeled_viral_sequences_v2.csv.gz")
 setwd("../../18mer_annotated/")
+mode = "tight_elm"
+kmer_length = 18
+
 Sys.time()
 files_to_read <- list.files()
 files_to_read <- files_to_read[grepl(".csv.gz", files_to_read)]
@@ -593,7 +651,7 @@ out_protein_final_count <- data.frame()
 for(active_file in files_to_read){
   print(paste0("Starting ", active_file, " Pathogen number:",match(active_file, files_to_read), "/", length(files_to_read)))
   active_data <- fread(active_file, nThread = 18) %>% as.data.frame()
-  
+
   if(nrow(active_data) == 0){
     out_final[,gsub("_18mer_3mis_hits.csv.gz", "", active_file)] <- c(0,0,0,0,NA,NA)
       data <- try(seqinr::read.fasta(file = paste0("../../epitope_alignment/Viral_Proteomes/Final_Cohort/", gsub("_18mer_3mis_hits.csv.gz", "", active_file), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
@@ -633,6 +691,19 @@ for(active_file in files_to_read){
   out <- as.data.frame(table(active_data$mismatches))
   if(nrow(out) == 0){out <- data.frame(mismatches = c(0,1,2,3), V2 = c(0,0,0,0))}
   colnames(out) <- c("mismatches", gsub("_18mer_3mis_hits.csv.gz", "", active_file))
+  
+   if(mode == "tight_elm"){
+    active_data <- active_data %>%
+      mutate(query_end = query_start + (kmer_length-1)) %>%
+      left_join(elm_instance_df %>% distinct(viral_protein, start, end, Regex) %>%
+                  mutate(viral_protein = gsub(">", "", viral_protein)),
+                by = c("query_seqname" = "viral_protein")) %>%
+      mutate(in_elm = ((query_start >= start & query_start <= end) | (query_end >= start & query_end <= end))) %>%
+      group_by(query, query_seqname, query_start, mismatches, external_gene_name) %>%
+      slice_max(in_elm) %>%
+      distinct(query, query_seqname, query_start, mismatches, external_gene_name, in_elm) %>%
+      filter(!in_elm)
+   }
   
   out_protein <- active_data %>%
      distinct(query, query_seqname, query_start, mismatches) %>%
@@ -693,249 +764,17 @@ for(active_file in files_to_read){
 }
 
 Sys.time()
-write.csv(out_final, "../Key_Data/18mer_proteome_everything.csv")
-write.csv(out_protein_final, "../Key_Data/18mer_proteome_protein_everything.csv")
-write.csv(out_protein_final_min, "../Key_Data/18mer_proteome_protein_everything_min.csv")
-write.csv(out_protein_final_count, "../Key_Data/18mer_proteome_protein_everything_count.csv")
+write.csv(out_final, "../Key_Data/18mer_proteome_everything_elmfilter_regex.csv")
+write.csv(out_protein_final, "../Key_Data/18mer_proteome_protein_everything_elmfilter_regex.csv")
+write.csv(out_protein_final_min, "../Key_Data/18mer_proteome_protein_everything_min_elmfilter_regex.csv")
+write.csv(out_protein_final_count, "../Key_Data/18mer_proteome_protein_everything_count_elmfilter_regex.csv")
 ```
 
-## Panel B
-
-#### Panel B 12mers
-
-```{r panel_b_2}
-#| warning: false
-out_final <- read.csv("../../Key_Data/12mer_proteome_everything.csv", row.names = 1)
-out_protein_final <- read.csv("../../Key_Data/12mer_proteome_protein_everything_count.csv", row.names = 1)
-mismatch_data <- t(out_final)
-colnames(mismatch_data) <- mismatch_data[1,]
-mismatch_data <- as.data.frame(mismatch_data[-1,])
-mismatch_data$ID <- gsub(".*UP", "UP", rownames(mismatch_data))
-
-mismatch_data_meta <- mismatch_data %>%
-  inner_join(metadata, by = c("ID" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 ID, Taxon.mnemonic)) %>%
-   mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
-  rowwise() %>%
-  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
-         `2` = sum(`0`, `1`, `2`,na.rm = T),
-         `1` = sum(`0`, `1`,na.rm = T)) %>%
-  ungroup()
-mismatch_data_meta$`0`[is.na(mismatch_data_meta$`0`)] <- 0
-mismatch_data_meta$`1`[is.na(mismatch_data_meta$`1`)] <- 0
-mismatch_data_meta$`2`[is.na(mismatch_data_meta$`2`)] <- 0
-mismatch_data_meta$`3`[is.na(mismatch_data_meta$`3`)] <- 0
-
-mismatch_data_meta$`0_corrected` <- as.numeric(mismatch_data_meta$`0`) / (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-
-
-heatdf <- as.data.frame(mismatch_data_meta[,grepl("_corrected", colnames(mismatch_data_meta))])
-heatdf <- apply(heatdf, 2, scale)
-rownames(heatdf) <- mismatch_data_meta$ID
-
-gg2 <- heatdf %>% as.data.frame() %>%
-  rownames_to_column("proteome_id") %>%
-  pivot_longer(cols = -proteome_id) %>%
-  left_join(metadata, by = c("proteome_id" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `proteome_id`, Taxon.mnemonic)) %>%
-  dplyr::rename("label" = "Taxon.mnemonic") %>%
-  mutate(name = gsub("_corrected", "", name))  %>%
-  mutate(name =ifelse(name != "0",  paste0("≤", name), name)) %>%
-  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
-  ggplot(aes(name, label, fill=value)) + geom_tile() +
-  theme_classic() +
-  xlab("Number of Mismatches") +
-  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2",
-                                   "#FCDE9C", "#FAB27B", "#E23333"), limits = c(-4,6.7),
-                       na.value = "white") +
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        #axis.text.y =element_text(size=7),
-        axis.title.x=element_text(size=9),
-        panel.border = element_rect(colour = "black", fill=NA, size=1))
-gg2
-```
-
-#### Panel B 18mers
-
-```{r}
-#| warning: false
-out_final_18mer <- read.csv("../../Key_Data/18mer_proteome_everything.csv", row.names = 1) 
-out_protein_final_18mer <- read.csv("../../Key_Data/18mer_proteome_protein_everything.csv", row.names = 1) %>% dplyr::rename("Proteome ID" = "Proteome.ID")
-
-mismatch_data <- t(out_final_18mer)
-colnames(mismatch_data) <- mismatch_data[1,]
-mismatch_data <- as.data.frame(mismatch_data[-1,])
-mismatch_data$ID <- gsub(".*UP", "UP", rownames(mismatch_data))
-
-mismatch_data_meta <- mismatch_data %>%
-  inner_join(metadata, by = c("ID" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 ID, Taxon.mnemonic)) %>%
-  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
-  rowwise() %>%
-  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
-         `2` = sum(`0`, `1`, `2`,na.rm = T),
-         `1` = sum(`0`, `1`,na.rm = T)) %>%
-  ungroup()
-mismatch_data_meta$`0`[is.na(mismatch_data_meta$`0`)] <- 0
-mismatch_data_meta$`1`[is.na(mismatch_data_meta$`1`)] <- 0
-mismatch_data_meta$`2`[is.na(mismatch_data_meta$`2`)] <- 0
-mismatch_data_meta$`3`[is.na(mismatch_data_meta$`3`)] <- 0
-
-mismatch_data_meta$`0_corrected` <- as.numeric(mismatch_data_meta$`0`) / (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-
-
-heatdf <- as.data.frame(mismatch_data_meta[,grepl("_corrected", colnames(mismatch_data_meta))])
-heatdf <- apply(heatdf, 2, scale)
-rownames(heatdf) <- mismatch_data_meta$ID
-#heatdf[heatdf==0]<-NA
-gg2_18mer <- heatdf %>% as.data.frame() %>%
-  rownames_to_column("proteome_id") %>%
-  pivot_longer(cols = -proteome_id) %>%
-  left_join(metadata, by = c("proteome_id" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `proteome_id`, Taxon.mnemonic)) %>%
-  dplyr::rename("label" = "Taxon.mnemonic") %>%
-  mutate(name =gsub("_corrected", "", name)) %>%
-  mutate(name =ifelse(name != "0",  paste0("≤", name), name)) %>%
-  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
-  ggplot(aes(name, label, fill=value)) + geom_tile() +
-  theme_classic() +
-  xlab("Number of Mismatches") +
-  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2",
-                                   "#FCDE9C", "#FAB27B", "#E23333"), limits = c(-4,6.7),
-                       na.value = "white") +
-  theme(axis.title.y = element_blank(),
-        axis.text.y = element_blank(),
-        #axis.text.y = element_text(size=7),
-        axis.title.x=element_text(size=9),
-        panel.border = element_rect(colour = "black", fill=NA, size=1))
-gg2_18mer
-```
-
-#### Panel B 8mers
-
-```{r}
-#| warning: false
-out_final <- read.csv("../../Key_Data/8mer_proteome_everything.csv", row.names = 1)
-
-mismatch_data <- t(out_final)
-colnames(mismatch_data) <- mismatch_data[1,]
-mismatch_data <- as.data.frame(mismatch_data[-1,])
-mismatch_data$ID <- gsub(".*UP", "UP", rownames(mismatch_data))
-
-mismatch_data_meta <- mismatch_data %>%
-  inner_join(metadata, by = c("ID" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 ID, Taxon.mnemonic))%>%
-  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
-  rowwise() %>%
-  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
-         `2` = sum(`0`, `1`, `2`,na.rm = T),
-         `1` = sum(`0`, `1`,na.rm = T)) %>%
-  ungroup()
-mismatch_data_meta$`0`[is.na(mismatch_data_meta$`0`)] <- 0
-mismatch_data_meta$`1`[is.na(mismatch_data_meta$`1`)] <- 0
-mismatch_data_meta$`2`[is.na(mismatch_data_meta$`2`)] <- 0
-mismatch_data_meta$`3`[is.na(mismatch_data_meta$`3`)] <- 0
-
-mismatch_data_meta$`0_corrected` <- as.numeric(mismatch_data_meta$`0`) / (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-
-
-heatdf <- as.data.frame(mismatch_data_meta[,grepl("_corrected", colnames(mismatch_data_meta))])
-heatdf <- apply(heatdf, 2, scale)
-rownames(heatdf) <- mismatch_data_meta$ID
-
-gg2_8mers <- heatdf %>% as.data.frame() %>%
-  rownames_to_column("proteome_id") %>%
-  pivot_longer(cols = -proteome_id) %>%
-  left_join(metadata, by = c("proteome_id" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `proteome_id`, Taxon.mnemonic)) %>%
-  dplyr::rename("label" = "Taxon.mnemonic") %>%
-  mutate(name = gsub("_corrected", "", name))  %>%
-  mutate(name =ifelse(name != "0",  paste0("≤", name), name)) %>%
-  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
-  ggplot(aes(name, label, fill=value)) + geom_tile() +
-  theme_classic() + 
-  xlab("Number of Mismatches") +
-   #scale_fill_gradient(low = "yellow", high = "purple", na.value = NA)
-  #scale_fill_gradientn(colours = c("blue", "purple", "yellow", "red")) +
-  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2",
-                                   "#FCDE9C", "#FAB27B", "#E23333"),
-                       limits = c(-4,6.7), oob=squish,
-                       na.value = "white") +
-  theme(axis.title.y = element_blank(),
-        #axis.text.y = element_blank(),
-        axis.text.y =element_text(size=7),
-        axis.title.x=element_text(size=9),
-        panel.border = element_rect(colour = "black", fill=NA, size=1))
-gg2_8mers
-```
-
-#### Panel Assembly
-
-```{r panel_b_5, fig.width=8, fig.height = 15}
-#| warning: false
-taxa <- metadata %>% as.data.frame() %>%
-  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
-                                 "Simian virus 5", Taxon.mnemonic)) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `Proteome.ID`, Taxon.mnemonic)) %>%
-  filter(Proteome.ID %in% out_protein_final$`Proteome.ID`) %>%
-  column_to_rownames("Taxon.mnemonic") %>%
-  dplyr::select(family, order, class, phylum, kingdom) %>%
-  as.data.frame()
-taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
-taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
-
-check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
-rownames(check) <- rownames(taxa)
-check <- check[complete.cases(check),]
-tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
-
-tax.phy <- as.phylo(tmp)
-
-
-gg_tree <- ggtree(tax.phy, branch.length='none')
-gg_tree
-
-gg_tree[["data"]] <- gg_tree[["data"]] %>% 
-  left_join(metadata %>%
-               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
-                                 "Simian virus 5", Taxon.mnemonic)) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `Proteome.ID`, Taxon.mnemonic)) %>%
-    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
-
-gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
-   scale_fill_manual(values = Family_palette_v2)
-
-panel_b <- gg2 %>% insert_left(gg2_8mers) %>%
-  insert_left(gg_tree, width = 0.7) %>%
-  insert_right(gg2_18mer)
-panel_b
-ggsave(paste0(out_dir, "Figure1B.pdf"), height = 17, width = 7)
-
-```
-
-## Panel C
+## Panel D
 
 ```{r, panel_c}
 #| warning: false
-out_final<- read.csv("../../Key_Data/8mer_proteome_everything.csv", row.names = 1)
+out_final<- read.csv("../../Key_Data/8mer_proteome_everything_elmfilter_regex.csv", row.names = 1)
 mismatch_data <- t(out_final)
 colnames(mismatch_data) <- mismatch_data[1,]
 mismatch_data <- as.data.frame(mismatch_data[-1,])
@@ -961,7 +800,7 @@ mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.nu
 mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((8-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((8-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 
-xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "8mers", col.names = TRUE, row.names = TRUE)
+xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mers", col.names = TRUE, row.names = TRUE)
 
 testing_data <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
@@ -972,10 +811,10 @@ wt <- compare_means(data = testing_data, formula = value ~ Chronic.or.Acute,
               group.by = c("name"), method = "wilcox.test") %>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-xlsx::write.xlsx(wt, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "8mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 
-panel_c <- mismatch_data_meta %>%
+panel_d <- mismatch_data_meta %>%
   #filter(grepl("Virus", Taxonomic.lineage)) %>%
   pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected"))) %>%
   filter(Chronic.or.Acute %in% c("Acute", "Chronic") | grepl("Bacteria", Taxonomic.lineage)) %>%
@@ -998,13 +837,13 @@ panel_c <- mismatch_data_meta %>%
   scale_color_manual(values =c("#1975EE", "#E78305", "black")) +
   ylab("Percent of 8mers (%)") +
   annotation_logticks(sides = "l", size = 0.1) +
-  annotate("text", x= c(1,2,3), y= c(1.7, 40, 40),
+  annotate("text", x= c(1,2,3,4), y= c(0.15, 40, 40, 40),
            label = wt$p.adj.star, size = 4, lineheight = 0.5) +
   theme(legend.position = "none")
-panel_c
+panel_d
 ```
 
-## Panel D
+## Panel E
 
 ```{r, panel_d, fig.width = 4, fig.height = 2.5}
 #| warning: false
@@ -1056,12 +895,12 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA)))) %>%
   mutate(group1 = "Herpesviridae")
-xlsx::write.xlsx(kt, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "8mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.p, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "8mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.h, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "8mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.hp, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "8mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(kt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.p, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.h, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.hp, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
-panel_d <- mismatch_data_meta %>%
+panel_e <- mismatch_data_meta %>%
   #mutate(Family = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Family_Viral_Zone)) %>%
   filter(!is.na(Family_Viral_Zone)) %>%
   mutate(Family = Family_Viral_Zone) %>%
@@ -1085,21 +924,22 @@ panel_d <- mismatch_data_meta %>%
   scale_color_manual(values =Family_palette_v2) +
   ylab("Percent of 8mers (%)") +
   annotation_logticks(sides = "l", size = 0.1)  +
-  annotate("text", x= c(0.9,2,3,3.9), y= c(2, 40, 40, 13),
+  annotate("text", x= c(0.9,2,3,3.9), y= c(2, 13, 13, 13),
            label = wt.h$p.adj.star, size = 4, lineheight = 0.5,
            color = Family_palette_v2["Herpesviridae"]) +
-  annotate("text", x= c(1.1,2,3,4.1), y= c(2, 40, 40, 13),
+  annotate("text", x= c(1.1,2,3,4.1), y= c(2, 13, 13, 13),
            label = wt.p$p.adj.star, size = 4, lineheight = 0.5,
            color = Family_palette_v2["Poxviridae"])  +
   theme(legend.position = "none")
-panel_d
+panel_e
 ```
 
-## Panel E
+## Panel F
 
 ```{r, panel_e}
 #| warning: false
-out_final <- read.csv("../../Key_Data/12mer_proteome_everything.csv", row.names =1)
+#out_final <- read.csv("../../Key_Data/12mer_proteome_everything.csv", row.names =1)
+out_final <- read.csv("../../Key_Data/12mer_proteome_everything_elmfilter_regex.csv", row.names =1)
 
 mismatch_data <- t(out_final)
 colnames(mismatch_data) <- mismatch_data[1,]
@@ -1126,7 +966,7 @@ mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.nu
 mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((12-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((12-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 
-xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "12mers", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mers", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 testing_data <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
@@ -1137,10 +977,10 @@ wt <- compare_means(data = testing_data, formula = value ~ Chronic.or.Acute,
               group.by = c("name"), method = "wilcox.test") %>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-xlsx::write.xlsx(wt, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "12mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 
-panel_e <- mismatch_data_meta %>%
+panel_f <- mismatch_data_meta %>%
   #filter(grepl("Virus", Taxonomic.lineage)) %>%
   pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected"))) %>%
   filter(Chronic.or.Acute %in% c("Acute", "Chronic") | grepl("Bacteria", Taxonomic.lineage)) %>%
@@ -1163,15 +1003,15 @@ panel_e <- mismatch_data_meta %>%
   scale_color_manual(values =c("#1975EE", "#E78305", "black")) +
   ylab("Percent of 12mers (%)") +
   annotation_logticks(sides = "l", size = 0.1) +
-  annotate("text", x= c(1,2,3,4), y= c(0.07, 0.210, 1, 9),
+  annotate("text", x= c(1,2,3,4), y= c(0.07, 0.210, 1, 3),
            label = wt$p.adj.star, size = 4, lineheight = 0.5)+
   theme(legend.key.height= unit(0.4, 'cm'),
         legend.key.width= unit(0.4, 'cm'),
         legend.position = "none")
-panel_e
+panel_f
 ```
 
-## Panel F
+## Panel G
 
 ```{r, panel_f, fig.width = 4, fig.height = 2.5}
 #| warning: false
@@ -1223,12 +1063,12 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA)))) %>%
   mutate(group1 = "Herpesviridae")
-xlsx::write.xlsx(kt, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "12mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.p, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "12mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.h, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "12mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.hp, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "12mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(kt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.p, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.h, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.hp, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
-panel_f <- mismatch_data_meta %>%
+panel_g <- mismatch_data_meta %>%
   #mutate(Family = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Family_Viral_Zone)) %>%
   filter(!is.na(Family_Viral_Zone)) %>%
   mutate(Family = Family_Viral_Zone) %>%
@@ -1263,14 +1103,14 @@ panel_f <- mismatch_data_meta %>%
   coord_cartesian(ylim = c(1e-3, 10)) +
   scale_y_continuous(trans = log10_trans(),
      breaks = trans_breaks("log10", function(x) round(10^x, 3)))
-panel_f
+panel_g
 ```
 
-## Panel G
+## Panel H
 
 ```{r, panel_g}
 #| warning: false
-out_final_18mer <- read.csv("../../Key_Data/18mer_proteome_everything.csv", row.names =1)
+out_final_18mer <- read.csv("../../Key_Data/18mer_proteome_everything_elmfilter_regex.csv", row.names =1)
 
 mismatch_data <- t(out_final_18mer)
 colnames(mismatch_data) <- mismatch_data[1,]
@@ -1298,7 +1138,7 @@ mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.nu
 mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((18-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 
 
-xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "18mers", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mers", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 testing_data <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
@@ -1309,9 +1149,9 @@ wt <- compare_means(data = testing_data, formula = value ~ Chronic.or.Acute,
               group.by = c("name"), method = "wilcox.test") %>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-xlsx::write.xlsx(wt, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "18mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
-panel_g <- mismatch_data_meta %>%
+panel_h <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
   pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected"))) %>%
   filter(Chronic.or.Acute %in% c("Acute", "Chronic")) %>%
@@ -1332,13 +1172,13 @@ panel_g <- mismatch_data_meta %>%
     xlab("Number of mismatches") +
   scale_color_manual(values =c("#1975EE", "#E78305")) +
   ylab("Percent of 18mers (%)") +
-  annotate("text", x= c(1,2,3,4), y= c(0.02, 0.05, 0.085, 0.11),
+  annotate("text", x= c(1,2,3,4), y= c(0.02, 0.05, 0.085, 0.06),
            label = wt$p.adj.star, size = 4, lineheight = 0.5) +
   theme(legend.position = "none")
-panel_g
+panel_h
 ```
 
-## Panel H
+## Panel I
 
 ```{r, panel_h}
 #| warning: false
@@ -1391,11 +1231,11 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
                                                         ifelse(p.adj<=0.05, "*", NA)))) %>%
   mutate(group1 = "Herpesviridae")
 
-xlsx::write.xlsx(kt, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "18mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.p, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "18mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.h, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "18mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.hp, paste0(out_dir, "Figure1_data.xlsx"), sheetName = "18mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-panel_h <- mismatch_data_meta %>%
+xlsx::write.xlsx(kt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.p, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.h, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.hp, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+panel_i <- mismatch_data_meta %>%
   #mutate(Family = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Family_Viral_Zone)) %>%
   filter(!is.na(Family_Viral_Zone)) %>%
   mutate(Family = Family_Viral_Zone) %>%
@@ -1418,432 +1258,35 @@ panel_h <- mismatch_data_meta %>%
     xlab("Number of mismatches") +
   scale_color_manual(values =Family_palette_v2) +
   ylab("Percent of 18mers (%)") +
-  annotate("text", x= c(0.9,1.9,2.9,3.9), y= c(0.12, 0.24, 0.42, 0.65),
+  annotate("text", x= c(0.9,1.9,2.9,3.9), y= c(0.03, 0.05, 0.075, 0.1),
            label = wt.h$p.adj.star, size = 4, lineheight = 0.5,
            color = Family_palette_v2["Herpesviridae"]) +
-  annotate("text", x= c(1.1,2.1,3.1,4.1), y= c(0.12, 0.24, 0.42, 0.65),
+  annotate("text", x= c(1.1,2.1,3.1,4.1), y= c(0.03, 0.05, 0.075, 0.1),
            label = wt.p$p.adj.star, size = 4, lineheight = 0.5,
            color = Family_palette_v2["Poxviridae"]) +
-  geom_errorbar(inherit.aes = FALSE, aes(x=0.85, ymin = 0.018380776, ymax = 0.075685311), color = "#545252",
-                size = 0.3, width = 0.1) +
-  geom_errorbar(inherit.aes = FALSE, aes(x=1.85, ymin = 0.051403280, ymax = 0.182375884), color = "#545252",
-                size = 0.3, width = 0.1) +
-  geom_errorbar(inherit.aes = FALSE, aes(x=2.85, ymin = 0.085500719, ymax = 0.345138406), color = "#545252",
-                size = 0.3, width = 0.1) +
-  geom_errorbar(inherit.aes = FALSE, aes(x=3.85, ymin = 0.145041702, ymax = 0.536979034), color = "#545252",
-                size = 0.3, width = 0.1) +
-  annotate("text", x= c(0.75, 1.8, 2.8, 3.8), y= c(0.04557349, 0.1136466,
-                                                   0.2057032, 0.3237431),
-           label = wt.hp$p.adj.star, size = 4, lineheight = 0.5,
-           color = "#545252") +
+  # geom_errorbar(inherit.aes = FALSE, aes(x=0.85, ymin = 0.018380776, ymax = 0.075685311), color = "#545252",
+  #               size = 0.3, width = 0.1) +
+  # geom_errorbar(inherit.aes = FALSE, aes(x=1.85, ymin = 0.051403280, ymax = 0.182375884), color = "#545252",
+  #               size = 0.3, width = 0.1) +
+  # geom_errorbar(inherit.aes = FALSE, aes(x=2.85, ymin = 0.085500719, ymax = 0.345138406), color = "#545252",
+  #               size = 0.3, width = 0.1) +
+  # geom_errorbar(inherit.aes = FALSE, aes(x=3.85, ymin = 0.145041702, ymax = 0.536979034), color = "#545252",
+  #               size = 0.3, width = 0.1) +
+  # annotate("text", x= c(0.75, 1.8, 2.8, 3.8), y= c(0.04557349, 0.1136466,
+  #                                                  0.2057032, 0.3237431),
+  #          label = wt.hp$p.adj.star, size = 4, lineheight = 0.5,
+  #          color = "#545252") +
   theme(legend.position = "none")
-panel_h
+panel_i
 ```
 
 ## Panel Assembly
 
 ```{r, panel_c_f_assembly_save, fig.width=5, fig.height=9}
 #| warning: false
-panel_c_h <- ggarrange(panel_c, panel_d,panel_e, panel_f,panel_g, panel_h, nrow = 3, ncol = 2, widths = c(1,1), align = "hv",
-                       labels = c("C", "D", "E", "F", "G", "H"),
+panel_d_i <- ggarrange(panel_d, panel_e,panel_f, panel_g,panel_h, panel_i, nrow = 3, ncol = 2, widths = c(1,1), align = "hv",
+                       labels = c("D", "E", "F", "G", "H", "I"),
                        label.x = 0.1)
-panel_c_h
-ggsave(paste0(out_dir, "Figure1C-H.pdf"), height = 7, width = 4)
-```
-
-## Supplemental Figures
-
-##Supplemental Figure 1 \### Supplemental Panel 1A - 8mer Baltimore Classification
-
-```{r, supp_panel_a, fig.width = 4, fig.height = 2.5}
-#| warning: false
-out_final <- read.csv("../../Key_Data/8mer_proteome_everything.csv", row.names =1)
-
-mismatch_data <- t(out_final)
-colnames(mismatch_data) <- mismatch_data[1,]
-mismatch_data <- as.data.frame(mismatch_data[-1,])
-mismatch_data$ID <- gsub(".*UP", "UP", rownames(mismatch_data))
-
-mismatch_data_meta <- mismatch_data %>%
-  inner_join(metadata, by = c("ID" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 ID, Taxon.mnemonic))%>%
-  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
-  rowwise() %>%
-  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
-         `2` = sum(`0`, `1`, `2`,na.rm = T),
-         `1` = sum(`0`, `1`,na.rm = T)) %>%
-  ungroup()
-mismatch_data_meta$`0`[is.na(mismatch_data_meta$`0`)] <- 0
-mismatch_data_meta$`1`[is.na(mismatch_data_meta$`1`)] <- 0
-mismatch_data_meta$`2`[is.na(mismatch_data_meta$`2`)] <- 0
-mismatch_data_meta$`3`[is.na(mismatch_data_meta$`3`)] <- 0
-
-mismatch_data_meta$`0_corrected` <- as.numeric(mismatch_data_meta$`0`) / (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(8-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-
-testing_data <- mismatch_data_meta %>%
-  filter(!is.na(Genome)) %>%
-  pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected")))
-
-## These results are used to manually add stars to the graph below in illustrator
-kt <- compare_means(data = testing_data, formula = value ~ Genome,
-              group.by = c("name"), method = "kruskal.test")
-wt <- compare_means(data = testing_data, formula = value ~ Genome,
-              group.by = c("name"), method = "wilcox.test")
-
-supp_panel_a <- mismatch_data_meta %>%
-  filter(!is.na(Genome)) %>%
-  pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected"))) %>%
-  group_by(Genome, name) %>%
-  mutate(value = ifelse(is.na(value), 0, value)) %>%
-  dplyr::summarize(mean_value = mean(value), count = n(), sd = sd(value)) %>%
-  #filter(count > 4) %>%
-  mutate(value_stderr = sd/sqrt(count)) %>%
-  mutate(name = gsub("_corrected", "", name))  %>%
-  mutate(name =ifelse(name != "0",  paste0("≤", name), name)) %>%
-  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
-  ggplot(aes(x=name, y=mean_value, color = `Genome`)) +
-    geom_point() +
-    geom_line(aes(group = `Genome`)) +
-    scale_y_continuous(trans = log10_trans(),
-     breaks = trans_breaks("log10", function(x) round(10^x, 3))) +
-    theme_classic() +
-    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=name), width=.1)+
-    xlab("Number of mismatches") +
-  scale_color_manual(values = Baltimore_classification_colors) +
-  ylab("Percent of 8mers (%)") +
-  annotation_logticks(sides = "l", size = 0.1)
-supp_panel_a
-#ggsave(paste0(out_dir, "supp_panel_b.pdf"), width = 4, height = 2.5)
-```
-
-### Supplemental Panel 1B - 12mer Baltimore Classification
-
-```{r, supp_panel_b, fig.width = 4, fig.height = 2.5}
-#| warning: false
-out_final <- read.csv("../../Key_Data/12mer_proteome_everything.csv", row.names =1)
-
-mismatch_data <- t(out_final)
-colnames(mismatch_data) <- mismatch_data[1,]
-mismatch_data <- as.data.frame(mismatch_data[-1,])
-mismatch_data$ID <- gsub(".*UP", "UP", rownames(mismatch_data))
-
-mismatch_data_meta <- mismatch_data %>%
-  inner_join(metadata, by = c("ID" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 ID, Taxon.mnemonic))%>%
-  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
-  rowwise() %>%
-  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
-         `2` = sum(`0`, `1`, `2`,na.rm = T),
-         `1` = sum(`0`, `1`,na.rm = T)) %>%
-  ungroup()
-mismatch_data_meta$`0`[is.na(mismatch_data_meta$`0`)] <- 0
-mismatch_data_meta$`1`[is.na(mismatch_data_meta$`1`)] <- 0
-mismatch_data_meta$`2`[is.na(mismatch_data_meta$`2`)] <- 0
-mismatch_data_meta$`3`[is.na(mismatch_data_meta$`3`)] <- 0
-
-mismatch_data_meta$`0_corrected` <- as.numeric(mismatch_data_meta$`0`) / (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(12-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-
-testing_data <- mismatch_data_meta %>%
-  filter(!is.na(Genome)) %>%
-  pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected")))
-
-## These results are used to manually add stars to the graph below in illustrator
-kt <- compare_means(data = testing_data, formula = value ~ Genome,
-              group.by = c("name"), method = "kruskal.test")
-wt <- compare_means(data = testing_data, formula = value ~ Genome,
-              group.by = c("name"), method = "wilcox.test")
-
-supp_panel_b <- mismatch_data_meta %>%
-  filter(!is.na(Genome)) %>%
-  pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected"))) %>%
-  group_by(Genome, name) %>%
-  mutate(value = ifelse(is.na(value), 0, value)) %>%
-  dplyr::summarize(mean_value = mean(value), count = n(), sd = sd(value)) %>%
-  #filter(count > 4) %>%
-  mutate(value_stderr = sd/sqrt(count)) %>%
-  mutate(name = gsub("_corrected", "", name)) %>%
-  mutate(name =ifelse(name != "0",  paste0("≤", name), name)) %>%
-  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
-  ggplot(aes(x=name, y=mean_value, color = `Genome`)) +
-    geom_point() +
-    geom_line(aes(group = `Genome`)) +
-    scale_y_continuous(trans = log10_trans(),
-     breaks = trans_breaks("log10", function(x) round(10^x, 3))) +
-    theme_classic() +
-    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=name), width=.1)+
-    xlab("Number of mismatches") +
-  scale_color_manual(values = Baltimore_classification_colors) +
-  ylab("Percent of 12mers (%)") +
-  annotation_logticks(sides = "l", size = 0.1) 
-supp_panel_b
-#ggsave(paste0(out_dir, "supp_panel_b.pdf"), width = 4, height = 2.5)
-```
-
-### Supplemental Panel 1C - 18mer Baltimore Classification
-
-```{r, supp_panel_c, fig.width = 4, fig.height = 2.5}
-#| warning: false
-out_final_18mer <- read.csv("../../Key_Data/18mer_proteome_everything.csv", row.names =1)
-
-mismatch_data <- t(out_final_18mer)
-colnames(mismatch_data) <- mismatch_data[1,]
-mismatch_data <- as.data.frame(mismatch_data[-1,])
-mismatch_data$ID <- gsub(".*UP", "UP", rownames(mismatch_data))
-
-mismatch_data_meta <- mismatch_data %>%
-  inner_join(metadata, by = c("ID" = "Proteome.ID")) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 ID, Taxon.mnemonic))%>%
-  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
-  rowwise() %>%
-  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
-         `2` = sum(`0`, `1`, `2`,na.rm = T),
-         `1` = sum(`0`, `1`,na.rm = T)) %>%
-  ungroup()
-mismatch_data_meta$`0`[is.na(mismatch_data_meta$`0`)] <- 0
-mismatch_data_meta$`1`[is.na(mismatch_data_meta$`1`)] <- 0
-mismatch_data_meta$`2`[is.na(mismatch_data_meta$`2`)] <- 0
-mismatch_data_meta$`3`[is.na(mismatch_data_meta$`3`)] <- 0
-
-mismatch_data_meta$`0_corrected` <- as.numeric(mismatch_data_meta$`0`) / (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -(18-1)-as.numeric(mismatch_data_meta$`Number of Proteins`))*100
-
-testing_data <- mismatch_data_meta %>%
-  filter(!is.na(Genome)) %>%
-  pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected")))
-
-## These results are used to manually add stars to the graph below in illustrator
-kt <- compare_means(data = testing_data, formula = value ~ Genome,
-              group.by = c("name"), method = "kruskal.test")
-wt <- compare_means(data = testing_data, formula = value ~ Genome,
-              group.by = c("name"), method = "wilcox.test")
-
-supp_panel_c <- mismatch_data_meta %>%
-  filter(!is.na(Genome)) %>%
-  pivot_longer(cols=paste0(c(0,1,2,3), ("_corrected"))) %>%
-  group_by(Genome, name) %>%
-  mutate(value = ifelse(is.na(value), 0, value)) %>%
-  dplyr::summarize(mean_value = mean(value), count = n(), sd = sd(value)) %>%
-  mutate(value_stderr = sd/sqrt(count)) %>%
-  mutate(name = gsub("_corrected", "", name)) %>%
-  mutate(name =ifelse(name != "0",  paste0("≤", name), name)) %>%
-  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
-  ggplot(aes(x=name, y=mean_value, color = `Genome`)) +
-    geom_point() +
-    geom_line(aes(group = `Genome`)) +
-    scale_y_continuous(trans = log10_trans(),
-     breaks = trans_breaks("log10", function(x) round(10^x, 3))) +
-    theme_classic() +
-    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=name), width=.1)+
-    xlab("Number of mismatches") +
-  scale_color_manual(values = Baltimore_classification_colors) +
-  ylab("Percent of 18mers (%)") +
-  annotation_logticks(sides = "l", size = 0.1)
-supp_panel_c
-
-#ggsave(paste0(out_dir, "supp_panel_c.pdf"), width = 4, height = 2.5)
-```
-
-### Supplemental Figure 1 Panel Assembly
-
-```{r, fig.width= 8, fig.height=2.25}
-#| warning: false
-panel_supp <- ggarrange(supp_panel_a, supp_panel_b, supp_panel_c, nrow = 1, ncol = 3, align = "hv",common.legend = T,legend = "right",
-                        labels = c("A", "B", "C"),
-                        label.x = 0.1)
-panel_supp
-ggsave(paste0(out_dir, "FigureS1.pdf"), height = 2.5, width = 7.25)
-
-```
-
-## Supplemental Figure 2
-
-### Supplemental Panel 2A
-
-```{r}
-#| warning: false
-out_protein_final_min <- read.csv("../../Key_Data/8mer_proteome_protein_everything_min.csv", row.names = 1)
-
-number_of_proteins <- metadata %>% dplyr::select(Proteome.ID, Protein.count)
-viral_ids <- unique(out_protein_final_min$Proteome.ID)
-
-out <- data.frame()
-for(i in viral_ids){
-  file_name <- list.files("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/")
-  file_name <- file_name[grepl(i, file_name)]
- fasta <- seqinr::read.fasta(paste0("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/", file_name), seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
-  
-  tmp.df <- out_protein_final_min %>%
-  mutate(number_of_8mer = PLength - 7) %>%
-  mutate(freq = count / number_of_8mer) %>%
-  filter(Proteome.ID == i) %>%
-  mutate(mismatches = as.factor(mismatches)) %>%
-  mutate(query_seqname = factor(query_seqname, unique(gsub(" .*", "", names(fasta))))) %>%
-    complete(query_seqname, mismatches) %>%
-    mutate(freq = ifelse(is.na(freq), 0, freq))
-  
-  out <- rbind.data.frame(out, tmp.df)
-  
-}
-
-ggS2A <- out %>%
-       filter(mismatches != 3) %>%
-       mutate(mismatches = factor(mismatches, c("0", "1", "2"))) %>%
-       left_join(metadata) %>%
-       filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
-    ggplot(aes(x=freq, y = ..count../sum(..count..), color = Family_Viral_Zone, group = Proteome.ID)) +
-  geom_density(stat = 'bin') +
-  theme_classic() +
-    ylab("Relative Density of Proteins") +
-    xlab("Percent of 8mers") +
-    facet_grid(rows = "mismatches", scale = "free_y") +
-    scale_color_manual(values = Family_palette_v2) +
-    #scale_y_continuous(labels = scales::percent)+
-    scale_x_continuous(labels = scales::percent)+
-    ggtitle("8mers All Viral Proteins")
-
-ggS2A
-ggsave(paste0(out_dir, "FigureS2A.pdf"), height = 4.5, width = 5)
-
-```
-
-### Supplemental Panel 2B
-
-```{r}
-#| warning: false
-out_protein_final_min <- read.csv("../../Key_Data/12mer_proteome_protein_everything_min.csv", row.names = 1)
-
-number_of_proteins <- metadata %>% dplyr::select(Proteome.ID, Protein.count)
-
-viral_ids <- unique(out_protein_final_min$Proteome.ID)
-
-out <- data.frame()
-for(i in viral_ids){
-  file_name <- list.files("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/")
-  file_name <- file_name[grepl(i, file_name)]
- fasta <- seqinr::read.fasta(paste0("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/", file_name), seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
-  
-  tmp.df <- out_protein_final_min %>%
-  mutate(number_of_12mer = PLength - 11) %>%
-  mutate(freq = count / number_of_12mer) %>%
-  filter(Proteome.ID == i) %>%
-  mutate(mismatches = as.factor(mismatches)) %>%
-  mutate(query_seqname = factor(query_seqname, unique(gsub(" .*", "", names(fasta))))) %>%
-    complete(query_seqname, mismatches) %>%
-    mutate(freq = ifelse(is.na(freq), 0, freq))
-  
-  out <- rbind.data.frame(out, tmp.df)
-  
-}
-
-ggS2B <- out %>%
-       mutate(mismatches = factor(mismatches, c("0", "1", "2", "3"))) %>%
-       left_join(metadata) %>%
-       filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
-    ggplot(aes(x=freq, y = ..count../sum(..count..), color = Family_Viral_Zone, group = Proteome.ID)) +
-  geom_density(stat = 'bin') +
-  theme_classic() +
-    ylab("Relative Density of Proteins") +
-    xlab("Percent of 12mers") +
-    facet_grid(rows = "mismatches", scale = "free_y") +
-    scale_color_manual(values = Family_palette_v2) +
-    #scale_y_continuous(labels = scales::percent)+
-    scale_x_continuous(labels = scales::percent)+
-    ggtitle("All viral proteins")
-
-ggS2B
-ggsave(paste0(out_dir, "FigureS2B.pdf"), height = 6, width = 5)
-
-```
-
-### Supplemental Panel 2C
-
-```{r}
-library(seqinr)
-AA_colors <- c("A" = "#f3c300", "C" = "#875692", "D" = "#f38400", "E" = "#a1caf1", "F" = "#be0032", "G" = "#c2b290",
-               "H" = "#008856", "I" = "#e68fac", "K" = "#0067a5", "L" = "#f99379", "M" = "#604e97", "N" = "#f6a600", "P" = "#b3446c", "Q" = "#dcd300",
-               "R" = "#882d17", "S" = "#8db600", "T" = "#654522", "V" = "#e25822", "W" = "#2b3d26", "Y" = "lightgray", "X" = "black", "U" = "#848283")
-
-
-setwd("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/")
-files_to_read <- list.files()
-files_to_read <- files_to_read[grepl(".fasta.gz", files_to_read)]
-files_to_read <- files_to_read[grepl(paste0(metadata$`Proteome.ID`[metadata$superkingdom == "Viruses"],collapse = "|"), files_to_read)]
-
-AA_freq <- data.frame()
-for(active_file in files_to_read){
-  tmp.fasta <- seqinr::read.fasta(active_file, seqtype = "AA",
-                                  as.string = FALSE, whole.header = TRUE)
-  
-  AA_table <- as.data.frame(table(unlist(tmp.fasta))) %>%
-    dplyr::rename("amino_acid" = 1, "freq" = 2) %>%
-    mutate(virus = gsub(".*UP", "UP", gsub(".fasta.gz", "", active_file)))
-  
-  AA_freq <- rbind.data.frame(AA_freq, AA_table)
-}
-
-```
-
-```{r, fig.height = 15, fig.width = 8}
-
-taxa <- metadata %>% as.data.frame() %>%
-  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
-                                 "Simian virus 5", Taxon.mnemonic)) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `Proteome.ID`, Taxon.mnemonic)) %>%
-  filter(Proteome.ID %in% AA_freq$virus) %>%
-  column_to_rownames("Taxon.mnemonic") %>%
-  dplyr::select(family, order, class, phylum, kingdom) %>%
-  as.data.frame()
-taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
-taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
-
-check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
-rownames(check) <- rownames(taxa)
-check <- check[complete.cases(check),]
-tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
-
-tax.phy <- as.phylo(tmp)
-
-gg_tree <- ggtree(tax.phy, branch.length='none')
-gg_tree
-
-gg_tree[["data"]] <- gg_tree[["data"]] %>% 
-  left_join(metadata %>%
-               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
-                                 "Simian virus 5", Taxon.mnemonic)) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `Proteome.ID`, Taxon.mnemonic)) %>%
-    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
-
-gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
-   scale_fill_manual(values = Family_palette_v2)
-
-gg_AA <- AA_freq %>%
-   left_join(metadata %>%
-               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
-                                 "Simian virus 5", Taxon.mnemonic)) %>%
-  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
-                                 `Proteome.ID`, Taxon.mnemonic)),
-  by = c("virus" = "Proteome.ID")) %>%
-  ggplot(aes(x=freq, y=Taxon.mnemonic, fill = amino_acid)) +
-  geom_bar(position = position_fill(reverse = TRUE),
-           stat = "identity", color = "black") +
-  theme_classic() +
-  scale_fill_manual(values = AA_colors) +
-  xlab("Frequency")
-gg_AA
-panel_S2C <- gg_AA %>% insert_left(gg_tree, width = 0.2) 
-panel_S2C
-ggsave(paste0(out_dir, "FigureS2C.pdf"), height = 15, width = 8)
+panel_d_i
+ggsave(paste0(out_dir, "Figure1S_D-I.pdf"), height = 7, width = 4)
 ```

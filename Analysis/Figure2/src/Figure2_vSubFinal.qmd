@@ -158,7 +158,7 @@ gg1 <- random_scram_results %>%
   ggplot(aes(mismatches, label, fill=FC)) + geom_tile() +
   theme_classic() +
   xlab("Number of Mismatches") +
-    scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+    scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#FAB27B", "#E23333"),
                        limits=c(0.2, 32), oob = scales::squish, trans = "log",
                        breaks = c(0.25, 0.5, 1, 2, 4, 8, 16, 32)) +
   theme(axis.title.y = element_blank(),
@@ -442,7 +442,7 @@ gg2 <- reverse_results %>%
   ggplot(aes(mismatches, label, fill=FC)) + geom_tile() +
   theme_classic() +
   xlab("Number of Mismatches") +
-    scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+    scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#FAB27B", "#E23333"),
                        limits=c(0.2, 32), oob = scales::squish, trans = "log",
                        breaks = c(0.25, 0.5, 1, 2, 4, 8, 16, 32)) +
   theme(axis.title.y = element_blank(),
@@ -725,7 +725,7 @@ gg3 <- class_scram_results %>%
   ggplot(aes(mismatches, label, fill=FC)) + geom_tile() +
   theme_classic() +
   xlab("Number of Mismatches") +
-  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#FAB27B", "#E23333"),
                        limits=c(0.2, 32), oob = scales::squish, trans = "log",
                        breaks = c(0.25, 0.5, 1, 2, 4, 8, 16, 32)) +
   theme(axis.title.y = element_blank(),
@@ -773,7 +773,7 @@ gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family
 #gg3 %>% insert_left(gg_tree,width = 0.2) 
 #ggsave(paste0(out_dir, "class_scramble_heatmap.pdf"), width = 4, height =12)
 gg3 %>% insert_left(gg2) %>% insert_left(gg1) %>% insert_left(gg_tree,width = 0.4)
-ggsave(paste0(out_dir, "Figure3B.pdf"), width = 5, height =13)
+ggsave(paste0(out_dir, "Figure2B.pdf"), width = 5, height =13)
 
 ```
 
