@@ -1,7 +1,17 @@
 This contains code written by Dennis Wylie (UT Austin) to map short aligned peptides between two proteomes and exports as a csv. The code takes a few arguments explained below:
 
+Example:
 julia fasta_kmer_locations.jl UP000005640_9606.fasta.gz UP000000354_694009.fasta.gz 10 1 > covid_10mer_1mis_hits.tsv
 
-julia calls the language and the fasta_kmer_locations.jl is the main script that call the supporting skewsuffixarray.jl and bwt.jl. The first argument is the target proteome to align to (human), and the second is the query (in this case viral). The 3 argument in the length of the kmers being looked for, and the fourth argument is the number of mismatches allowed. Downstream I'll use BLOSUM scores to suppliment and refine the mismatching, so I use a high general threshold at this step.
+julia calls the language and the fasta_kmer_locations.jl is the main script that call the supporting skewsuffixarray.jl and bwt.jl. The first argument is the target proteome to align to (human), and the second is the query (in this case viral). The third argument in the length of the kmers being looked for, and the fourth argument is the number of mismatches allowed.
 
-On 2/1/2022, Dennis sent a new version that also provides information on the query's source in the original fasta. There is both a single threaded and multithreaded version. This can be distinguished by query being in the file name.
+There are several versions of the script which offers the options of whether the query start position should also be reported in the output csv (script name had _query_tracking added to file name) or whether the task should be multithreaded (script name contains "_threaded").
+
+We recommend specifically using the fasta_kmer_locations_threaded_query_tracking.jl as this will both multi-thread and report the starting position of the matching queried kmer in addition to the target kmer. To set the number of threads for a multithreaded version of the script, please specify the global variable "JULIA_NUM_THREADS". The easiest way to set this is to add "export JULIA_NUM_THREADS=XXX" (replacing XXX with the number of threads desired) to your .bashrc file.
+
+To initially set up this script, you will need to install julia and the dependencies listed below (the exact versions of the packages used in this manuscript are used below):
+Julia = 1.6.0
+"DataStructures" (v"0.18.9")
+"DataFrames" (v"0.22.6")
+"GZip" (v"0.5.1")
+
