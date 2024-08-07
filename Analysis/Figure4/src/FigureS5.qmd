@@ -116,7 +116,7 @@ ggc <- output_df %>%
   ggplot(aes(x=cell_type, y=label)) +
   geom_tile(aes(fill = freq)) +
   theme_classic() +
-  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#FAB27B", "#E23333"),
                        name = "Cell Type (%)") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         axis.title.y = element_blank()) +
@@ -189,7 +189,7 @@ ggt <- Tissue_df %>%
   ggplot(aes(x=tissue, y=label)) +
   geom_tile(aes(fill = freq)) +
   theme_classic() +
-  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#FAB27B", "#E23333"),
                        name = "Tissue (%)") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         axis.text.y = element_blank(),
@@ -212,7 +212,7 @@ ggo <- Organ_df %>%
   ggplot(aes(x=organ, y=label)) +
   geom_tile(aes(fill = freq)) +
   theme_classic() +
-  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E"),
+  scale_fill_gradientn(colours = c("#045375", "#089099", "#7CCBA2", "#FCDE9C", "#FAB27B", "#E23333"),
                        name = "Organ System (%)") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         axis.text.y = element_blank(),

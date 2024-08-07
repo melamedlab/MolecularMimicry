@@ -235,23 +235,36 @@ percent_of_protein_df <- out_protein_final_count_12mer %>%
   left_join(out_protein_final_count_12mer %>% distinct(query_seqname, viral_id, PLength, Proteome.ID)) %>%
   mutate(percent_of_protein = number_of_12mers / (PLength-11) * 100)
 
-out_protein_final_count_12mer %>%
-  group_by(viral_id, mismatches) %>%
-  filter(mismatches == 3) %>%
+
+model_df <- out_protein_final_count_12mer %>%
+  group_by(viral_id) %>%
   dplyr::summarize(mean = mean(count)) %>%
   left_join(percent_of_protein_df) %>%
   left_join(metadata) %>%
   mutate(smooth_curve = ifelse(Family_Viral_Zone %in% c("Herpesviridae", "Poxviridae"), Family_Viral_Zone, "Other")) %>%
-  ggplot(aes(x=percent_of_protein, y= (mean))) +
+  mutate(smooth_curve = factor(smooth_curve))
+library(gamm4)
+formula_ready <- as.formula('mean ~ s(percent_of_protein, bs = "cr", by = "smooth_curve")')
+fit <- gam(data = model_df, formula = mean ~ s(percent_of_protein, bs = "cr", by = smooth_curve))
+summary(fit)
+
+out_protein_final_count_12mer %>%
+  group_by(viral_id) %>%
+  dplyr::summarize(mean = mean(count)) %>%
+  left_join(percent_of_protein_df) %>%
+  left_join(metadata) %>%
+  mutate(smooth_curve = ifelse(Family_Viral_Zone %in% c("Herpesviridae", "Poxviridae"), Family_Viral_Zone, "Other")) %>%
+  ggplot(aes(x=percent_of_protein/100, y= (mean))) +
   geom_point(aes(color = smooth_curve), alpha = 0.5, size = 0.6) +
-  geom_smooth(aes(fill = smooth_curve, group= smooth_curve, color = smooth_curve), method = "gam") +
+  geom_smooth(data = . %>% filter(percent_of_protein <= 50), aes(fill = smooth_curve, group= smooth_curve, color = smooth_curve), method = "gam") +
   theme_bw() +
   scale_color_manual(values = c(Family_palette_v2[c(5,9)], "Other" = "darkgray"), name = "Viral Family") +
   scale_fill_manual(values = c(Family_palette_v2[c(5,9)], "Other" = "darkgray"), name = "Viral Family") +
   xlab("Percent of Viral Protein") +
   ylab("Average Number of Gene Products\nMimicked per 12mer") +
   coord_cartesian(ylim = c(1, 150)) +
-  scale_y_continuous(trans='sqrt')
+  scale_y_continuous(trans='log10') +
+  scale_x_continuous(trans='logit', labels = scales::percent)
 ggsave(paste0(out_dir, "Figure3E.pdf"), width = 6, height = 4)
 
 ```
