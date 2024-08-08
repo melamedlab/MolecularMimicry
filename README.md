@@ -1,5 +1,5 @@
 # Molecular Mimicry as a Mechanism of Viral Immune Evasion and Autoimmunity
-<a href="https://zenodo.org/doi/10.5281/zenodo.11411891"><img src="https://zenodo.org/badge/764360678.svg" alt="DOI"></a>
+<a href="https://doi.org/10.5281/zenodo.13272863"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.13272863.svg" alt="DOI"></a>
 
 This is the repository for the paper "Molecular Mimicry as a Mechanism of Viral Immune Evasion and Autoimmunity" currently pre-printed at BioRxiv. Below is a brief summary of the repository structure.
 
