@@ -7,6 +7,6 @@ All analysis outside of the alignment including Figure assembly and statistical 
 
 Many of the figure's quarto documents have intermediate data files uploaded on the github (file size permitting, otherwise a link was provided to where you can retrieve the large file) which will enable you to run the figure code directly out of the box where permitting. The alternative is to go into the respective quarto document and set eval: true for many of the longer running chunks that generate these intermediate files (e.g. the chunks that save data to Key_Data). So also pay attention to which chunks have eval set to false, as this was usually done because the file they generate is provided and running that chunk everytime greatly slows down the speed of rendering the quarto.
 
-On 08-07-2024 we pushed the changes made for revisions to the manuscript in response to reviewer's comments (v1.1.0). 
+On 08-08-2024 changes made for revisions to the manuscript in response to reviewer's comments were finalized (v1.1.1). 
 
 If you use any of the code or novel data (so excluding data in the Databases folder) from this github, please cite the manuscript at <a href="https://zenodo.org/doi/10.5281/zenodo.11411891">https://doi.org/10.1101/2024.03.08.583134</a>.
