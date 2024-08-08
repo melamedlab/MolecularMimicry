@@ -9,4 +9,4 @@ Many of the figure's quarto documents have intermediate data files uploaded on t
 
 On 08-07-2024 we pushed the changes made for revisions to the manuscript in response to reviewer's comments (v1.1.0). 
 
-If you use any of the code or novel data (so excluding data in the Databases folder) from this github, please cite the manuscript at <a href="https://zenodo.org/doi/10.5281/zenodo.11411891">https://doi.org/10.1101/2024.03.08.583134</a> and the GitHub DOI (see Citation.cff files).
+If you use any of the code or novel data (so excluding data in the Databases folder) from this github, please cite the manuscript at <a href="https://zenodo.org/doi/10.5281/zenodo.11411891">https://doi.org/10.1101/2024.03.08.583134</a>.
