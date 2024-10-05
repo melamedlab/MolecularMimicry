@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Figure2
+## Figure 2
 
 ```{r load_in}
 #| message: false
@@ -203,7 +203,6 @@ gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family
    scale_fill_manual(values = Family_palette_v2)
 
 gg1 %>% insert_left(gg_tree,width = 0.2) 
-#ggsave(paste0(out_dir, "random_heatmap.pdf"), width = 4, height =12)
 
 ```
 
@@ -212,15 +211,19 @@ gg1 %>% insert_left(gg_tree,width = 0.2)
 
 testing_data <- random_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
-  left_join(metadata) %>%
-  filter(grepl("Virus", Taxonomic.lineage)) %>%
-  filter(Chronic.or.Acute %in% c("Acute", "Chronic"))
+  inner_join(metadata)
 
-wt <- compare_means(data = testing_data, formula = FC ~ Chronic.or.Acute,
+write.csv(testing_data %>%
+            pivot_wider(names_from = mismatches, values_from = FC,
+                        id_cols = c(Proteome.ID, Pathogen)), paste0(out_dir, "perm1_data_points.csv"))
+
+wt <- compare_means(data = testing_data %>%
+                      filter(Chronic.or.Acute %in% c("Acute", "Chronic")),
+                    formula = FC ~ Chronic.or.Acute,
               group.by = c("mismatches"), method = "wilcox.test")%>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-write.xlsx(wt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = FALSE)
+write.xlsx(wt, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm1_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = FALSE)
 
 gg3_perm1 <- random_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
@@ -248,9 +251,7 @@ gg3_perm1 <- random_scram_results %>%
            label = wt$p.adj.star, size = 6, lineheight = 0.5) +
   theme(legend.position = "none")
 gg3_perm1
-#ggsave(paste0(out_dir, "random_scram_chronicity.pdf"), width = 4, height = 3)
-
-
+write.csv(gg3_perm1$data, paste0(out_dir, "Figure3c_part1_datapoints.csv"))
 testing_data <- random_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
   left_join(metadata) %>%
@@ -275,10 +276,10 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA)))) %>%
   mutate(group1 = "Herpesviridae")
-write.xlsx(kt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.p, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.h, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.hp, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm1_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(kt, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm1_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.p, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm1_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.h, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm1_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.hp, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm1_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 gg4_perm1 <- random_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
@@ -317,11 +318,8 @@ gg4_perm1 <- random_scram_results %>%
   theme(legend.position = "none")
   
 gg4_perm1
-#ggsave(paste0(out_dir, "random_scram_family.pdf"), width = 4, height = 3)
-
-
+write.csv(gg4_perm1$data, paste0(out_dir, "Figure3c_part2_datapoints.csv"))
 ggarrange(gg3_perm1, gg4_perm1, ncol = 2, nrow = 1, common.legend = TRUE)
-#ggsave(paste0(out_dir, "random_scram_combined.pdf"), width = 5, height = 3)
 ```
 
 ## Reverse Processing
@@ -488,10 +486,7 @@ gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family
    scale_fill_manual(values = Family_palette_v2)
 
 gg2 %>% insert_left(gg_tree,width = 0.2) 
-#ggsave(paste0(out_dir, "reversed_heatmap.pdf"), width = 5, height =10)
 
-#gg2 %>% insert_left(gg1) %>% insert_left(gg_tree,width = 0.2)
-#ggsave(paste0(out_dir, "perm1-2_heatmap.pdf"), width = 5, height =10)
 ```
 
 ```{r, perm2_graphing_3}
@@ -499,15 +494,19 @@ gg2 %>% insert_left(gg_tree,width = 0.2)
 
 testing_data <- reverse_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
-  left_join(metadata) %>%
-  filter(grepl("Virus", Taxonomic.lineage)) %>%
-  filter(Chronic.or.Acute %in% c("Acute", "Chronic"))
+  left_join(metadata) 
 
-wt <- compare_means(data = testing_data, formula = FC ~ Chronic.or.Acute,
+write.csv(testing_data %>%
+            pivot_wider(names_from = mismatches, values_from = FC,
+                        id_cols = c(Proteome.ID, Pathogen)), paste0(out_dir, "perm2_data_points.csv"))
+
+wt <- compare_means(data = testing_data %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic")),
+  formula = FC ~ Chronic.or.Acute,
               group.by = c("mismatches"), method = "wilcox.test") %>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-write.xlsx(wt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm2_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 gg3_perm2 <- reverse_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
@@ -535,9 +534,7 @@ gg3_perm2 <- reverse_results %>%
            label = wt$p.adj.star, size = 6, lineheight = 0.5) +
   theme(legend.position = "none")
 gg3_perm2
-#ggsave(paste0(out_dir, "reverse_chronicity.pdf"), width = 4, height = 3)
-
-
+write.csv(gg3_perm2$data, paste0(out_dir, "Figure3d_part1_datapoints.csv"))
 testing_data <- reverse_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
   left_join(metadata) %>%
@@ -560,10 +557,10 @@ wt.h <- compare_means(data = testing_data, formula = FC ~ Herpesviridae,
 wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesviridae", "Poxviridae")), formula = FC ~ Poxviridae,
               group.by = c("mismatches"), method = "wilcox.test") %>%
   mutate(group1 = "Herpesviridae")
-write.xlsx(kt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.p, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.h, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.hp, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm2_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(kt, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm2_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.p, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm2_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.h, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm2_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.hp, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm2_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 gg4_perm2 <- reverse_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
@@ -596,11 +593,7 @@ gg4_perm2 <- reverse_results %>%
            color = Family_palette_v2["Poxviridae"])+
   theme(legend.position = "none")
 gg4_perm2
-#ggsave(paste0(out_dir, "reverse_family.pdf"), width = 4, height = 3)
-
-
-#ggarrange(gg3_perm2, gg4_perm2, ncol = 2, nrow = 1, common.legend = TRUE)
-#ggsave(paste0(out_dir, "reverse_combined.pdf"), width = 5, height = 3)
+write.csv(gg4_perm2$data, paste0(out_dir, "Figure3d_part2_datapoints.csv"))
 ```
 
 ## Class Scramble Processing
@@ -652,7 +645,6 @@ for(active_file in files_to_read){
   colnames(out) <- c("mismatches", gsub("_12mer_3mis_hits.tsv", "", active_file))
 
   ############## Count Proteome Length ##############
-   #browser()
   data <- try(seqinr::read.fasta(file = paste0("../../Viral_Proteomes/Final_Cohort/", gsub("AAClass_Scramble_", "", gsub("-[1-9].*", "", active_file)), ".fasta.gz"), seqtype = "AA", as.string = TRUE, set.attributes = FALSE), silent = TRUE)
     if(class(data) == "try-error"){
         PLength <- "Error"
@@ -770,8 +762,6 @@ gg_tree[["data"]] <- gg_tree[["data"]] %>%
 gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
    scale_fill_manual(values = Family_palette_v2)
 
-#gg3 %>% insert_left(gg_tree,width = 0.2) 
-#ggsave(paste0(out_dir, "class_scramble_heatmap.pdf"), width = 4, height =12)
 gg3 %>% insert_left(gg2) %>% insert_left(gg1) %>% insert_left(gg_tree,width = 0.4)
 ggsave(paste0(out_dir, "Figure2B.pdf"), width = 5, height =13)
 
@@ -782,15 +772,18 @@ ggsave(paste0(out_dir, "Figure2B.pdf"), width = 5, height =13)
 
 testing_data <- class_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
-  left_join(metadata) %>%
-  filter(grepl("Virus", Taxonomic.lineage)) %>%
-  filter(Chronic.or.Acute %in% c("Acute", "Chronic"))
+  inner_join(metadata)
 
-wt <- compare_means(data = testing_data, formula = FC ~ Chronic.or.Acute,
+write.csv(testing_data %>%
+            pivot_wider(names_from = mismatches, values_from = FC,
+                        id_cols = c(Proteome.ID, Pathogen)), paste0(out_dir, "perm3_data_points.csv"))
+
+wt <- compare_means(data = testing_data %>%
+  filter(Chronic.or.Acute %in% c("Acute", "Chronic")), formula = FC ~ Chronic.or.Acute,
               group.by = c("mismatches"), method = "wilcox.test")%>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-write.xlsx(wt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm3_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 gg3_perm3 <- class_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
@@ -814,8 +807,7 @@ gg3_perm3 <- class_scram_results %>%
   ylab("Fold Change of\nActual over Permutation 3")+
   theme(legend.position = "none")
 gg3_perm3
-#ggsave(paste0(out_dir, "class_scram_chronicity.pdf"), width = 4, height = 3)
-
+write.csv(gg3_perm3$data, paste0(out_dir, "Figure3e_part1_datapoints.csv"))
 
 testing_data <- class_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
@@ -840,10 +832,10 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
               group.by = c("mismatches"), method = "wilcox.test") %>%
   mutate(group1 = "Herpesviridae")
 
-write.xlsx(kt, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.p, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.h, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-write.xlsx(wt.hp, paste0(out_dir, "figure2_statistics.xlsx"), sheetName = "Perm3_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(kt, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm3_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.p, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm3_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.h, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm3_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+write.xlsx(wt.hp, paste0(out_dir, "SupplementalData4.xlsx"), sheetName = "Perm3_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 gg4_perm3 <- class_scram_results %>%
   mutate(Proteome.ID = gsub(".*_UP", "UP", Species)) %>%
@@ -876,11 +868,7 @@ gg4_perm3 <- class_scram_results %>%
            color = Family_palette_v2["Poxviridae"])+
   theme(legend.position = "none")
 gg4_perm3
-#ggsave(paste0(out_dir, "class_scram_family.pdf"), width = 4, height = 3)
-
-
-#ggarrange(gg3_perm3, gg4_perm3, ncol = 2, nrow = 1, common.legend = TRUE)
-#ggsave(paste0(out_dir, "class_scram_combined.pdf"), width = 5, height = 3)
+write.csv(gg4_perm3$data, paste0(out_dir, "Figure3e_part2_datapoints.csv"))
 ```
 
 ## Panel Assembly
