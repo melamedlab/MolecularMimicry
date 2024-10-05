@@ -1,0 +1,169 @@
+"","viral_uniprot","query_seqname","protein_length","feature","3","1","2","0","NA"
+"1","A0A1P7U1I1","tr|A0A1P7U1I1|A0A1P7U1I1_HCMVM Membrane glycoprotein UL8 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL8 PE=4 SV=1",324,"Lytic",1.91693290734824,0,0,0,NA
+"2","C1BEG3","sp|C1BEG3|UL74A_HCMVM Uncharacterized protein UL74A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL74A PE=4 SV=2",70,"Lytic",10.1694915254237,1.69491525423729,5.08474576271186,0,NA
+"3","F5H8Q3","sp|F5H8Q3|UL148_HCMVM Membrane protein UL148 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL148 PE=3 SV=1",316,"Lytic",2.95081967213115,0,0,0,NA
+"4","F5H8R0","sp|F5H8R0|U147A_HCMVM Uncharacterized protein UL147A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL147A PE=3 SV=1",75,"Lytic",4.6875,0,0,0,NA
+"5","F5H8R6","sp|F5H8R6|UL96_HCMVM Protein UL96 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL96 PE=3 SV=1",127,"Lytic",4.31034482758621,0,0,0,NA
+"6","F5H8S6","sp|F5H8S6|US24_HCMVM Tegument protein US24 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US24 PE=3 SV=1",501,"Lytic",1.22448979591837,0,0,0,NA
+"7","F5H991","sp|F5H991|US26_HCMVM Protein US26 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US26 PE=3 SV=1",603,"Lytic",4.39189189189189,0,0.168918918918919,0,NA
+"8","F5H9F9","sp|F5H9F9|UL88_HCMVM Protein UL88 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL88 PE=3 SV=1",429,"Lytic",5.98086124401914,0.239234449760766,1.67464114832536,0,NA
+"9","F5H9I4","sp|F5H9I4|US13_HCMVM Membrane protein US13 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US13 PE=3 SV=1",261,"Lytic",1.6,0,0,0,NA
+"10","F5H9N4","sp|F5H9N4|VP22_HCMVM Tegument protein UL24 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL24 PE=3 SV=2",358,"Lytic",5.76368876080692,0,0.288184438040346,0,NA
+"11","F5H9N9","sp|F5H9N9|US17_HCMVM Protein US17 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US17 PE=4 SV=1",293,"Lytic",4.25531914893617,0,0,0,NA
+"12","F5H9T4","sp|F5H9T4|UL09_HCMVM Membrane glycoprotein UL9 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL9 PE=3 SV=1",233,"Lytic",1.35135135135135,0,0,0,NA
+"13","F5H9Z4","sp|F5H9Z4|UL20_HCMVM Membrane protein UL20 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL20 PE=3 SV=1",338,"Lytic",6.72782874617737,0,0.611620795107034,0,NA
+"14","F5HA06","sp|F5HA06|UL147_HCMVM Putative viral CXC chemokine 2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL147 PE=3 SV=1",159,"Lytic",1.35135135135135,0,0,0,NA
+"15","F5HA10","sp|F5HA10|CEP1_HCMVM Cytoplasmic envelopment protein 1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL103 PE=3 SV=1",249,"Lytic",2.52100840336134,0,0,0,NA
+"16","F5HA93","sp|F5HA93|TRX1_HCMVM Triplex capsid protein 1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=TRX1 PE=3 SV=1",290,"Lytic",2.5089605734767,0,0,0,NA
+"17","F5HAC7","sp|F5HAC7|CEP2_HCMVM Cytoplasmic envelopment protein 2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL94 PE=3 SV=1",345,"Lytic",1.49700598802395,0,0,0,NA
+"18","F5HAE6","sp|F5HAE6|UL15A_HCMVM Uncharacterized protein UL15A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL15A PE=3 SV=1",102,"Lytic",4.3956043956044,0,0,0,NA
+"19","F5HAM0","sp|F5HAM0|UL144_HCMVM Membrane glycoprotein UL144 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL144 PE=3 SV=1",176,"Lytic",1.81818181818182,0,0,0,NA
+"20","F5HAM4","sp|F5HAM4|US31_HCMVM Uncharacterized protein US31 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US31 PE=3 SV=1",161,"Lytic",7.33333333333333,0,0,0,NA
+"21","F5HAQ7","sp|F5HAQ7|UL135_HCMVM Protein UL135 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL135 PE=1 SV=1",308,"Lytic",12.4579124579125,0,1.68350168350168,0,NA
+"22","F5HAR3","sp|F5HAR3|US19_HCMVM Transmembrane protein US19 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US19 PE=2 SV=1",240,"Lytic",5.67685589519651,0,0,0,NA
+"23","F5HAS7","sp|F5HAS7|UL92_HCMVM Uncharacterized protein UL92 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL92 PE=4 SV=1",201,"Lytic",3.15789473684211,0,0,0,NA
+"24","F5HAY6","sp|F5HAY6|VICA_HCMVM Viral inhibitor of caspase-8-induced apoptosis OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL36 PE=1 SV=1",476,"Lytic",0.860215053763441,0,0,0,NA
+"25","F5HAZ3","sp|F5HAZ3|US23_HCMVM Protein US23 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US23 PE=3 SV=1",592,"Lytic",3.95869191049914,0,0.516351118760757,0,NA
+"26","F5HB40","sp|F5HB40|UL84_HCMVM Protein UL84 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL84 PE=3 SV=1",587,"Lytic",8.33333333333333,0,0.868055555555556,0,NA
+"27","F5HB41","sp|F5HB41|US30_HCMVM Uncharacterized protein US30 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US30 PE=4 SV=1",349,"Lytic",3.25443786982249,0,0,0,NA
+"28","F5HB52","sp|F5HB52|US08_HCMVM Membrane glycoprotein US8 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US8 PE=3 SV=1",227,"Lytic",0.925925925925926,0,0,0,NA
+"29","F5HB53","sp|F5HB53|GB_HCMVM Envelope glycoprotein B OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=gB PE=3 SV=1",907,"Lytic",2.45535714285714,0,0.111607142857143,0,NA
+"30","F5HBC6","sp|F5HBC6|PP71_HCMVM Protein pp71 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL82 PE=3 SV=1",559,"Lytic",9.48905109489051,1.27737226277372,2.37226277372263,0.364963503649635,NA
+"31","F5HBR4","sp|F5HBR4|PORTL_HCMVM Portal protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL104 PE=3 SV=1",697,"Lytic",5.3935860058309,0,0.145772594752187,0,NA
+"32","F5HBX1","sp|F5HBX1|CXCL1_HCMVM Chemokine vCXCL1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL146 PE=1 SV=1",120,"Lytic",2.75229357798165,0,0,0,NA
+"33","F5HC14","sp|F5HC14|UL119_HCMVM Viral Fc-gamma receptor-like protein UL119 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL119/UL118 PE=3 SV=1",345,"Lytic",5.38922155688623,0,0,0,NA
+"34","F5HC16","sp|F5HC16|UL34_HCMVM Transcriptional regulator UL34 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL34 PE=3 SV=1",407,"Lytic",4.7979797979798,0,1.01010101010101,0,NA
+"35","F5HC33","sp|F5HC33|US09_HCMVM Membrane glycoprotein US9 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US9 PE=3 SV=1",247,"Lytic",4.66101694915254,0,0,0,NA
+"36","F5HC71","sp|F5HC71|IL10H_HCMVM Viral interleukin-10 homolog OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL111A PE=3 SV=1",176,"Latent",1.21212121212121,0,0,0,NA
+"37","F5HC79","sp|F5HC79|TRM1_HCMVM Tripartite terminase subunit 1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=TRM1 PE=3 SV=1",850,"Lytic",5.60190703218117,0,0,0,NA
+"38","F5HC97","sp|F5HC97|VPAP_HCMVM DNA polymerase processivity factor OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL44 PE=3 SV=1",433,"Lytic",13.7440758293839,2.13270142180095,5.45023696682464,0.4739336492891,NA
+"39","F5HCH8","sp|F5HCH8|GL_HCMVM Envelope glycoprotein L OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=gL PE=1 SV=1",278,"Lytic",4.8689138576779,0,0.374531835205993,0,NA
+"40","F5HCK7","sp|F5HCK7|UL140_HCMVM Protein UL140 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL140 PE=4 SV=1",191,"Lytic",1.11111111111111,0,0,0,NA
+"41","F5HCM1","sp|F5HCM1|VIE1_HCMVM Immediate early protein IE1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL123 PE=3 SV=1",491,"Lytic",4.79166666666667,0,0.208333333333333,0,NA
+"42","F5HCP3","sp|F5HCP3|UL130_HCMVM Envelope glycoprotein UL130 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL130 PE=1 SV=1",214,"Lytic",0.985221674876847,0,0,0,NA
+"43","F5HCU8","sp|F5HCU8|TRM3_HCMVM Tripartite terminase subunit 3 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=TRM3 PE=3 SV=1",674,"Lytic",3.01659125188537,0,0.150829562594268,0,NA
+"44","F5HD03","sp|F5HD03|US32_HCMVM Protein US32 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US32 PE=3 SV=1",183,"Lytic",2.90697674418605,0,0,0,NA
+"45","F5HD27","sp|F5HD27|UL121_HCMVM Membrane protein UL121 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL121 PE=3 SV=1",180,"Lytic",2.36686390532544,0,0,0,NA
+"46","F5HD92","sp|F5HD92|US14_HCMVM Membrane protein US14 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US14 PE=3 SV=1",310,"Lytic",2.67558528428094,0,0,0,NA
+"47","F5HDC7","sp|F5HDC7|US22_HCMVM Tegument protein US22 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US22 PE=3 SV=1",576,"Lytic",2.83185840707965,0,0.176991150442478,0,NA
+"48","F5HDD3","sp|F5HDD3|US07_HCMVM Membrane glycoprotein US7 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US7 PE=3 SV=1",225,"Lytic",1.86915887850467,0,0,0,NA
+"49","F5HDE7","sp|F5HDE7|U148C_HCMVM Protein UL148C OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL148C PE=4 SV=1",77,"Lytic",3.03030303030303,0,0,0,NA
+"50","F5HDK1","sp|F5HDK1|US27_HCMVM Envelope glycoprotein US27 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US27 PE=3 SV=1",364,"Lytic",6.23229461756374,0.28328611898017,1.13314447592068,0,NA
+"51","F5HDM3","sp|F5HDM3|UL23_HCMVM Tegument protein UL23 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL23 PE=3 SV=1",284,"Lytic",0.732600732600733,0,0,0,NA
+"52","F5HDQ6","sp|F5HDQ6|DNBI_HCMVM Major DNA-binding protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=DBP PE=3 SV=1",1235,"Lytic",7.02614379084967,0.245098039215686,1.30718954248366,0,NA
+"53","F5HE05","sp|F5HE05|US02_HCMVM Unique short US2 glycoprotein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US2 PE=2 SV=1",199,"Lytic",2.12765957446809,0,0,0,NA
+"54","F5HE12","sp|F5HE12|UL35_HCMVM Tegument protein UL35 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL35 PE=3 SV=1",641,"Lytic",10,0.952380952380952,1.9047619047619,0.317460317460317,NA
+"55","F5HE44","sp|F5HE44|US12_HCMVM Uncharacterized protein US12 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US12 PE=3 SV=1",281,"Lytic",2.59259259259259,0,0.740740740740741,0,NA
+"56","F5HE69","sp|F5HE69|US18_HCMVM Transmembrane protein US18 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US18 PE=3 SV=1",274,"Lytic",4.18250950570342,0,0,0,NA
+"57","F5HE74","sp|F5HE74|U148A_HCMVM Protein UL148A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL148A PE=4 SV=1",80,"Lytic",5.79710144927536,0,0,0,NA
+"58","F5HEA3","sp|F5HEA3|TEG7_HCMVM Tegument protein UL51 homolog OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL71 PE=3 SV=1",361,"Lytic",7.42857142857143,0,0,0,NA
+"59","F5HEF3","sp|F5HEF3|US34_HCMVM Protein US34 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US34 PE=3 SV=1",163,"Lytic",7.23684210526316,0,0,0,NA
+"60","F5HEN7","sp|F5HEN7|SCP_HCMVM Small capsomere-interacting protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=SCP PE=3 SV=1",75,"Lytic",3.125,0,0,0,NA
+"61","F5HEN8","sp|F5HEN8|HELI_HCMVM DNA replication helicase OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=HELI PE=3 SV=1",956,"Lytic",6.03174603174603,0.105820105820106,1.58730158730159,0,NA
+"62","F5HET1","sp|F5HET1|UL78_HCMVM Protein UL78 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL78 PE=1 SV=1",431,"Lytic",4.04761904761905,0,0,0,NA
+"63","F5HET4","sp|F5HET4|U131A_HCMVM Protein UL131A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL131A PE=1 SV=1",129,"Lytic",7.6271186440678,0,0,0,NA
+"64","F5HEU0","sp|F5HEU0|US03_HCMVM Membrane glycoprotein US3 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US3 PE=2 SV=1",186,"Lytic",2.85714285714286,0,0,0,NA
+"65","F5HF35","sp|F5HF35|UL136_HCMVM Protein UL136 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL136 PE=1 SV=1",240,"Lytic",7.4235807860262,0,1.31004366812227,0,NA
+"66","F5HF44","sp|F5HF44|UL145_HCMVM Protein UL145 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL145 PE=1 SV=1",130,"Lytic",0.840336134453782,0,0,0,NA
+"67","F5HF49","sp|F5HF49|AN_HCMVM Alkaline nuclease OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL98 PE=3 SV=1",584,"Lytic",2.61780104712042,0,0.349040139616056,0,NA
+"68","F5HF62","sp|F5HF62|US28_HCMVM Envelope protein US28 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US28 PE=3 SV=1",354,"Latent",13.7026239067055,0.583090379008746,6.12244897959184,0,NA
+"69","F5HF90","sp|F5HF90|UL22A_HCMVM Glycoprotein UL22A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL22A PE=3 SV=1",105,"Lytic",8.51063829787234,0,0,0,NA
+"70","F5HFA5","sp|F5HFA5|UL117_HCMVM Protein UL117 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL117 PE=3 SV=1",425,"Lytic",9.42028985507246,0.72463768115942,3.6231884057971,0,NA
+"71","F5HFB4","sp|F5HFB4|UL18_HCMVM Membrane glycoprotein UL18 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL18 PE=3 SV=1",368,"Lytic",5.04201680672269,0,0.840336134453782,0,NA
+"72","F5HFG3","sp|F5HFG3|UL41A_HCMVM Protein UL41A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL41A PE=3 SV=1",78,"Lytic",1.49253731343284,0,0,0,NA
+"73","F5HFH0","sp|F5HFH0|US15_HCMVM Membrane protein US15 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US15 PE=3 SV=1",262,"Lytic",3.98406374501992,0,0,0,NA
+"74","F5HFJ7","sp|F5HFJ7|US10_HCMVM Membrane glycoprotein US10 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US10 PE=3 SV=1",185,"Lytic",0.574712643678161,0,0,0,NA
+"75","F5HFJ8","sp|F5HFJ8|UL91_HCMVM Protein UL91 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL91 PE=3 SV=1",111,"Lytic",4,0,0,0,NA
+"76","F5HFZ4","sp|F5HFZ4|NEC1_HCMVM Nuclear egress protein 1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=NEC1 PE=1 SV=1",376,"Lytic",4.93150684931507,0,0.273972602739726,0,NA
+"77","F5HG51","sp|F5HG51|PRIM_HCMVM DNA primase OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL70 PE=3 SV=1",946,"Lytic",2.03208556149733,0,0.106951871657754,0,NA
+"78","F5HG68","sp|F5HG68|UL16P_HCMVM Protein UL16 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL16 PE=3 SV=1",230,"Lytic",5.02283105022831,0,0,0,NA
+"79","F5HG95","sp|F5HG95|US29_HCMVM Uncharacterized protein US29 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US29 PE=3 SV=1",462,"Lytic",5.98669623059867,0,0.221729490022173,0,NA
+"80","F5HG98","sp|F5HG98|UL38_HCMVM Apoptosis inhibitor UL38 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL38 PE=1 SV=1",331,"Lytic",8.4375,0,0.3125,0,NA
+"81","F5HGC2","sp|F5HGC2|UL30_HCMVM Uncharacterized protein UL30 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL30 PE=3 SV=1",121,"Lytic",3.63636363636364,0,0,0,NA
+"82","F5HGG3","sp|F5HGG3|UL26_HCMVM Tegument protein UL26 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL26 PE=3 SV=2",222,"Lytic",2.8436018957346,0,0,0,NA
+"83","F5HGH8","sp|F5HGH8|US20_HCMVM Membrane protein US20 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US20 PE=4 SV=1",254,"Lytic",2.46913580246914,0,0,0,NA
+"84","F5HGI9","sp|F5HGI9|TRM2_HCMVM Tripartite terminase subunit 2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=TRM2 PE=3 SV=1",157,"Lytic",7.53424657534247,0,0,0,NA
+"85","F5HGJ4","sp|F5HGJ4|PP85_HCMVM Phosphoprotein 85 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL25 PE=3 SV=1",656,"Lytic",6.66666666666667,0,0,0,NA
+"86","F5HGP1","sp|F5HGP1|GO_HCMVM Envelope glycoprotein O OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL74 PE=1 SV=1",472,"Lytic",2.38611713665944,0,0,0,NA
+"87","F5HGQ8","sp|F5HGQ8|UL138_HCMVM Protein UL138 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL138 PE=1 SV=1",169,"Latent",1.89873417721519,0,0,0,NA
+"88","F5HGT1","sp|F5HGT1|MCP_HCMVM Major capsid protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=MCP PE=3 SV=1",1370,"Lytic",2.13392200147167,0,0,0,NA
+"89","F5HGU6","sp|F5HGU6|UL132_HCMVM Envelope glycoprotein UL132 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL132 PE=3 SV=1",270,"Lytic",7.33590733590734,0,0.386100386100386,0,NA
+"90","F5HH39","sp|F5HH39|UL21A_HCMVM Uncharacterized protein UL21A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL21A PE=3 SV=1",123,"Lytic",0.892857142857143,0,0,0,NA
+"91","F5HHQ0","sp|F5HHQ0|GN_HCMVM Envelope glycoprotein N OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=gN PE=3 SV=1",135,"Lytic",18.5483870967742,0.806451612903226,4.03225806451613,0,NA
+"92","F5HHS3","sp|F5HHS3|UL124_HCMVM Uncharacterized protein UL124 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL124 PE=3 SV=1",150,"Lytic",10.7913669064748,0,0,0,NA
+"93","F5HHT4","sp|F5HHT4|UL17_HCMVM Protein UL17 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL17 PE=3 SV=1",104,"Lytic",3.2258064516129,0,0,0,NA
+"94","F5HHT6","sp|F5HHT6|US21_HCMVM Membrane protein US21 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US21 PE=3 SV=1",243,"Lytic",7.32758620689655,0,0,0,NA
+"95","F5HHZ3","sp|F5HHZ3|UL42_HCMVM Protein UL42 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL42 PE=1 SV=1",125,"Lytic",7.89473684210526,0,1.75438596491228,0,NA
+"96","F5HI32","sp|F5HI32|IR10_HCMVM Protein IRL10 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL10 PE=3 SV=1",170,"Lytic",3.77358490566038,0,0,0,NA
+"97","F5HI68","sp|F5HI68|UL19_HCMVM Uncharacterized protein UL19 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL19 PE=3 SV=1",98,"Lytic",1.14942528735632,0,0,0,NA
+"98","F5HI85","sp|F5HI85|UNG_HCMVM Uracil-DNA glycosylase OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL114 PE=3 SV=1",250,"Lytic",3.76569037656904,0,0.418410041841004,0,NA
+"99","F5HI87","sp|F5HI87|CEP3_HCMVM Cytoplasmic envelopment protein 3 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL99 PE=3 SV=1",190,"Lytic",15.0837988826816,0,1.67597765363128,0,NA
+"100","F5HIG1","sp|F5HIG1|HEPA_HCMVM DNA helicase/primase complex-associated protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL102 PE=3 SV=1",873,"Lytic",6.61252900232019,0,0.348027842227378,0,NA
+"101","F5HIN9","sp|F5HIN9|TRX2_HCMVM Triplex capsid protein 2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=TRX2 PE=3 SV=1",306,"Lytic",2.03389830508475,0,0,0,NA
+"102","F7V995","sp|F7V995|RL8A_HCMVM Protein RL8A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL8A PE=4 SV=1",90,"Lytic",11.3924050632911,0,5.06329113924051,0,NA
+"103","F7V998","sp|F7V998|U150A_HCMVM Uncharacterized protein UL150A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL150A PE=4 SV=1",271,"Lytic",4.61538461538462,0,0,0,NA
+"104","Q6RJQ3","sp|Q6RJQ3|UL141_HCMVM Protein UL141 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL141 PE=1 SV=1",338,"Lytic",2.44648318042813,0,0.305810397553517,0,NA
+"105","Q6SVX2","sp|Q6SVX2|TRS1_HCMVM Protein TRS1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=TRS1 PE=1 SV=1",788,"Lytic",8.49420849420849,0.514800514800515,1.02960102960103,0,NA
+"106","Q6SVZ0","sp|Q6SVZ0|US16_HCMVM Protein US16 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US16 PE=3 SV=1",309,"Lytic",6.04026845637584,0,0,0,NA
+"107","Q6SVZ5","sp|Q6SVZ5|US11_HCMVM Membrane glycoprotein US11 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US11 PE=2 SV=1",215,"Lytic",2.45098039215686,0,0,0,NA
+"108","Q6SW00","sp|Q6SW00|US06_HCMVM Unique short US6 glycoprotein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US6 PE=2 SV=1",182,"Lytic",4.09356725146199,0,0,0,NA
+"109","Q6SW03","sp|Q6SW03|US01_HCMVM Protein US1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US1 PE=4 SV=1",156,"Lytic",7.58620689655172,0,2.06896551724138,0,NA
+"110","Q6SW04","sp|Q6SW04|IRS1_HCMVM Protein IRS1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=IRS1 PE=3 SV=1",847,"Lytic",8.49282296650718,0.478468899521531,0.956937799043062,0,NA
+"111","Q6SW05","sp|Q6SW05|UL150_HCMVM Uncharacterized protein UL150 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL150 PE=3 SV=1",639,"Lytic",3.6624203821656,0,0.318471337579618,0,NA
+"112","Q6SW10","sp|Q6SW10|UL133_HCMVM Protein UL133 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL133 PE=4 SV=1",257,"Lytic",6.50406504065041,0,0.813008130081301,0,NA
+"113","Q6SW14","sp|Q6SW14|UL139_HCMVM Membrane glycoprotein UL139 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL139 PE=3 SV=1",138,"Lytic",17.3228346456693,5.51181102362205,7.08661417322835,3.93700787401575,NA
+"114","Q6SW29","sp|Q6SW29|VIE2_HCMVM Viral transcription factor IE2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL122 PE=3 SV=1",580,"Lytic",7.73286467486819,1.05448154657293,2.63620386643234,0.351493848857645,NA
+"115","Q6SW31","sp|Q6SW31|UL120_HCMVM Membrane protein UL120 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL120 PE=3 SV=1",201,"Lytic",1.57894736842105,0,0,0,NA
+"116","Q6SW34","sp|Q6SW34|UL116_HCMVM Uncharacterized protein UL116 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL116 PE=3 SV=1",313,"Lytic",10.5960264900662,0,0.662251655629139,0,NA
+"117","Q6SW37","sp|Q6SW37|EP84_HCMVM Early phosphoprotein p84 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL112/UL113 PE=3 SV=1",684,"Lytic",22.1396731054978,2.37741456166419,9.9554234769688,0,NA
+"118","Q6SW43","sp|Q6SW43|GM_HCMVM Envelope glycoprotein M OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=gM PE=3 SV=1",371,"Lytic",3.61111111111111,0,0.277777777777778,0,NA
+"119","Q6SW46","sp|Q6SW46|UL97_HCMVM Serine/threonine protein kinase UL97 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL97 PE=3 SV=1",707,"Lytic",5.02873563218391,0.14367816091954,0.574712643678161,0,NA
+"120","Q6SW48","sp|Q6SW48|UL95_HCMVM Protein UL95 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL95 PE=3 SV=1",533,"Lytic",12.6436781609195,1.34099616858238,2.4904214559387,0.383141762452107,NA
+"121","Q6SW50","sp|Q6SW50|CVC1_HCMVM Capsid vertex component 1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=CVC1 PE=3 SV=1",594,"Lytic",4.11663807890223,0,0,0,NA
+"122","Q6SW55","sp|Q6SW55|UL87_HCMVM Uncharacterized protein UL87 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL87 PE=3 SV=1",941,"Lytic",5.05376344086022,0,0.537634408602151,0,NA
+"123","Q6SW59","sp|Q6SW59|PP65_HCMVM 65 kDa phosphoprotein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL83 PE=1 SV=1",561,"Lytic",2.72727272727273,0,0,0,NA
+"124","Q6SW62","sp|Q6SW62|SCAF_HCMVM Capsid scaffolding protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL80 PE=3 SV=1",708,"Lytic",14.6341463414634,0.430416068866571,1.72166427546628,0,NA
+"125","Q6SW63","sp|Q6SW63|UL79_HCMVM Protein UL79 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL79 PE=3 SV=1",295,"Lytic",3.52112676056338,0,0,0,NA
+"126","Q6SW65","sp|Q6SW65|CVC2_HCMVM Capsid vertex component 2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=CVC2 PE=3 SV=1",636,"Lytic",6.56,0,0,0,NA
+"127","Q6SW66","sp|Q6SW66|UL76_HCMVM Protein UL76 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL76 PE=2 SV=1",325,"Lytic",11.7834394904459,0,0.318471337579618,0,NA
+"128","Q6SW67","sp|Q6SW67|GH_HCMVM Envelope glycoprotein H OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=gH PE=1 SV=1",742,"Lytic",3.83036935704514,0,0.27359781121751,0,NA
+"129","Q6SW70","sp|Q6SW70|DUT_HCMVM Deoxyuridine 5'-triphosphate nucleotidohydrolase OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=DUT PE=3 SV=1",388,"Lytic",5.03978779840849,0,0,0,NA
+"130","Q6SW73","sp|Q6SW73|ICP27_HCMVM mRNA export factor ICP27 homolog OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL69 PE=3 SV=1",742,"Lytic",9.02872777017784,0.27359781121751,0.957592339261286,0,NA
+"131","Q6SW77","sp|Q6SW77|DPOL_HCMVM DNA polymerase catalytic subunit OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL54 PE=3 SV=1",1242,"Lytic",5.68643379366369,0.24370430544273,1.38099106417547,0,NA
+"132","Q6SW79","sp|Q6SW79|UL52_HCMVM Packaging protein UL32 homolog OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL52 PE=3 SV=1",668,"Lytic",5.63165905631659,0,0.45662100456621,0,NA
+"133","Q6SW81","sp|Q6SW81|NEC2_HCMVM Nuclear egress protein 2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=NEC2 PE=1 SV=1",398,"Lytic",14.2118863049096,0,2.58397932816537,0,NA
+"134","Q6SW82","sp|Q6SW82|UL49_HCMVM Protein UL49 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL49 PE=3 SV=1",570,"Lytic",5.00894454382826,0,0.178890876565295,0,NA
+"135","Q6SW84","sp|Q6SW84|LTP_HCMVM Large tegument protein deneddylase OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL48 PE=3 SV=1",2241,"Lytic",4.75336322869955,0,0.269058295964126,0,NA
+"136","Q6SW85","sp|Q6SW85|ITP_HCMVM Inner tegument protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL47 PE=3 SV=1",983,"Lytic",4.01234567901235,0,0,0,NA
+"137","Q6SW87","sp|Q6SW87|RIR1_HCMVM Ribonucleoside-diphosphate reductase large subunit-like protein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RIR1 PE=3 SV=1",906,"Lytic",2.79329608938547,0,0,0,NA
+"138","Q6SW89","sp|Q6SW89|UL43_HCMVM Tegument protein UL43 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL43 PE=3 SV=1",423,"Lytic",3.88349514563107,0,0.242718446601942,0,NA
+"139","Q6SW92","sp|Q6SW92|UL40_HCMVM Protein UL40 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL40 PE=3 SV=1",221,"Lytic",3.33333333333333,0,0,0,NA
+"140","Q6SW94","sp|Q6SW94|VGLI_HCMVM UL37 immediate early glycoprotein OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL37 PE=3 SV=1",488,"Lytic",5.45073375262055,0,1.25786163522013,0,NA
+"141","Q6SW98","sp|Q6SW98|UL33_HCMVM G-protein coupled receptor homolog UL33 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL33 PE=3 SV=1",412,"Lytic",3.24189526184539,0,0.249376558603491,0,NA
+"142","Q6SW99","sp|Q6SW99|PP150_HCMVM Tegument protein pp150 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL32 PE=3 SV=1",1049,"Lytic",11.3680154142582,0,1.44508670520231,0,NA
+"143","Q6SWA0","sp|Q6SWA0|UL31_HCMVM Protein UL31 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL31 PE=3 SV=1",595,"Lytic",6.16438356164384,0,0.856164383561644,0,NA
+"144","Q6SWA3","sp|Q6SWA3|UL298_HCMVM Protein UL29/28 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL29 PE=3 SV=2",700,"Lytic",4.49927431059506,0,0.725689404934688,0,NA
+"145","Q6SWA4","sp|Q6SWA4|UL27_HCMVM Protein UL27 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL27 PE=1 SV=1",608,"Lytic",3.85259631490787,0,0.16750418760469,0,NA
+"146","Q6SWB7","sp|Q6SWB7|UL14_HCMVM Uncharacterized protein UL14 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL14 PE=3 SV=1",327,"Lytic",5.06329113924051,0,0.632911392405063,0,NA
+"147","Q6SWB8","sp|Q6SWB8|UL13_HCMVM Uncharacterized protein UL13 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL13 PE=3 SV=1",473,"Lytic",6.27705627705628,0,0.216450216450216,0,NA
+"148","Q6SWB9","sp|Q6SWB9|UL11P_HCMVM Protein UL11 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL11 PE=1 SV=1",272,"Lytic",13.0268199233716,0.383141762452107,3.83141762452107,0,NA
+"149","Q6SWC0","sp|Q6SWC0|UL10_HCMVM Uncharacterized protein UL10 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL10 PE=3 SV=1",254,"Lytic",3.29218106995885,0,0.411522633744856,0,NA
+"150","Q6SWC3","sp|Q6SWC3|UL07_HCMVM CEACAM1-like protein UL7 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL7 PE=3 SV=1",222,"Lytic",3.3175355450237,0,0,0,NA
+"151","Q6SWC4","sp|Q6SWC4|UL06_HCMVM Uncharacterized protein UL6 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL6 PE=3 SV=1",280,"Lytic",0.743494423791822,0,0,0,NA
+"152","Q6SWC5","sp|Q6SWC5|UL05_HCMVM Protein UL5 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL5 PE=3 SV=1",166,"Lytic",5.16129032258065,0,0,0,NA
+"153","Q6SWC6","sp|Q6SWC6|UL04_HCMVM Envelope glycoprotein UL4 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL4 PE=3 SV=1",149,"Lytic",2.89855072463768,0,0,0,NA
+"154","Q6SWC7","sp|Q6SWC7|UL02_HCMVM Uncharacterized protein UL2 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL2 PE=3 SV=1",59,"Lytic",4.16666666666667,0,0,0,NA
+"155","Q6SWC8","sp|Q6SWC8|UL01_HCMVM Glycoprotein UL1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL1 PE=3 SV=1",218,"Lytic",6.76328502415459,0,0,0,NA
+"156","Q6SWC9","sp|Q6SWC9|RL13_HCMVM Membrane protein RL13 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL13 PE=3 SV=1",293,"Lytic",4.25531914893617,0,0,0,NA
+"157","Q6SWD0","sp|Q6SWD0|RL12_HCMVM Uncharacterized protein RL12 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL12 PE=4 SV=1",414,"Lytic",5.4590570719603,0,0,0,NA
+"158","Q6SWD1","sp|Q6SWD1|RL11_HCMVM Membrane glycoprotein RL11 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL11 PE=3 SV=1",234,"Lytic",1.79372197309417,0,0,0,NA
+"159","Q6SWD5","sp|Q6SWD5|IR01_HCMVM Uncharacterized protein HKLF1 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL1 PE=3 SV=1",310,"Lytic",3.01003344481605,0,0.334448160535117,0,NA
+"160","U3KRG9","tr|U3KRG9|U3KRG9_HCMVM Protein UL30A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL30A PE=4 SV=1",79,"Lytic",2.94117647058824,0,0,0,NA
+"161","F5HHH2","sp|F5HHH2|UL142_HCMVM Membrane glycoprotein UL142 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL142 PE=1 SV=1",305,"Lytic",0,0,0,0,NA
+"162","F5HAK6","sp|F5HAK6|U148B_HCMVM Protein UL148B OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL148B PE=4 SV=1",80,"Lytic",0,0,0,0,NA
+"163","F5HF23","sp|F5HF23|RL5A_HCMVM Protein RL5A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL5A PE=4 SV=1",95,"Lytic",0,0,0,0,NA
+"164","F5HHL7","sp|F5HHL7|U148D_HCMVM Protein UL148D OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=UL148D PE=4 SV=1",62,"Lytic",0,0,0,0,NA
+"165","F7V996","sp|F7V996|RL9A_HCMVM Protein RL9A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL9A PE=4 SV=1",47,"Lytic",0,0,0,0,NA
+"166","F7V999","sp|F7V999|US33A_HCMVM Uncharacterized protein US33A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US33A PE=4 SV=1",57,"Lytic",0,0,0,0,NA
+"167","Q6SVX3","sp|Q6SVX3|US34A_HCMVM Uncharacterized protein US34A OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=US34A PE=3 SV=1",64,"Lytic",0,0,0,0,NA
+"168","Q6SWD3","sp|Q6SWD3|IR06_HCMVM Uncharacterized protein IRL6 OS=Human cytomegalovirus (strain Merlin) OX=295027 GN=RL6 PE=3 SV=1",111,"Lytic",0,0,0,0,NA

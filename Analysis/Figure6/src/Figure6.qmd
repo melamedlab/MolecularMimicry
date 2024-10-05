@@ -1,0 +1,456 @@
+---
+title: "Figure6"
+format: html
+editor: visual
+---
+
+# Figure 6
+
+## Bootup
+
+```{r setup}
+#| warning: false
+library(seqinr)
+library(stringi)
+library(clusterProfiler)
+library(R.utils)
+library(tidyverse)
+library(data.table)
+library(readxl)
+library(ReactomePA)
+library(biomaRt)
+library(reticulate)
+library(treeio)
+library(ggtree)
+library(ade4)
+library(aplot)
+library(xlsx)
+library(scales)
+out_dir <- "../output/"
+source("../../Utilities.R")
+
+mart <- useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl") ## , mirror = "useast"
+mart_retrieved <- getBM(
+  mart = mart,
+  attributes = c(
+    'ensembl_gene_id',
+    'entrezgene_id',
+    'external_gene_name',
+    'uniprot_gn_symbol',
+    'uniprot_gn_id',
+    'chromosome_name',
+    'description'),
+  uniqueRows=TRUE)
+
+meta_path <- "../../Metadata/"
+metadata <- openxlsx::read.xlsx(paste0(meta_path, "Final_Cohort_Metadata_v5.xlsx"), sheet = 1)
+
+duplicated_proteins <- read_csv(paste0(meta_path, "duplicated_proteins.csv"))
+human_duplicated_proteins <- read_csv(paste0(meta_path, "human_duplicated_or_removed_proteins.csv")) %>%
+  dplyr::rename("uniprot" = 1)
+
+tissue_map <- read_tsv(paste0(meta_path, "normal_tissue.tsv"))
+organ_map <- read_excel(paste0(meta_path, "Tissue_Groupings.xlsx"))
+tissue_organ_map <- merge(tissue_map, organ_map, by.x = "Tissue", by.y = "Var1", all.x = T)
+unique(tissue_organ_map$Level)
+tissue_organ_map <- tissue_organ_map[tissue_organ_map$Level != "Not detected",]
+tissue_organ_map <- tissue_organ_map[tissue_organ_map$Level != "Not representative",]
+tissue_organ_map <- tissue_organ_map[tissue_organ_map$Level != "N/A",]
+
+unique(tissue_organ_map$Reliability)
+tissue_organ_map <- tissue_organ_map[tissue_organ_map$Reliability != "Uncertain",]
+tissue_organ_map <- tissue_organ_map[tissue_organ_map$Reliability != "NA",]
+
+tissue_organ_map_condensed <- tissue_organ_map %>%
+  dplyr::select(Tissue, Gene, `Cell type`, `New Name`) %>%
+  group_by(Gene) %>%
+  dplyr::summarize(organ_system = gsub("NA;", "", paste(unique(`New Name`), collapse = ";")),
+                   tissue = gsub("NA;", "", paste(unique(Tissue), collapse = ";")),
+                   cell_type = gsub("NA;", "", paste(unique(`Cell type`), collapse = ";")))
+
+protein_atlas <- read_tsv("../../Databases/proteinatlas_2023-10-15.tsv")
+```
+
+## Panel B
+
+```{r}
+#| warning: false
+ebv_mimicry <- fread("../../12mer_annotated/Epstein-Barr_virus_UP000153037_12mer_3mis_hits.csv.gz")
+latent_ebv_proteins <- c("P03211", "P03230", "P12978", "P13285", "Q8AZK7",
+                         "P03204", "P12977", "P03203")
+ebv_fasta <- seqinr::read.fasta("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/Epstein-Barr_virus_UP000153037.fasta.gz", seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
+
+EBV_latency <- protein_compare(virus_name = "EBV",
+                mimicry_df = ebv_mimicry,
+                fasta = ebv_fasta,
+                protein_ids = latent_ebv_proteins,
+                kmer_length = 12,
+                star_heights = c(3,10,15,25),
+                feature_name = c("Latent", "Lytic"))
+EBV_latency[[1]]
+ggsave(paste0(out_dir, "Figure6B.pdf"), width = 4.5, height = 3)
+
+write.xlsx(EBV_latency[[2]], paste0(out_dir, "SupplementalData6_part2.xlsx"), sheetName = "EBV_Latent_vs_Lytic", col.names = TRUE, row.names = TRUE, append = FALSE)
+```
+
+```{r}
+kmer_length = 12
+ebv_fasta <- seqinr::read.fasta("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/Epstein-Barr_virus_UP000153037.fasta.gz", seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
+  ebv_mimicry$viral_uniprot <- sapply(strsplit(ebv_mimicry$query_seqname, split="\\|"), function(x) paste(x[2]))
+  ebv_mimicry$uniprot <- sapply(strsplit(ebv_mimicry$target_seqname, split="\\|"), function(x) paste(x[2]))
+  PLength <- as.data.frame(nchar(ebv_fasta))
+  
+  data <- ebv_mimicry %>%
+    filter(!viral_uniprot %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    distinct(viral_uniprot, query_seqname, query_start, mismatches) %>%
+    group_by(viral_uniprot, query_seqname, query_start) %>%
+    slice_min(mismatches) %>%
+    group_by(viral_uniprot, query_seqname, mismatches) %>%
+    dplyr::summarize(count = n()) %>%
+    full_join(PLength %>% rownames_to_column("query_seqname")) 
+  data$viral_uniprot <- sapply(strsplit(data$query_seqname, split="\\|"), function(x) paste(x[2]))
+latent_ebv_proteins <- c("P03211", "P03230", "P12978", "P13285", "Q8AZK7",
+                         "P03204", "P12977", "P03203")
+data <- data %>%
+    mutate(feature = ifelse(viral_uniprot %in% latent_ebv_proteins,
+                            "Latent", "Lytic")) %>%
+    dplyr::rename("protein_length" = "nchar(ebv_fasta)") %>%
+    mutate(count_corr = count / (protein_length -(kmer_length-1)) * 100) %>%
+    pivot_wider(names_from = mismatches, values_from = count_corr,
+                id_cols = -count) %>% 
+    mutate_at(c("0", "1", "2", "3"), ~replace_na(.,0))%>%
+    rowwise() %>%
+    mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+           `2` = sum(`0`, `1`, `2`,na.rm = T),
+           `1` = sum(`0`, `1`,na.rm = T)) %>%
+    ungroup()
+
+write.csv(data, paste0(out_dir, "Figure6B_datapoints.csv"))
+```
+
+## mTEC Expression Test
+
+### Gabrielsen I et al 2019 gene expression
+
+```{r}
+#| warning: false
+all_genes <- read_xlsx("../../Databases/Gabrielsen_I_et_al_2019_TableS3.xlsx",
+                       skip = 2) %>%
+  dplyr::rename("ensembl_gene_id"=1) %>%
+  dplyr::distinct(ensembl_gene_id, mTEC.MED, CD123.MED, CD141.MED, CD19.MED) %>%
+  rowwise() %>%
+  mutate(Any.MED = ifelse(sum(c(mTEC.MED, CD123.MED, CD141.MED, CD19.MED)) > 0,
+                          1, 0))
+
+## gabrielsen_gene_set_binary
+gabrielsen_gene_set_binary_both <- all_genes %>%
+  pivot_longer(-ensembl_gene_id) %>%
+  arrange(ensembl_gene_id, name) %>%
+  mutate(name = paste0(name,value)) %>%
+  dplyr::distinct(name, ensembl_gene_id) %>%
+  left_join(mart_retrieved %>% distinct(ensembl_gene_id, uniprot_gn_id)) %>%
+  filter(!uniprot_gn_id %in% c(" ", "", NA)) %>%
+  distinct(uniprot_gn_id, name) %>%
+  dplyr::rename(uniprot = 1)
+
+## The known frequencies of proteins
+protein_frequencies <- gabrielsen_gene_set_binary_both %>%
+  group_by(name) %>%
+  dplyr::summarize(count = n()) %>%
+  mutate(cell_type = gsub(".MED.*", "", name),
+         found = gsub(".*MED", "", name)) %>%
+  dplyr::select(-name) %>%
+  pivot_wider(names_from = found, values_from = count) %>%
+  mutate(freq = `1`/(`1` +`0`))
+
+```
+
+### Fisher test against permuted
+
+### Base Counts
+
+```{r}
+#| warning: false
+
+setwd("../../12mer_annotated/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".csv.gz", files_to_read)]
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+
+all_genes_enrichment <- unique(all_genes$ensembl_gene_id)
+ 
+out_final <- data.frame()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file))
+  active_data <- fread(active_file, nThread = 10) %>%
+    as.data.frame() %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    filter(mismatches <= 2)
+  if(nrow(active_data) == 0){
+    zero_df <- data.frame(cell_type = c("CD123", "CD141", "CD19", "mTEC"),
+                    `0` = rep(0, 4),
+                    `1` = rep(0, 4),
+                    virus = rep(gsub(".*_UP", "UP", gsub("_12mer_3mis.*", "", active_file)), 4))
+    colnames(zero_df)[2:3] <- c("0", "1")
+     out_final <- plyr::rbind.fill(out_final, zero_df)
+     next
+  }
+  counts_df <- active_data %>%
+    filter(!uniprot %in% c(NA, "", " ")) %>%
+    left_join(gabrielsen_gene_set_binary_both) %>%
+    filter(!is.na(name)) %>%
+    distinct(query_start, target_start, name, uniprot, viral_id) %>%
+    mutate(cell_type = gsub(".MED.*", "", name),
+           expressed = gsub(".*MED", "", name)) %>%
+    group_by(viral_id, query_start, cell_type) %>%
+    slice_max(expressed) %>%
+    distinct(viral_id, query_start, cell_type, expressed) %>%
+    group_by(cell_type, expressed) %>%
+    dplyr::summarize(count = n()) %>%
+    pivot_wider(names_from = expressed, values_from = count) %>%
+    mutate(virus = gsub(".*_UP", "UP", gsub("_12mer_3mis.*", "", active_file)))
+  out_final <- plyr::rbind.fill(out_final, counts_df)
+  
+}
+
+write.csv(out_final, paste0("../Figure6/output/", "mTEC_real.csv"))
+
+```
+
+### Panel C
+
+```{r}
+
+out_final <- read.csv(paste0(out_dir, "mTEC_real.csv"), row.names = 1) %>%
+  mutate(virus = gsub("-.*", "", virus)) %>%
+  left_join(protein_frequencies) %>%
+  mutate(`X0` = ifelse(is.na(`X0`), 0, `X0`),
+         `X1` = ifelse(is.na(`X1`), 0, `X1`)) %>%
+  mutate(freq.viral = `X1` / (X1 +X0)) %>%
+  mutate(p.value = NA)
+
+
+for(i in 1:nrow(out_final)){
+  count_table <- mapply(c,out_final[i, c(2,3)],out_final[i, c(5,6)])
+  count_table[is.na(count_table)] <- 0
+  tmp <- try(fisher.test(count_table), silent = TRUE)
+   if(class(tmp) != "try-error"){
+      out_final$p.value[i] <- tmp$p.value
+   }
+}
+
+## If the p.value is too small, just report the smallest p.value calculated
+out_final$p.value <- ifelse(out_final$p.value ==0, min(out_final$p.value[out_final$p.value > 0]), out_final$p.value)
+
+graph_data <- out_final %>%
+  inner_join(metadata, by = c("virus" = "Proteome.ID")) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `virus`, Taxon.mnemonic)) %>%
+  dplyr::rename("label" = "Taxon.mnemonic") %>%
+  mutate(label = factor(label)) %>%
+  mutate(FC = freq.viral / freq) %>%
+  mutate(p.adj = p.adjust(p.value, "fdr")) %>%
+  filter(p.adj <= 0.01) %>%
+  mutate(log10p = -log10(p.adj)) %>%
+  mutate(direction = ifelse(FC>1, "Up", "Down"))
+
+graph_data_out <- graph_data
+colnames(graph_data_out)[c(1,2,5,6)] <- c("Hits_viral", "NoHit_viral", "Not_Expressed_Human", "Expressed_Human")
+write.xlsx(graph_data_out, paste0(out_dir, "SupplementalData6_part2.xlsx"), sheetName = "Thymic_Cell_Fisher_Test", col.names = TRUE, row.names = TRUE, append = TRUE)
+
+gg5 <- graph_data %>%
+  mutate(difference = freq.viral* 100 - freq * 100) %>%
+  ggplot(aes(x=label, y=cell_type)) +
+  geom_point(aes(size =log10p, fill = difference), shape =21) +
+  theme_light() +
+  scale_fill_gradientn(limits = c(-10,10),
+  colours=c("#2213c2", "lightgray", "#b8180d"),
+  breaks=c(-10, -5, 0, 5, 10),
+  guide = guide_colorbar(frame.colour = "black", ticks.colour = "black"),
+  name = "Percent Difference", oob=squish) +
+  scale_color_manual(values = c("00FFFFFF", "black")) + 
+  scale_x_discrete(drop=FALSE) +
+  ylab("Thymus Cell Type") +
+  theme(panel.grid.major = element_line(color="grey", size=0.1), 
+        axis.text.x = element_text(angle=45, hjust = 0),
+        axis.title.x = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  scale_x_discrete(position = "top") +
+  guides(size=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         #fill=guide_legend("Percent Difference"),
+         color=guide_legend("Significant in all\nthree permutations"))
+gg5
+```
+
+```{r}
+
+taxa <- metadata %>% as.data.frame() %>%
+  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  filter(Proteome.ID %in% graph_data$`virus`) %>%
+  column_to_rownames("Taxon.mnemonic") %>%
+  dplyr::select(family, order, class, phylum, kingdom) %>%
+  as.data.frame()
+taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
+taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
+
+check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
+rownames(check) <- rownames(taxa)
+check <- check[complete.cases(check),]
+tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
+
+tax.phy <- as.phylo(tmp)
+
+
+gg_tree <- ggtree(tax.phy, branch.length='none')
+gg_tree
+
+gg_tree[["data"]] <- gg_tree[["data"]] %>% 
+  left_join(metadata %>%
+               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
+
+gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
+   scale_fill_manual(values = Family_palette_v2, name = "Viral Family")
+
+
+gg5 %>%
+  insert_bottom(gg_tree + coord_flip(),height = 0.2)
+ggsave(paste0(out_dir, "Figure6C.pdf"), width =12, height = 4)
+```
+
+## Supplemental Materials
+
+### Supplemental Figure 7
+
+```{r}
+#| warning: false
+cmv_mimicry <- fread("../../12mer_annotated/Human_cytomegalovirus_merlin_UP000000938_12mer_3mis_hits.csv.gz")
+latent_cmv_proteins <- c("F5HGQ8", "F5HC71", "F5HF62")
+cmv_fasta <- seqinr::read.fasta("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/Human_cytomegalovirus_merlin_UP000000938.fasta.gz", seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
+
+CMV_latency <- protein_compare(virus_name = "CMV",
+                mimicry_df = cmv_mimicry,
+                fasta = cmv_fasta,
+                protein_ids = latent_cmv_proteins,
+                kmer_length = 12,
+                #star_heights = c(3,10,15,25),
+                feature_name = c("Latent", "Lytic"))
+CMV_latency[[1]]
+
+```
+
+```{r}
+hhv8_mimicry <- fread("../../12mer_annotated/Human_herpesvirus_8_UP000000942_12mer_3mis_hits.csv.gz")
+
+hhv8_fasta <- seqinr::read.fasta("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/Human_herpesvirus_8_UP000000942.fasta.gz", seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
+
+latent_hhv8_proteins <- c("Q9QR71", "Q77Q38", "F5HIC6", "F5HEZ4", "Q77Q36",
+                          "Q2HRC7", "F5HF68", "Q98146")
+
+HHV8_latency <- protein_compare(virus_name = "HHV8",
+                mimicry_df = hhv8_mimicry,
+                fasta = hhv8_fasta,
+                protein_ids = latent_hhv8_proteins,
+                kmer_length = 12,
+                #star_heights = c(0,0,0),
+                feature_name = c("Latent", "Lytic"))
+HHV8_latency[[1]]
+```
+
+```{r}
+ggarrange(CMV_latency[[1]] + ggtitle("CMV (HHV5)"), HHV8_latency[[1]] + ggtitle("KSHV (HHV8)"),
+          common.legend = TRUE)
+
+ggsave(paste0(out_dir, "FigureS7.pdf"), width = 7, height = 3)
+```
+
+#### Datapoint Files
+
+###### CMV
+
+```{r}
+kmer_length = 12
+cmv_mimicry <- fread("../../12mer_annotated/Human_cytomegalovirus_merlin_UP000000938_12mer_3mis_hits.csv.gz")
+cmv_fasta <- seqinr::read.fasta("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/Human_cytomegalovirus_merlin_UP000000938.fasta.gz", seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
+  cmv_mimicry$viral_uniprot <- sapply(strsplit(cmv_mimicry$query_seqname, split="\\|"), function(x) paste(x[2]))
+  cmv_mimicry$uniprot <- sapply(strsplit(cmv_mimicry$target_seqname, split="\\|"), function(x) paste(x[2]))
+  PLength <- as.data.frame(nchar(cmv_fasta))
+  
+  data <- cmv_mimicry %>%
+    filter(!viral_uniprot %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    distinct(viral_uniprot, query_seqname, query_start, mismatches) %>%
+    group_by(viral_uniprot, query_seqname, query_start) %>%
+    slice_min(mismatches) %>%
+    group_by(viral_uniprot, query_seqname, mismatches) %>%
+    dplyr::summarize(count = n()) %>%
+    full_join(PLength %>% rownames_to_column("query_seqname")) 
+  data$viral_uniprot <- sapply(strsplit(data$query_seqname, split="\\|"), function(x) paste(x[2]))
+latent_cmv_proteins <- c("F5HGQ8", "F5HC71", "F5HF62")
+data <- data %>%
+    mutate(feature = ifelse(viral_uniprot %in% latent_cmv_proteins,
+                            "Latent", "Lytic")) %>%
+    dplyr::rename("protein_length" = "nchar(cmv_fasta)") %>%
+    mutate(count_corr = count / (protein_length -(kmer_length-1)) * 100) %>%
+    pivot_wider(names_from = mismatches, values_from = count_corr,
+                id_cols = -count) %>% 
+    mutate_at(c("0", "1", "2", "3"), ~replace_na(.,0))%>%
+    rowwise() %>%
+    mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+           `2` = sum(`0`, `1`, `2`,na.rm = T),
+           `1` = sum(`0`, `1`,na.rm = T)) %>%
+    ungroup()
+
+write.csv(data, paste0(out_dir, "FigureS7A_datapoints.csv"))
+```
+
+###### HHV8
+
+```{r}
+hhv8_mimicry <- fread("../../12mer_annotated/Human_herpesvirus_8_UP000000942_12mer_3mis_hits.csv.gz")
+
+hhv8_fasta <- seqinr::read.fasta("../../../epitope_alignment/Viral_Proteomes/Final_Cohort/Human_herpesvirus_8_UP000000942.fasta.gz", seqtype = "AA", as.string = TRUE, set.attributes = FALSE, whole.header = TRUE)
+
+latent_hhv8_proteins <- c("Q9QR71", "Q77Q38", "F5HIC6", "F5HEZ4", "Q77Q36",
+                          "Q2HRC7", "F5HF68", "Q98146")
+
+kmer_length = 12
+  hhv8_mimicry$viral_uniprot <- sapply(strsplit(hhv8_mimicry$query_seqname, split="\\|"), function(x) paste(x[2]))
+  hhv8_mimicry$uniprot <- sapply(strsplit(hhv8_mimicry$target_seqname, split="\\|"), function(x) paste(x[2]))
+  PLength <- as.data.frame(nchar(hhv8_fasta))
+  
+  data <- hhv8_mimicry %>%
+    filter(!viral_uniprot %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    distinct(viral_uniprot, query_seqname, query_start, mismatches) %>%
+    group_by(viral_uniprot, query_seqname, query_start) %>%
+    slice_min(mismatches) %>%
+    group_by(viral_uniprot, query_seqname, mismatches) %>%
+    dplyr::summarize(count = n()) %>%
+    full_join(PLength %>% rownames_to_column("query_seqname")) 
+  data$viral_uniprot <- sapply(strsplit(data$query_seqname, split="\\|"), function(x) paste(x[2]))
+  
+data <- data %>%
+    mutate(feature = ifelse(viral_uniprot %in% latent_hhv8_proteins,
+                            "Latent", "Lytic")) %>%
+    dplyr::rename("protein_length" = "nchar(hhv8_fasta)") %>%
+    mutate(count_corr = count / (protein_length -(kmer_length-1)) * 100) %>%
+    pivot_wider(names_from = mismatches, values_from = count_corr,
+                id_cols = -count) %>% 
+    mutate_at(c("0", "1", "2", "3"), ~replace_na(.,0))%>%
+    rowwise() %>%
+    mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+           `2` = sum(`0`, `1`, `2`,na.rm = T),
+           `1` = sum(`0`, `1`,na.rm = T)) %>%
+    ungroup()
+
+write.csv(data, paste0(out_dir, "FigureS7B_datapoints.csv"))
+```

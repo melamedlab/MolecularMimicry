@@ -1,0 +1,93 @@
+"","viral_uniprot","query_seqname","protein_length","feature","3","2","1","0","NA"
+"1","A0A1P7U110","tr|A0A1P7U110|A0A1P7U110_EBVB9 Tripartite terminase subunit 2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BFRF1A PE=3 SV=1",135,"Lytic",4.03225806451613,0,0,0,NA
+"2","A0A1P7U1U3","tr|A0A1P7U1U3|A0A1P7U1U3_EBVB9 A73 protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=A73 PE=4 SV=1",126,"Lytic",0.869565217391304,0,0,0,NA
+"3","P03177","sp|P03177|KITH_EBVB9 Thymidine kinase OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=TK PE=3 SV=2",607,"Lytic",2.68456375838926,0.167785234899329,0,0,NA
+"4","P03179","sp|P03179|MTP_EBVB9 Major tegument protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BNRF1 PE=1 SV=1",1318,"Lytic",5.66182096403979,0.994644223412395,0.382555470543229,0,NA
+"5","P03180","sp|P03180|IL10H_EBVB9 Viral interleukin-10 homolog OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BCRF1 PE=1 SV=1",170,"Lytic",83.0188679245283,71.6981132075472,64.7798742138365,50.314465408805,NA
+"6","P03181","sp|P03181|BHLF1_EBVB9 Uncharacterized protein BHLF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BHLF1 PE=4 SV=1",660,"Lytic",24.191063174114,3.08166409861325,0,0,NA
+"7","P03182","sp|P03182|EAR_EBVB9 Apoptosis regulator BHRF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BHRF1 PE=1 SV=1",191,"Lytic",5.55555555555556,0,0,0,NA
+"8","P03184","sp|P03184|UL32_EBVB9 Packaging protein UL32 homolog OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BFLF1 PE=1 SV=1",525,"Lytic",1.94552529182879,0,0,0,NA
+"9","P03185","sp|P03185|NEC2_EBVB9 Nuclear egress protein 2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=NEC2 PE=1 SV=1",336,"Lytic",2.76923076923077,0,0,0,NA
+"10","P03186","sp|P03186|LTP_EBVB9 Large tegument protein deneddylase OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BPLF1 PE=1 SV=1",3149,"Lytic",11.0579987253027,0.892288081580625,0,0,NA
+"11","P03187","sp|P03187|TRX1_EBVB9 Triplex capsid protein 1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=TRX1 PE=1 SV=1",364,"Lytic",8.4985835694051,0.56657223796034,0,0,NA
+"12","P03188","sp|P03188|GB_EBVB9 Envelope glycoprotein B OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=gB PE=1 SV=1",857,"Lytic",5.08274231678487,0.354609929078014,0,0,NA
+"13","P03189","sp|P03189|ITP_EBVB9 Inner tegument protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BOLF1 PE=3 SV=1",1239,"Lytic",9.03908794788274,0.0814332247557003,0,0,NA
+"14","P03190","sp|P03190|RIR1_EBVB9 Ribonucleoside-diphosphate reductase large subunit OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=RIR1 PE=3 SV=1",826,"Lytic",3.06748466257669,0.122699386503067,0,0,NA
+"15","P03191","sp|P03191|EAD_EBVB9 DNA polymerase processivity factor BMRF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BMRF1 PE=1 SV=1",404,"Lytic",4.83460559796438,1.27226463104326,0,0,NA
+"16","P03192","sp|P03192|BMRF2_EBVB9 Protein BMRF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BMRF2 PE=1 SV=1",357,"Lytic",2.3121387283237,0,0,0,NA
+"17","P03193","sp|P03193|PRIM_EBVB9 DNA primase OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BSLF1 PE=3 SV=1",874,"Lytic",1.96987253765933,0,0,0,NA
+"18","P03195","sp|P03195|DUT_EBVB9 Deoxyuridine 5'-triphosphate nucleotidohydrolase OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=DUT PE=1 SV=1",278,"Lytic",1.49812734082397,0,0,0,NA
+"19","P03196","sp|P03196|GN_EBVB9 Envelope glycoprotein N OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=gN PE=1 SV=1",102,"Lytic",9.89010989010989,0,0,0,NA
+"20","P03197","sp|P03197|BLRF2_EBVB9 Tegument protein BLRF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BLRF2 PE=3 SV=1",162,"Lytic",9.27152317880795,0,0,0,NA
+"21","P03198","sp|P03198|DPOL_EBVB9 DNA polymerase catalytic subunit OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BALF5 PE=1 SV=1",1015,"Lytic",4.8804780876494,0.896414342629482,0,0,NA
+"22","P03199","sp|P03199|BLLF2_EBVB9 Uncharacterized protein BLLF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BLLF2 PE=3 SV=1",148,"Lytic",2.91970802919708,0,0,0,NA
+"23","P03200","sp|P03200|GP350_EBVB9 Envelope glycoprotein GP350 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BLLF1 PE=1 SV=1",907,"Lytic",7.14285714285714,0.223214285714286,0,0,NA
+"24","P03203","sp|P03203|EBNA4_EBVB9 Epstein-Barr nuclear antigen 4 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=EBNA4 PE=1 SV=3",938,"Latent",6.90399137001079,0,0,0,NA
+"25","P03204","sp|P03204|EBNA6_EBVB9 Epstein-Barr nuclear antigen 6 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=EBNA6 PE=1 SV=1",992,"Latent",10.1936799184506,1.7329255861366,0,0,NA
+"26","P03205","sp|P03205|GP42_EBVB9 Glycoprotein 42 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BZLF2 PE=1 SV=1",223,"Lytic",3.77358490566038,0,0,0,NA
+"27","P03206","sp|P03206|BZLF1_EBVB9 Trans-activator protein BZLF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BZLF1 PE=1 SV=2",245,"Lytic",4.27350427350427,0,0,0,NA
+"28","P03207","sp|P03207|BRRF1_EBVB9 Transcriptional activator BRRF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BRRF1 PE=3 SV=1",310,"Lytic",1.00334448160535,0,0,0,NA
+"29","P03208","sp|P03208|BILF1_EBVB9 G-protein coupled receptor BILF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BILF1 PE=1 SV=1",312,"Lytic",4.65116279069767,0.332225913621262,0,0,NA
+"30","P03209","sp|P03209|RTA_EBVB9 Replication and transcription activator OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BRLF1 PE=1 SV=1",605,"Lytic",6.73400673400673,0.505050505050505,0,0,NA
+"31","P03210","sp|P03210|BRRF2_EBVB9 Tegument protein BRRF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BRRF2 PE=3 SV=1",537,"Lytic",6.08365019011407,0.380228136882129,0,0,NA
+"32","P03211","sp|P03211|EBNA1_EBVB9 Epstein-Barr nuclear antigen 1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=EBNA1 PE=1 SV=1",641,"Latent",54.4444444444444,44.2857142857143,26.3492063492063,0.952380952380952,NA
+"33","P03212","sp|P03212|GL_EBVB9 Envelope glycoprotein L OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=gL PE=1 SV=1",137,"Lytic",6.34920634920635,0,0,0,NA
+"34","P03213","sp|P03213|PORTL_EBVB9 Portal protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BBRF1 PE=1 SV=1",613,"Lytic",4.31893687707641,0.664451827242525,0,0,NA
+"35","P03215","sp|P03215|GM_EBVB9 Envelope glycoprotein M OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=gM PE=1 SV=1",405,"Lytic",8.62944162436548,1.01522842639594,0.253807106598985,0,NA
+"36","P03217","sp|P03217|AN_EBVB9 Shutoff alkaline exonuclease OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BGLF5 PE=1 SV=1",470,"Lytic",0.65359477124183,0,0,0,NA
+"37","P03218","sp|P03218|BILF2_EBVB9 Glycoprotein BILF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BILF2 PE=1 SV=1",248,"Lytic",5.06329113924051,0,0,0,NA
+"38","P03219","sp|P03219|TRM3_EBVB9 Tripartite terminase subunit 3 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=TRM3 PE=1 SV=2",690,"Lytic",0.883652430044183,0,0,0,NA
+"39","P03220","sp|P03220|UL95_EBVB9 Protein BGLF3 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BGLF3 PE=3 SV=1",332,"Lytic",0.934579439252336,0,0,0,NA
+"40","P03222","sp|P03222|CVC1_EBVB9 Capsid vertex component 1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=CVC1 PE=1 SV=1",507,"Lytic",7.45967741935484,0.201612903225806,0,0,NA
+"41","P03224","sp|P03224|BDLF3_EBVB9 Glycoprotein BDLF3 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BDLF3 PE=1 SV=1",234,"Lytic",16.1434977578475,0.448430493273543,0,0,NA
+"42","P03225","sp|P03225|BDLF2_EBVB9 Protein BDLF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BDLF2 PE=1 SV=1",420,"Lytic",7.09046454767726,2.68948655256724,0.244498777506112,0,NA
+"43","P03226","sp|P03226|MCP_EBVB9 Major capsid protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=MCP PE=1 SV=1",1381,"Lytic",2.04379562043796,0.145985401459854,0,0,NA
+"44","P03227","sp|P03227|DNBI_EBVB9 Major DNA-binding protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=DBP PE=1 SV=1",1128,"Lytic",3.22291853178156,0.26857654431513,0,0,NA
+"45","P03228","sp|P03228|BARF1_EBVB9 Secreted protein BARF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BARF1 PE=1 SV=1",221,"Lytic",3.80952380952381,0,0,0,NA
+"46","P03230","sp|P03230|LMP1_EBVB9 Latent membrane protein 1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=LMP1 PE=1 SV=1",386,"Latent",13.6,2.13333333333333,0,0,NA
+"47","P03231","sp|P03231|GH_EBVB9 Envelope glycoprotein H OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=gH PE=1 SV=1",706,"Lytic",3.16546762589928,0,0,0,NA
+"48","P03232","sp|P03232|UL24_EBVB9 Protein UL24 homolog OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BXRF1 PE=2 SV=1",248,"Lytic",5.06329113924051,0.421940928270042,0,0,NA
+"49","P03233","sp|P03233|CVC2_EBVB9 Capsid vertex component 2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=CVC2 PE=1 SV=1",570,"Lytic",6.08228980322004,0.35778175313059,0,0,NA
+"50","P03234","sp|P03234|SCAF_EBVB9 Capsid scaffolding protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BVRF2 PE=1 SV=1",605,"Lytic",7.07070707070707,0.168350168350168,0,0,NA
+"51","P0C725","sp|P0C725|LF2_EBVB9 Protein LF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=LF2 PE=1 SV=1",429,"Lytic",3.58851674641148,0,0,0,NA
+"52","P0C727","sp|P0C727|LF3_EBVB9 Uncharacterized protein LF3 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=LF3 PE=3 SV=1",924,"Lytic",16.9769989047097,0.109529025191676,0,0,NA
+"53","P0C739","sp|P0C739|BNL2A_EBVB9 Protein BNLF2a OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BNLF2a PE=1 SV=1",60,"Lytic",6.12244897959184,0,0,0,NA
+"54","P0CAP6","sp|P0CAP6|RIR2_EBVB9 Ribonucleoside-diphosphate reductase small subunit OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=RIR2 PE=1 SV=1",302,"Lytic",3.78006872852234,0,0,0,NA
+"55","P0CK47","sp|P0CK47|NEC1_EBVB9 Nuclear egress protein 1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=NEC1 PE=1 SV=1",318,"Lytic",1.62866449511401,0,0,0,NA
+"56","P0CK49","sp|P0CK49|TEG7_EBVB9 Tegument protein UL51 homolog OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BSRF1 PE=1 SV=1",218,"Lytic",5.79710144927536,0,0,0,NA
+"57","P0CK53","sp|P0CK53|CEP2_EBVB9 Cytoplasmic envelopment protein 2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BGLF2 PE=1 SV=1",336,"Lytic",2.46153846153846,0,0,0,NA
+"58","P0CK56","sp|P0CK56|UL92_EBVB9 Uncharacterized protein BDLF4 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BDLF4 PE=3 SV=1",225,"Lytic",3.73831775700935,0,0,0,NA
+"59","P0CK58","sp|P0CK58|BALF1_EBVB9 Apoptosis regulator BALF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BALF1 PE=1 SV=1",220,"Lytic",2.87081339712919,0,0,0,NA
+"60","P12888","sp|P12888|UNG_EBVB9 Uracil-DNA glycosylase OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=UNG PE=1 SV=1",255,"Lytic",9.42622950819672,2.86885245901639,1.63934426229508,0.409836065573771,NA
+"61","P12977","sp|P12977|EBNA3_EBVB9 Epstein-Barr nuclear antigen 3 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=EBNA3 PE=1 SV=2",944,"Latent",5.46623794212219,0,0,0,NA
+"62","P12978","sp|P12978|EBNA2_EBVB9 Epstein-Barr nuclear antigen 2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=EBNA2 PE=1 SV=1",487,"Latent",17.6470588235294,11.1344537815126,8.19327731092437,5.88235294117647,NA
+"63","P13285","sp|P13285|LMP2_EBVB9 Latent membrane protein 2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=LMP2 PE=1 SV=1",497,"Latent",14.40329218107,1.02880658436214,0,0,NA
+"64","P13288","sp|P13288|KR2_EBVB9 Serine/threonine-protein kinase BGLF4 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BGLF4 PE=1 SV=2",429,"Lytic",3.34928229665072,0.239234449760766,0,0,NA
+"65","P14347","sp|P14347|BFRF2_EBVB9 Uncharacterized protein BFRF2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BFRF2 PE=3 SV=1",591,"Lytic",6.55172413793103,0.172413793103448,0,0,NA
+"66","P14348","sp|P14348|SCP_EBVB9 Small capsomere-interacting protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=SCP PE=1 SV=1",176,"Lytic",17.5757575757576,1.81818181818182,0,0,NA
+"67","P25214","sp|P25214|TRX2_EBVB9 Triplex capsid protein 2 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=TRX2 PE=1 SV=1",301,"Lytic",0.689655172413793,0,0,0,NA
+"68","P25215","sp|P25215|UL87_EBVB9 TBP-like protein BcRF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BcRF1 PE=3 SV=1",575,"Lytic",2.30496453900709,0,0,0,NA
+"69","P25939","sp|P25939|TRM1_EBVB9 Tripartite terminase subunit 1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=TRM1 PE=3 SV=2",685,"Lytic",4.15430267062314,0,0,0,NA
+"70","P29882","sp|P29882|CEP1_EBVB9 Cytoplasmic envelopment protein 1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BBRF2 PE=3 SV=1",278,"Lytic",0.374531835205993,0,0,0,NA
+"71","P30117","sp|P30117|BKRF4_EBVB9 Tegument protein BKRF4 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BKRF4 PE=3 SV=1",217,"Lytic",21.3592233009709,0.485436893203883,0,0,NA
+"72","P30119","sp|P30119|BTRF1_EBVB9 Uncharacterized protein BTRF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BTRF1 PE=3 SV=2",404,"Lytic",2.03562340966921,0,0,0,NA
+"73","Q04360","sp|Q04360|ICP27_EBVB9 mRNA export factor ICP27 homolog OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BMLF1 PE=1 SV=2",479,"Lytic",7.47863247863248,0,0,0,NA
+"74","Q2MG95","tr|Q2MG95|Q2MG95_EBVB9 BVLF1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BVLF1 PE=3 SV=1",272,"Lytic",3.44827586206897,0.383141762452107,0,0,NA
+"75","Q2MG96","tr|Q2MG96|Q2MG96_EBVB9 BGLF3.5 protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BGLF3.5 PE=4 SV=1",153,"Lytic",9.15492957746479,2.11267605633803,0,0,NA
+"76","Q777D7","tr|Q777D7|Q777D7_EBVB9 DNA replication helicase OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BBLF4 PE=3 SV=1",809,"Lytic",2.13032581453634,0,0,0,NA
+"77","Q8AZJ3","sp|Q8AZJ3|BNL2B_EBVB9 Uncharacterized protein BNLF2b OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BNLF2b PE=3 SV=2",98,"Lytic",2.29885057471264,0,0,0,NA
+"78","Q8AZJ4","tr|Q8AZJ4|Q8AZJ4_EBVB9 Putative BARF0 protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BARF0 PE=4 SV=1",471,"Lytic",6.73913043478261,0.217391304347826,0,0,NA
+"79","Q8AZJ5","sp|Q8AZJ5|LF1_EBVB9 Uncharacterized LF1 protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=LF1 PE=3 SV=1",469,"Lytic",5.24017467248908,0,0,0,NA
+"80","Q8AZJ7","tr|Q8AZJ7|Q8AZJ7_EBVB9 Putative BBLF3 protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BBLF2-BBLF3 PE=3 SV=1",723,"Lytic",2.6685393258427,0,0,0,NA
+"81","Q8AZK1","tr|Q8AZK1|Q8AZK1_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BWRF1 PE=4 SV=1",383,"Lytic",13.9784946236559,0.268817204301075,0,0,NA
+"82","Q8AZK7","sp|Q8AZK7|EBNA5_EBVB9 Epstein-Barr nuclear antigen leader protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=EBNA-LP PE=1 SV=1",506,"Latent",22.4242424242424,1.41414141414141,0,0,NA
+"83","Q9Q2P0","sp|Q9Q2P0|RPMS1_EBVB9 Uncharacterized protein RPMS1 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=RPMS1 PE=3 SV=1",103,"Lytic",18.4782608695652,1.08695652173913,0,0,NA
+"84","Q9QCF1","tr|Q9QCF1|Q9QCF1_EBVB9 BSLF2 protein OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BSLF2 PE=4 SV=1",39,"Lytic",3.57142857142857,0,0,0,NA
+"85","P0CK51","sp|P0CK51|CEP3_EBVB9 Cytoplasmic envelopment protein 3 OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BBLF1 PE=1 SV=1",75,"Lytic",0,0,0,0,NA
+"86","Q8AZK5","tr|Q8AZK5|Q8AZK5_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BWRF1 PE=4 SV=1",383,"Lytic",0,0,0,0,NA
+"87","Q8AZK0","tr|Q8AZK0|Q8AZK0_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BWRF1 PE=4 SV=1",383,"Lytic",0,0,0,0,NA
+"88","Q8AZK3","tr|Q8AZK3|Q8AZK3_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BWRF1 PE=4 SV=1",383,"Lytic",0,0,0,0,NA
+"89","Q8AZK4","tr|Q8AZK4|Q8AZK4_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BWRF1 PE=4 SV=1",383,"Lytic",0,0,0,0,NA
+"90","Q8AZK8","tr|Q8AZK8|Q8AZK8_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BCRF2 PE=4 SV=1",383,"Lytic",0,0,0,0,NA
+"91","Q8AZK2","tr|Q8AZK2|Q8AZK2_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BWRF1 PE=4 SV=1",383,"Lytic",0,0,0,0,NA
+"92","Q8AZK6","tr|Q8AZK6|Q8AZK6_EBVB9 Uncharacterized protein (Fragment) OS=Epstein-Barr virus (strain B95-8) OX=10377 GN=BWRF1 PE=4 SV=1",383,"Lytic",0,0,0,0,NA

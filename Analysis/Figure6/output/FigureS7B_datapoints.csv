@@ -1,0 +1,86 @@
+"","viral_uniprot","query_seqname","protein_length","feature","3","2","1","0","NA"
+"1","F5H8Y5","sp|F5H8Y5|TRX1_HHV8P Triplex capsid protein 1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=TRX1 PE=1 SV=1",331,"Lytic",1.25,0,0,0,NA
+"2","F5H982","sp|F5H982|NEC1_HHV8P Nuclear egress protein 1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=NEC1 PE=1 SV=1",302,"Lytic",4.46735395189003,0,0,0,NA
+"3","F5H9W4","sp|F5H9W4|TRM2_HHV8P Tripartite terminase subunit 2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=TRM2 PE=3 SV=1",80,"Lytic",2.89855072463768,0,0,0,NA
+"4","F5H9W9","sp|F5H9W9|TEG7_HHV8P Tegument protein ORF55 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF55 PE=1 SV=1",227,"Lytic",0.925925925925926,0,0,0,NA
+"5","F5HA27","sp|F5HA27|NEC2_HHV8P Nuclear egress protein 2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=NEC2 PE=1 SV=1",271,"Lytic",3.07692307692308,0,0,0,NA
+"6","F5HAD1","sp|F5HAD1|ORF58_HHV8P Protein ORF58 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF58 PE=3 SV=1",357,"Lytic",5.20231213872832,0,0,0,NA
+"7","F5HAI6","sp|F5HAI6|CEP1_HHV8P Cytoplasmic envelopment protein 1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF42 PE=3 SV=1",278,"Lytic",2.62172284644195,0,0,0,NA
+"8","F5HAK9","sp|F5HAK9|GH_HHV8P Envelope glycoprotein H OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=gH PE=1 SV=1",730,"Lytic",1.66898470097357,0,0,0,NA
+"9","F5HAW0","sp|F5HAW0|RIR2_HHV8P Ribonucleoside-diphosphate reductase small subunit OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=RIR2 PE=3 SV=1",305,"Lytic",0.680272108843537,0,0,0,NA
+"10","F5HB39","sp|F5HB39|CVC1_HHV8P Capsid vertex component 1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=CVC1 PE=1 SV=1",454,"Lytic",4.74040632054176,0.677200902934537,0,0,NA
+"11","F5HB62","sp|F5HB62|KITH_HHV8P Thymidine kinase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=TK PE=3 SV=1",580,"Lytic",4.56942003514938,0,0,0,NA
+"12","F5HB81","sp|F5HB81|GB_HHV8P Envelope glycoprotein B OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=gB PE=1 SV=1",845,"Lytic",5.03597122302158,0.119904076738609,0,0,NA
+"13","F5HB98","sp|F5HB98|K81_HHV8P Protein K8.1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K8.1 PE=3 SV=1",228,"Lytic",7.83410138248848,0,0,0,NA
+"14","F5HCD4","sp|F5HCD4|ORF35_HHV8P Protein ORF35 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF35 PE=4 SV=1",150,"Lytic",7.19424460431655,0,0,0,NA
+"15","F5HCJ2","sp|F5HCJ2|VCCL3_HHV8P Protein vCCL3 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K4.1 PE=3 SV=1",114,"Lytic",0.970873786407767,0,0,0,NA
+"16","F5HCV3","sp|F5HCV3|ORF50_HHV8P Putative transcription activator ORF50 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF50 PE=3 SV=1",691,"Lytic",6.76470588235294,0.147058823529412,0,0,NA
+"17","F5HDA4","sp|F5HDA4|K7_HHV8P Protein K7 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K7 PE=1 SV=1",126,"Lytic",6.95652173913043,0,0,0,NA
+"18","F5HDB7","sp|F5HDB7|GL_HHV8P Envelope glycoprotein L OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=gL PE=1 SV=1",167,"Lytic",2.56410256410256,0,0,0,NA
+"19","F5HDD0","sp|F5HDD0|GM_HHV8P Envelope glycoprotein M OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=gM PE=1 SV=1",400,"Lytic",1.02827763496144,0,0,0,NA
+"20","F5HDE4","sp|F5HDE4|ORF45_HHV8P Protein ORF45 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF45 PE=1 SV=1",407,"Lytic",12.3737373737374,2.77777777777778,0.505050505050505,0,NA
+"21","F5HDY6","sp|F5HDY6|ORF27_HHV8P Protein ORF27 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF27 PE=4 SV=1",290,"Lytic",0.716845878136201,0,0,0,NA
+"22","F5HEF2","sp|F5HEF2|CEP2_HHV8P Cytoplasmic envelopment protein 2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF33 PE=3 SV=1",334,"Lytic",1.23839009287926,0,0,0,NA
+"23","F5HES7","sp|F5HES7|ORF30_HHV8P Protein ORF30 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF30 PE=4 SV=1",77,"Lytic",3.03030303030303,0,0,0,NA
+"24","F5HET8","sp|F5HET8|K6_HHV8P Protein K6 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K6 PE=3 SV=1",95,"Lytic",27.3809523809524,22.6190476190476,17.8571428571429,10.7142857142857,NA
+"25","F5HEU7","sp|F5HEU7|ITP_HHV8P Inner tegument protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF63 PE=3 SV=1",928,"Lytic",1.9629225736096,0.109051254089422,0,0,NA
+"26","F5HEZ4","sp|F5HEZ4|VFLIP_HHV8P Viral FLICE protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF71 PE=1 SV=1",188,"Latent",1.12994350282486,0,0,0,NA
+"27","F5HF36","sp|F5HF36|K42_HHV8P Protein K4.2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K4.2 PE=4 SV=1",182,"Lytic",7.60233918128655,0.584795321637427,0,0,NA
+"28","F5HF47","sp|F5HF47|UL32_HHV8P Packaging protein UL32 homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF68 PE=1 SV=1",467,"Lytic",2.63157894736842,0,0,0,NA
+"29","F5HF68","sp|F5HF68|VIRF1_HHV8P VIRF-1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=vIRF-1 PE=1 SV=1",449,"Latent",4.5662100456621,0.228310502283105,0,0,NA
+"30","F5HFA1","sp|F5HFA1|UNG_HHV8P Uracil-DNA glycosylase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF46 PE=1 SV=1",255,"Lytic",9.42622950819672,4.09836065573771,1.63934426229508,0,NA
+"31","F5HFD2","sp|F5HFD2|ORF24_HHV8P Protein ORF24 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF24 PE=1 SV=1",752,"Lytic",2.83400809716599,0,0,0,NA
+"32","F5HFQ0","sp|F5HFQ0|GN_HHV8P Envelope glycoprotein N OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=gN PE=1 SV=1",110,"Lytic",14.1414141414141,0,0,0,NA
+"33","F5HG20","sp|F5HG20|UL49_HHV8P Protein ORF66 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF66 PE=1 SV=1",429,"Lytic",2.15311004784689,0,0,0,NA
+"34","F5HGB6","sp|F5HGB6|TRM3_HHV8P Tripartite terminase subunit 3 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=TRM3 PE=3 SV=1",687,"Lytic",1.03550295857988,0,0,0,NA
+"35","F5HGH5","sp|F5HGH5|VPK_HHV8P Viral protein kinase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=vPK PE=1 SV=1",444,"Lytic",1.61662817551963,0,0,0,NA
+"36","F5HGJ3","sp|F5HGJ3|ARBH_HHV8P Apoptosis regulator Bcl-2 homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=vBCL2 PE=1 SV=1",175,"Lytic",4.8780487804878,0,0,0,NA
+"37","F5HGK9","sp|F5HGK9|PORTL_HHV8P Portal protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF43 PE=1 SV=1",605,"Lytic",3.1986531986532,0,0,0,NA
+"38","F5HGN8","sp|F5HGN8|TRX2_HHV8P Triplex capsid protein 2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=TRX2 PE=1 SV=1",305,"Lytic",2.72108843537415,0.340136054421769,0,0,NA
+"39","F5HHY1","sp|F5HHY1|CEP3_HHV8P Cytoplasmic envelopment protein 3 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF38 PE=3 SV=1",61,"Lytic",2,0,0,0,NA
+"40","F5HI25","sp|F5HI25|ORF28_HHV8P Protein ORF28 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF28 PE=4 SV=1",102,"Lytic",7.69230769230769,1.0989010989011,0,0,NA
+"41","F5HIC6","sp|F5HIC6|VIRF3_HHV8P Viral IRF3-like protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=vIRF-3 PE=1 SV=1",566,"Latent",4.5045045045045,0.18018018018018,0,0,NA
+"42","F5HID2","sp|F5HID2|PAP_HHV8P DNA polymerase processivity factor OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF59 PE=3 SV=1",396,"Lytic",7.53246753246753,0,0,0,NA
+"43","F5HIM6","sp|F5HIM6|ORF23_HHV8P Protein ORF23 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF23 PE=1 SV=1",404,"Lytic",0.763358778625954,0,0,0,NA
+"44","F5HIN0","sp|F5HIN0|PRIM_HHV8P DNA primase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF56 PE=3 SV=1",843,"Lytic",2.16346153846154,0,0,0,NA
+"45","P0C788","sp|P0C788|OX2V_HHV8P OX-2 membrane glycoprotein homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K14 PE=1 SV=1",271,"Lytic",5.76923076923077,1.53846153846154,0,0,NA
+"46","P90463","sp|P90463|TYSY_HHV8P Thymidylate synthase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=70 PE=1 SV=1",337,"Lytic",48.4662576687117,33.7423312883436,19.6319018404908,5.8282208588957,NA
+"47","P90489","sp|P90489|MIR2_HHV8P E3 ubiquitin-protein ligase MIR2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K5 PE=1 SV=1",256,"Lytic",3.26530612244898,0,0,0,NA
+"48","P90495","sp|P90495|MIR1_HHV8P E3 ubiquitin-protein ligase MIR1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K3 PE=1 SV=1",333,"Lytic",5.27950310559006,0,0,0,NA
+"49","Q2HR63","sp|Q2HR63|SCP_HHV8P Small capsomere-interacting protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=SCP PE=1 SV=1",170,"Lytic",5.66037735849057,0,0,0,NA
+"50","Q2HR64","sp|Q2HR64|LTP_HHV8P Large tegument protein deneddylase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF64 PE=1 SV=1",2635,"Lytic",4.83993902439024,0.38109756097561,0,0,NA
+"51","Q2HR67","sp|Q2HR67|RIR1_HHV8P Ribonucleoside-diphosphate reductase large subunit OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=RIR1 PE=3 SV=1",792,"Lytic",1.92061459667093,0.512163892445583,0,0,NA
+"52","Q2HR71","sp|Q2HR71|VIRF2_HHV8P Viral IRF2-like protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=vIRF-2 PE=1 SV=1",680,"Lytic",6.2780269058296,0,0,0,NA
+"53","Q2HR73","sp|Q2HR73|VIRF4_HHV8P Viral IRF4-like protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=vIRF-4 PE=1 SV=1",911,"Lytic",6.77777777777778,0.666666666666667,0,0,NA
+"54","Q2HR75","sp|Q2HR75|ICP27_HHV8P mRNA export factor ICP27 homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF57 PE=1 SV=1",455,"Lytic",4.5045045045045,0,0,0,NA
+"55","Q2HR78","sp|Q2HR78|DUT_HHV8P Deoxyuridine 5'-triphosphate nucleotidohydrolase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=DUT PE=3 SV=1",295,"Lytic",1.40845070422535,0,0,0,NA
+"56","Q2HR80","sp|Q2HR80|ORF52_HHV8P Tegument protein ORF52 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF52 PE=1 SV=1",131,"Lytic",3.33333333333333,0,0,0,NA
+"57","Q2HR82","sp|Q2HR82|KBZIP_HHV8P E3 SUMO-protein ligase K-bZIP OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K8 PE=1 SV=1",286,"Lytic",4.36363636363636,0.363636363636364,0,0,NA
+"58","Q2HR83","sp|Q2HR83|ORF49_HHV8P Protein ORF49 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF49 PE=3 SV=1",302,"Lytic",2.40549828178694,0,0,0,NA
+"59","Q2HR85","sp|Q2HR85|ORF48_HHV8P Tegument protein ORF48 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF48 PE=3 SV=1",402,"Lytic",3.0690537084399,0,0,0,NA
+"60","Q2HR89","sp|Q2HR89|HELI_HHV8P DNA replication helicase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=HELI PE=3 SV=1",788,"Lytic",2.18790218790219,0,0,0,NA
+"61","Q2HR92","sp|Q2HR92|HEPA_HHV8P DNA helicase/primase complex-associated protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF40 PE=3 SV=1",669,"Lytic",2.12765957446809,0,0,0,NA
+"62","Q2HR95","sp|Q2HR95|AN_HHV8P Shutoff alkaline exonuclease OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF37 PE=1 SV=1",486,"Lytic",2.31578947368421,0,0,0,NA
+"63","Q2HR98","sp|Q2HR98|UL95_HHV8P Protein UL95 homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF34 PE=1 SV=1",327,"Lytic",3.79746835443038,0,0,0,NA
+"64","Q2HRA1","sp|Q2HRA1|UL92_HHV8P Protein ORF31 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF31 PE=1 SV=1",194,"Lytic",2.18579234972678,0,0,0,NA
+"65","Q2HRA7","sp|Q2HRA7|MCP_HHV8P Major capsid protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=MCP PE=1 SV=1",1376,"Lytic",1.75824175824176,0,0,0,NA
+"66","Q2HRB2","sp|Q2HRB2|UL24_HHV8P Protein UL24 homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF20 PE=2 SV=1",257,"Lytic",0.813008130081301,0,0,0,NA
+"67","Q2HRB3","sp|Q2HRB3|CVC2_HHV8P Capsid vertex component 2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=CVC2 PE=1 SV=1",549,"Lytic",2.04460966542751,0,0,0,NA
+"68","Q2HRB4","sp|Q2HRB4|UL79_HHV8P Protein UL79 homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF18 PE=1 SV=1",257,"Lytic",1.6260162601626,0,0,0,NA
+"69","Q2HRB6","sp|Q2HRB6|SCAF_HHV8P Capsid scaffolding protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF17 PE=1 SV=1",534,"Lytic",5.73613766730402,0.382409177820268,0,0,NA
+"70","Q2HRC6","sp|Q2HRC6|DYR_HHV8P Putative Dihydrofolate reductase OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF2 PE=3 SV=1",210,"Lytic",12.5628140703518,3.01507537688442,0,0,NA
+"71","Q2HRC7","sp|Q2HRC7|VIL6_HHV8P Viral interleukin-6 homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K2 PE=1 SV=1",204,"Latent",1.03626943005181,0,0,0,NA
+"72","Q2HRC8","sp|Q2HRC8|ORF11_HHV8P Protein ORF11 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF11 PE=4 SV=1",407,"Lytic",1.51515151515152,0,0,0,NA
+"73","Q2HRC9","sp|Q2HRC9|ORF10_HHV8P Protein ORF10 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF10 PE=4 SV=1",418,"Lytic",2.94840294840295,0,0,0,NA
+"74","Q2HRD0","sp|Q2HRD0|DPOL_HHV8P DNA polymerase catalytic subunit OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF9 PE=3 SV=1",1012,"Lytic",5.19480519480519,1.2987012987013,0.1998001998002,0,NA
+"75","Q2HRD2","sp|Q2HRD2|TRM1_HHV8P Tripartite terminase subunit 1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=TRM1 PE=3 SV=1",695,"Lytic",1.75438596491228,0,0,0,NA
+"76","Q2HRD3","sp|Q2HRD3|DNBI_HHV8P Major DNA-binding protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=DBP PE=1 SV=1",1132,"Lytic",1.96253345227475,0,0,0,NA
+"77","Q2HRD4","sp|Q2HRD4|ORF4_HHV8P Complement control protein OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF4 PE=3 SV=1",550,"Lytic",5.00927643784787,1.11317254174397,0.556586270871985,0,NA
+"78","Q2HRD5","sp|Q2HRD5|K1_HHV8P Protein K1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K1 PE=1 SV=1",279,"Lytic",2.98507462686567,0,0,0,NA
+"79","Q77Q36","sp|Q77Q36|VCYCL_HHV8P viral cyclin homolog OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF72 PE=1 SV=1",257,"Latent",5.28455284552846,0,0,0,NA
+"80","Q98146","sp|Q98146|VGPCR_HHV8P viral G-protein coupled receptor OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF74 PE=1 SV=1",342,"Latent",8.45921450151057,0,0,0,NA
+"81","Q98157","sp|Q98157|VMI2_HHV8P Viral macrophage inflammatory protein 2 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF K4 PE=1 SV=1",94,"Lytic",24.0963855421687,18.0722891566265,13.2530120481928,4.81927710843374,NA
+"82","Q9QR69","sp|Q9QR69|K15_HHV8P Protein K15 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K15 PE=1 SV=1",489,"Lytic",1.25523012552301,0,0,0,NA
+"83","Q9QR70","sp|Q9QR70|ORF75_HHV8P Protein ORF75 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=ORF75 PE=4 SV=1",1296,"Lytic",4.3579766536965,0,0,0,NA
+"84","Q9QR71","sp|Q9QR71|LANA1_HHV8P Protein LANA1 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=LANA1 PE=1 SV=1",1129,"Latent",39.9821109123435,13.1484794275492,3.5778175313059,0.268336314847943,NA
+"85","Q77Q38","sp|Q77Q38|K12_HHV8P Protein K12 OS=Human herpesvirus 8 type P (isolate GK18) OX=868565 GN=K12 PE=4 SV=1",60,"Latent",0,0,0,0,NA
