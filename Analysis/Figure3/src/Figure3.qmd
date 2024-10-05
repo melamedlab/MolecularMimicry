@@ -1,5 +1,5 @@
 ---
-title: "Figure3_Final_v1"
+title: "Figure3"
 format: html
 editor: visual
 ---
@@ -34,8 +34,44 @@ out_dir <- "../output/"
 out_protein_final_count_12mer <- read.csv("../../Key_Data/12mer_proteome_protein_everything_count.csv", row.names = 1) %>%
   mutate(viral_id = id_split(query_seqname))
 
+raw_data <- out_protein_final_count_12mer %>%
+   mutate(count = cut(count, c(0,1,2,3,4,6,10,20,323))) %>%
+  group_by(Proteome.ID, count) %>%
+  dplyr::summarize(total = n()) %>%
+  mutate(freq = total / sum(total) *100,
+         total_total = sum(total)) %>%
+  mutate(label = paste0(round(freq, 2), "% (", total, "/", total_total, ")")) %>%
+  pivot_wider(names_from = count, values_from = label, id_cols = Proteome.ID) %>%
+  left_join(metadata %>% select(Proteome.ID, Pathogen))
+write.csv(raw_data, paste0(out_dir, "figure3b_datapoints.csv"))
+
+raw_data <- out_protein_final_count_12mer %>%
+   mutate(count = cut(count, c(0,1,2,3,4,6,10,20,323))) %>%
+  group_by(Proteome.ID, count) %>%
+  dplyr::summarize(total = n()) %>%
+  mutate(freq = total / sum(total) *100,
+         total_total = sum(total)) %>%
+  left_join(metadata) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  group_by(Family_Viral_Zone, count) %>%
+  dplyr::summarize(count_freq = mean(freq)) %>%
+  pivot_wider(names_from = count, values_from = count_freq, id_cols = Family_Viral_Zone)
+write.csv(raw_data, paste0(out_dir, "figure3b_family_datapoints.csv"))
+
+raw_data <- out_protein_final_count_12mer %>%
+   mutate(count = cut(count, c(0,1,2,3,4,6,10,20,323))) %>%
+  group_by(Proteome.ID, mismatches, count) %>%
+ dplyr::summarize(total = n()) %>%
+  mutate(freq = total / sum(total) *100,
+         total_total = sum(total)) %>%
+  mutate(label = paste0(round(freq, 2), "% (", total, "/", total_total, ")")) %>%
+  left_join(metadata %>% dplyr::select(Proteome.ID, Pathogen)) %>%
+  arrange(mismatches, count) %>%
+  pivot_wider(names_from = c(mismatches, count), values_from = label, id_cols = c(Proteome.ID, Pathogen))
+write.csv(raw_data, paste0(out_dir, "figureS3b_datapoints.csv"))
+
 gg12mer_multi_map <- out_protein_final_count_12mer %>%
-   mutate(count = cut(count, c(0,1,2,3,4,6,10,20,300))) %>%
+   mutate(count = cut(count, c(0,1,2,3,4,6,10,20,323))) %>%
   group_by(Proteome.ID, mismatches, count) %>%
   dplyr::summarize(total = n()) %>%
   mutate(freq = total / sum(total)) %>%
@@ -150,6 +186,38 @@ write.csv(run_calls_df, "../Figure3/output/12mer_run_calls_2024.csv")
 
 run_calls_df <- read.csv(paste0(out_dir, "12mer_run_calls_2024.csv"))
 
+data_t <- run_calls_df %>%
+  group_by(Proteome.ID, query_seqname, target_seqname, run) %>%
+  dplyr::summarize(count = n()) %>% ungroup() %>%
+  mutate(count = count +11) %>%
+  mutate(count = cut(count, c(11, 12,13,14,15, 16,20, 30, 90))) %>%
+  group_by(Proteome.ID, count) %>%
+  dplyr::summarize(total = n()) %>%
+  mutate(freq = total / sum(total) *100,
+         total_total = sum(total)) %>%
+  mutate(label = paste0(round(freq, 2), "% (", total, "/", total_total, ")")) %>%
+  pivot_wider(names_from = count, values_from = label, id_cols = Proteome.ID) %>%
+  left_join(metadata %>% select(Proteome.ID, Pathogen))
+
+write.csv(data_t, paste0(out_dir, "figure3d_datapoints.csv"))
+
+data_t <- run_calls_df %>%
+  group_by(Proteome.ID, query_seqname, target_seqname, run) %>%
+  dplyr::summarize(count = n()) %>% ungroup() %>%
+  mutate(count = count +11) %>%
+  mutate(count = cut(count, c(11, 12,13,14,15, 16,20, 30, 90))) %>%
+  group_by(Proteome.ID, count) %>%
+  dplyr::summarize(total_count = n()) %>%
+  group_by(Proteome.ID) %>%
+  mutate(count_freq = total_count / sum(total_count) * 100) %>%
+  left_join(metadata) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  group_by(Family_Viral_Zone, count) %>%
+  dplyr::summarize(count_freq = mean(count_freq)) %>%
+  pivot_wider(names_from = count, values_from = count_freq, id_cols = Family_Viral_Zone)
+
+write.csv(data_t, paste0(out_dir, "figure3d_family_datapoints.csv"))
+
 run_call_gg <- run_calls_df %>%
   group_by(Proteome.ID, query_seqname, target_seqname, run) %>%
   dplyr::summarize(count = n()) %>% ungroup() %>%
@@ -207,7 +275,7 @@ run_call_family_gg
 
 ## Final Panel Assembly
 
-### Main Panels B-C
+### Main Panels B-D
 
 ```{r}
 ggarrange(run_call_family_gg+
@@ -243,6 +311,9 @@ model_df <- out_protein_final_count_12mer %>%
   left_join(metadata) %>%
   mutate(smooth_curve = ifelse(Family_Viral_Zone %in% c("Herpesviridae", "Poxviridae"), Family_Viral_Zone, "Other")) %>%
   mutate(smooth_curve = factor(smooth_curve))
+
+write.csv(model_df %>% select(viral_id, Proteome.ID, Pathogen, smooth_curve, mean, percent_of_protein), paste0(out_dir, "Figure3e_datapoints.csv"))
+
 library(gamm4)
 formula_ready <- as.formula('mean ~ s(percent_of_protein, bs = "cr", by = "smooth_curve")')
 fit <- gam(data = model_df, formula = mean ~ s(percent_of_protein, bs = "cr", by = smooth_curve))
