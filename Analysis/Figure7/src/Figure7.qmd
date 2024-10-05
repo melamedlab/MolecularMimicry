@@ -1,0 +1,453 @@
+---
+title: "Figure7"
+format: html
+editor: visual
+---
+
+## Figure 7
+
+```{r}
+library(data.table)
+library(tidyverse)
+library(readxl)
+library(ggpubr)
+library(ggrepel)
+
+peptide_gene_mapping <- read_csv("../../Databases/peptide_gene_mapping.csv")
+
+AA_colors <-c("Pre&Post\nAuto-Antibody" = "#0ABAB5",
+              "IC Cluster\nAuto-Antibody" = "#e4eb6e",
+              "Post\nAuto-Antibody" = "#0A67BA",
+              "Pre\nAuto-Antibody" = "#B069EA",
+              "Control\nAuto-Antibody" = "#BA0A67",
+              "Non\nAuto-Antibody" = "darkgray")
+
+## List from Zamecnik et al (paper and github link below)
+## https://www.medrxiv.org/node/652357.external-links.html
+## https://github.com/UCSF-Wilson-Lab/MS_DoD_and_ORIGINS_study_data
+IC_cluster <- c("SRSF4_342020
+## B3G NT8_18711 ## Not in the library but reported in the manuscript?
+SRSF4_342019
+RIMS2_337979
+CLASRP_13379
+DENND4C_307092
+SRSF7_101254
+TRA2B_456817
+RIMS2_627827
+CLASRP_441187
+RIMS2_306096
+TRIO_395474
+SH3BP2_216602
+SRSF4_682211
+KRT75_287685
+NKTR_139361
+SRRM3_613856
+KRT75_287686
+SRRM3_558302
+PPIG_130031
+ZNF764_541112
+SRSF7_331013
+USP31_222214
+RBMY1B_64485
+TRA2B_456818
+NKTR_139362
+MAP3K12_274436
+SRRM3_613857
+ZRANB2_281628
+CLASRP_13378
+USP31_222213
+NKTR_139346
+NKTR_139345
+EXO1_90756
+CHERP_554789
+LOC100652901_49861
+SRSF4_682210
+SRSF1_550431
+MAP3K12_274862
+MAP3K12_274863
+C5orf60_596251
+CHERP_554788
+MAP3K12_274437
+SRSF1_550429
+SRSF7_331012")
+IC_cluster <- unlist(strsplit(IC_cluster,split  = "\n"))
+out_dir <- "../output/"
+```
+
+### Preparing EBV specific file (8mer)
+
+```{r}
+#| eval: false
+setwd("../../../epitope_alignment/Results/Phip_seq/Vasquez_8mer_3mis/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl("Epstein", files_to_read)]
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+files_completed <- list.files("/stor/work/Ehrlich_COVID19/Cole/Molecular_Mimicry/Analysis/8mer_annotated_phipseq/")
+files_to_read <- files_to_read[!gsub(".tsv.gz", "", files_to_read) %in% gsub(".csv.gz", "", files_completed)]
+files_to_read <- files_to_read[order(file.info(files_to_read)$size)]
+
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " ", Sys.time()))
+  active_data <- fread(active_file, sep = "\t", nThread = 12)
+  if(nrow(active_data) == 0){
+    print(paste0("Skipping ", active_file, " due to lack of data."))
+    next
+  }
+
+ active_data[, mismatches := mismatch_calling_fast(query, target), by = seq_len(nrow(active_data))]
+  
+  print(paste0("Data Merging ", Sys.time()))
+  
+  Sys.time()
+  fwrite(active_data, paste0("../../../../Analysis/8mer_annotated_phipseq/", gsub(".tsv", ".csv", active_file)), row.names = FALSE, compress = "gzip", nThread = 12)
+  rm(active_data, active_data_subset)
+  gc()
+}
+```
+
+```{r}
+#| eval: false
+ebv_mimicry <- fread(paste0("../../8mer_annotated_phipseq/Epstein-Barr_virus_UP000153037_8mer_3mis_hits.csv.gz"), nThread = 20)
+
+mimicry_model_matrix <- ebv_mimicry %>%
+    group_by(target_seqname, target_start) %>%
+    slice_min(mismatches) %>%
+    distinct(target_seqname, target_start, mismatches) %>%
+    group_by(target_seqname, mismatches) %>%
+    mutate(mismatches = factor(mismatches, c("0", "1", "2", "3"))) %>%
+    dplyr::summarize(counts = n()) %>%
+    mutate(target_seqname = gsub(",", "_", target_seqname)) %>%
+    full_join(peptide_gene_mapping %>% dplyr::rename("target_seqname" = "seq_id")) %>%
+    mutate(peptide_length = nchar(sequence), count = n()) %>%
+    mutate(freq = counts / (peptide_length - 7) *100) %>%
+    pivot_wider(id_cols = c(target_seqname, peptide_length), names_from = mismatches, values_from = freq, names_expand = T) %>%
+    dplyr::select(target_seqname,`0`, `1`, `2`, `3`)
+  mimicry_model_matrix[is.na(mimicry_model_matrix)] <- 0
+
+fwrite(mimicry_model_matrix, "../../Key_Data/EBV_phipseq_8mers.csv.gz",
+       nThread = 16)
+```
+
+### Load Phip-seq Data
+
+```{r}
+MS_phipseq <- fread("../../Databases/rpk_count_tables/dod_rpk_table.csv.gz", nThread = 8) %>% 
+  filter(!is.na(sequence)) %>%
+  mutate(MS070A_healthy_control_pre = as.numeric(MS070A_healthy_control_pre )) %>%
+  mutate(MS244A_healthy_control_post = as.numeric(MS244A_healthy_control_post )) %>%
+  mutate(MS117X_Case_post            = as.numeric(MS117X_Case_post            )) %>%
+  as.data.frame()
+
+MS_phipseq_meta <- as.data.frame(colnames(MS_phipseq)[-1:-4]) %>%
+  dplyr::rename("sample_name" = 1) %>%
+  mutate(timepoint = gsub(".*_", "", sample_name),
+         group = ifelse(grepl("Case", sample_name), "MS",
+                        ifelse(grepl("healthy_control", sample_name), "Control", "Beads"))) %>%
+  mutate(timepoint = ifelse(group == "Beads", NA, timepoint))
+
+
+IC_cluster2 <- MS_phipseq$peptide[match(IC_cluster, MS_phipseq$peptide_id)]
+names(IC_cluster2) <- IC_cluster
+```
+
+### Analysis
+
+```{r}
+### Calcualte CTRL Means for each timepoint
+control_pre <- MS_phipseq %>%
+  dplyr::select(contains(c("healthy_control_pre")))
+control_pre_means <- rowMeans(control_pre)
+
+control_post <- MS_phipseq %>%
+  dplyr::select(contains("healthy_control_post")) 
+control_post_means <- rowMeans(control_post)
+
+### Pre MS Diagnoses
+ms_pre <- MS_phipseq %>%
+  dplyr::select(contains("Case_pre"))
+rownames(ms_pre) <- rownames(MS_phipseq)
+ms_pre_FC <- ms_pre / (control_pre_means + 1)
+
+ms_pre_FC_mat <- as.matrix(ms_pre_FC)
+Auto_Abs_pre <- (ms_pre_FC_mat>=10)
+rownames(Auto_Abs_pre) <- MS_phipseq$peptide
+pre_df <- as.data.frame(rowSums(Auto_Abs_pre))
+rownames(pre_df) <-  MS_phipseq$peptide
+
+### Post MS Timepoint
+ms_post <- MS_phipseq %>%
+  dplyr::select(contains("Case_post"))
+rownames(ms_post) <- MS_phipseq$peptide
+ms_post_FC <- ms_post / (control_post_means + 1)
+ms_post_FC_mat <- as.matrix(ms_post_FC)
+rownames(ms_post_FC_mat)  <- MS_phipseq$peptide
+Auto_Abs_post <- (ms_post_FC_mat>=10) 
+rownames(Auto_Abs_post) <- MS_phipseq$peptide
+
+post_df <- as.data.frame(rowSums(Auto_Abs_post))
+rownames(post_df) <-  MS_phipseq$peptide
+post_df$peptide_id <- MS_phipseq$peptide_id
+```
+
+## Control Calculations
+
+```{r}
+#| eval: false
+## To calculate the control FC, we calculate using a leave one out approach to
+## actively exclude the evaluated sample from the control mean used for the calculation
+## Pre Controls
+mean_matrix_pre <- matrix(NA, nrow = nrow(control_pre), ncol = ncol(control_pre))
+for(i in 1:ncol(control_pre)){
+  mean_matrix_pre[,i] <- rowMeans(control_pre[,-i])
+}
+ctl_pre_FC <- control_pre / (mean_matrix_pre + 1)
+ctl_pre_FC_b <- (ctl_pre_FC>=10)
+ctl_pre_df <- as.data.frame(rowSums(ctl_pre_FC_b))
+rownames(ctl_pre_df) <-  MS_phipseq$peptide
+
+## Post Controls
+mean_matrix_post <- matrix(NA, nrow = nrow(control_post), ncol = ncol(control_post))
+for(i in 1:ncol(control_post)){
+  mean_matrix_post[,i] <- rowMeans(control_post[,-i])
+}
+ctl_post_FC <- control_post / (mean_matrix_post + 1)
+ctl_post_FC_b <- (ctl_post_FC>=10)
+rownames(ctl_post_FC_b) <-  MS_phipseq$peptide
+ctl_post_df <- as.data.frame(rowSums(ctl_post_FC_b))
+rownames(ctl_post_df) <-  MS_phipseq$peptide
+
+
+ctl_df <- ctl_pre_df %>%
+  rownames_to_column("seq_id") %>%
+  left_join(ctl_post_df %>% rownames_to_column("seq_id")) %>%
+  dplyr::rename("Pre_CTL_Count" = 2, "Post_CTL_Count" = 3)
+write.csv(ctl_df, paste0("ctl_count_aab_leave_one_out.csv"), row.names = F)
+```
+
+## Panel A
+
+```{r, fig.width = 6, fig.height = 3}
+controls_df <- fread("ctl_count_aab_leave_one_out.csv.gz") %>%
+  as.data.frame() %>%
+  filter(Pre_CTL_Count > 0 | Post_CTL_Count > 0)
+
+mimicry_model_matrix <- fread("../../Key_Data/EBV_phipseq_8mers.csv.gz")
+colnames(mimicry_model_matrix) <- as.character(mimicry_model_matrix[1,])
+mimicry_model_matrix <- mimicry_model_matrix[-1,]
+mimicry_model_matrix[is.na(mimicry_model_matrix)] <- 0
+
+pre_and_post <- post_df %>%
+  dplyr::rename("post_MS_autoAbs" = 1) %>%
+  rownames_to_column("target_seqname") %>%
+  left_join(pre_df %>%
+  dplyr::rename("pre_MS_autoAbs" = 1) %>%
+  rownames_to_column("target_seqname")) %>%
+  left_join(mimicry_model_matrix) %>%
+  left_join(peptide_gene_mapping %>% dplyr::select(seq_id, gene, index), by = c("target_seqname" = "seq_id")) %>%
+  mutate(IC_cluster = ifelse(target_seqname%in% IC_cluster2, "IC Cluster", "Non-IC Cluster"))
+
+
+pre_and_post$`3` <- pre_and_post$`3` + pre_and_post$`2` + pre_and_post$`1` + pre_and_post$`0`
+pre_and_post$`2` <- pre_and_post$`2` + pre_and_post$`1` + pre_and_post$`0`
+pre_and_post$`1` <- pre_and_post$`1` + pre_and_post$`0`
+concat_data <- data.frame()
+for(AutoAntibody_cutoff in 1:15){
+tmp.data <- pre_and_post %>%
+  pivot_longer(cols = c("0", "1",
+                                      "2","3")) %>%
+  mutate(value = ifelse(value > 0, "Mimic", "Non-mimic")) %>%
+  mutate(MS_autoAbs_call = ifelse(pre_MS_autoAbs >= AutoAntibody_cutoff, ifelse(post_MS_autoAbs >=AutoAntibody_cutoff, "Pre&Post\nAuto-Antibody", "Pre\nAuto-Antibody"), ifelse(post_MS_autoAbs>=AutoAntibody_cutoff, "Post\nAuto-Antibody", "Non\nAuto-Antibody"))) %>%
+   mutate(MS_autoAbs_call = ifelse(target_seqname %in% controls_df$seq_id, "Control\nAuto-Antibody", MS_autoAbs_call)) %>%
+  mutate(MS_autoAbs_call = ifelse(target_seqname %in% pre_and_post$target_seqname[pre_and_post$IC_cluster == "IC Cluster"],
+                                   "IC Cluster\nAuto-Antibody", MS_autoAbs_call)) %>%
+  group_by(MS_autoAbs_call, name, value) %>%
+  dplyr::summarize(count = n()) %>%
+  pivot_wider(names_from = MS_autoAbs_call, values_from = count)
+
+## Add the pre and post antibodies back into the pre and post individual categories
+if("Pre\nAuto-Antibody" %in% colnames(tmp.data) &  "Pre&Post\nAuto-Antibody" %in% colnames(tmp.data) ){
+  tmp.data$`Pre\nAuto-Antibody` <- tmp.data$`Pre\nAuto-Antibody` + tmp.data$`Pre&Post\nAuto-Antibody`
+} else if ("Pre&Post\nAuto-Antibody" %in% colnames(tmp.data)){
+  tmp.data$`Pre\nAuto-Antibody` <- tmp.data$`Pre&Post\nAuto-Antibody`
+}
+
+if("Post\nAuto-Antibody" %in% colnames(tmp.data) &  "Pre&Post\nAuto-Antibody" %in% colnames(tmp.data)){
+  tmp.data$`Post\nAuto-Antibody` <- tmp.data$`Post\nAuto-Antibody` + tmp.data$`Pre&Post\nAuto-Antibody`
+} else if ("Pre&Post\nAuto-Antibody" %in% colnames(tmp.data)){
+  tmp.data$`Post\nAuto-Antibody` <- tmp.data$`Post&Post\nAuto-Antibody`
+}
+
+tmp.data <- tmp.data %>%
+  pivot_longer(cols = c(-name, -value), names_to = "MS_autoAbs_call", values_to = "count") %>%
+  group_by(MS_autoAbs_call, name) %>%
+  mutate(count = ifelse(is.na(count), 0, count)) %>%
+  mutate(total = sum(count)) %>%
+  mutate(freq = count / sum(count) *100) %>%
+  filter(value == "Mimic") %>%
+  mutate(name = ifelse(name == 0, as.character(name), paste0("≤", name))) %>%
+  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
+  mutate(MS_autoAbs_call = factor(MS_autoAbs_call)) %>% 
+  ungroup() %>%
+  complete(MS_autoAbs_call, name, value) %>%
+  mutate(count = ifelse(is.na(count), 0, count),
+         freq = ifelse(is.na(freq), 0, freq))
+tmp.data$frequency <- AutoAntibody_cutoff
+concat_data <- rbind.data.frame(concat_data, tmp.data)
+}
+
+aux_lines <- concat_data %>%
+  filter(frequency == 1) %>%
+  filter(!MS_autoAbs_call %in% c("Pre\nAuto-Antibody", "Post\nAuto-Antibody","Pre&Post\nAuto-Antibody")) %>%
+  filter(name %in% c("≤1", "≤2")) %>%
+  distinct(MS_autoAbs_call, name, freq)
+
+write.csv(concat_data %>%
+  filter(MS_autoAbs_call %in% c("Pre\nAuto-Antibody", "Post\nAuto-Antibody","Pre&Post\nAuto-Antibody")) %>%
+ filter(name %in% c("≤1", "≤2")) %>%
+  mutate(freq_percent = ifelse(MS_autoAbs_call %in% c("Post\nAuto-Antibody","Pre&Post\nAuto-Antibody"),
+                               frequency/248*100, frequency/250*100)), paste0(out_dir, "Figure7a_datapoints.csv"))
+
+concat_data %>%
+  filter(MS_autoAbs_call %in% c("Pre\nAuto-Antibody", "Post\nAuto-Antibody","Pre&Post\nAuto-Antibody")) %>%
+ filter(name %in% c("≤1", "≤2")) %>%
+  mutate(freq_percent = ifelse(MS_autoAbs_call %in% c("Post\nAuto-Antibody","Pre&Post\nAuto-Antibody"),
+                               frequency/248*100, frequency/250*100)) %>%
+  ggplot(aes(x=freq_percent, y= freq)) +
+  geom_line(aes(color = MS_autoAbs_call)) +
+  geom_point(aes(color = MS_autoAbs_call)) +
+  geom_hline(data = aux_lines, aes(yintercept = freq, color = MS_autoAbs_call),
+             linetype = "dashed") +
+  #geom_text_repel(aes(label = count, color = MS_autoAbs_call)) +
+  facet_wrap(~name, scales = "free") +
+  theme_classic() +
+  scale_color_manual(values = AA_colors) +
+  ylab("Percent of Auto-Antibodies with\nan EBV matching 8mer (%)") +
+  xlab("Percent of MS patients positive for auto-antibody (%)") +
+  theme(
+    axis.text = element_text(color="black"),
+    axis.ticks = element_line(color = "black")
+  )
+ggsave(paste0(out_dir, "Figure7A.pdf"), width = 6, height = 3)
+
+```
+
+## Panel B
+
+```{r, fig.height = 14, fig.width = 10}
+
+pre_and_post <- post_df %>%
+  dplyr::rename("post_MS_autoAbs" = 1) %>%
+  rownames_to_column("target_seqname") %>%
+  left_join(pre_df %>%
+  dplyr::rename("pre_MS_autoAbs" = 1) %>%
+  rownames_to_column("target_seqname")) %>%
+  #filter(!target_seqname %in% controls_df$seq_id) %>%
+  left_join(mimicry_model_matrix) %>%
+  left_join(MS_phipseq %>% dplyr::select(peptide, gene), by = c("target_seqname" = "peptide")) %>%
+  mutate(IC_cluster = ifelse(target_seqname%in% IC_cluster2, "IC Cluster", "Non-IC Cluster")) %>%
+  left_join(controls_df, by = c("target_seqname" = "seq_id"))
+
+
+graph_data <- pre_and_post %>%
+  filter(IC_cluster == "Non-IC Cluster") %>%
+  filter(is.na(Pre_CTL_Count) & is.na(Post_CTL_Count) ) %>%
+  slice_max(post_MS_autoAbs,n = 20) %>%
+  filter(post_MS_autoAbs >= 5 | pre_MS_autoAbs >=5) %>%
+  rowwise() %>%
+  mutate(max = max(post_MS_autoAbs, pre_MS_autoAbs)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c(post_MS_autoAbs, pre_MS_autoAbs)) %>%
+  mutate(value = ifelse(name == "post_MS_autoAbs", value / 248*100, value / 250*100)) 
+
+write.csv(graph_data, paste0(out_dir, "Figure7b_datapoints.csv"))
+
+gg1 <- graph_data %>%
+  ggplot(aes(y=value, x=fct_reorder(peptide_id, max), fill = name)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_classic() +
+  ylab("Percent of participants (%)") +
+  xlab("Peptide") +
+  coord_flip() +
+  scale_fill_manual(values = c("#0A67BA", "#B069EA"))+
+  theme(
+    axis.text = element_text(color="black"),
+    axis.ticks = element_line(color = "black")
+  )
+gg1
+
+library(showtext)
+showtext_auto()
+font_add_google("Roboto Mono", "Roboto Mono")
+ebv_mimicry <- fread(paste0("../../8mer_annotated_phipseq/Epstein-Barr_virus_UP000153037_8mer_3mis_hits.csv.gz"), nThread = 20)
+
+subsampled_mimicry <- ebv_mimicry %>%
+  filter(target_seqname %in% MS_phipseq$peptide[match(graph_data$peptide_id, MS_phipseq$peptide_id)]) %>%
+  filter(mismatches <= 2) %>%
+  distinct(target_seqname, target_start, mismatches) %>%
+  left_join(MS_phipseq %>% distinct(peptide, peptide_id), by = c("target_seqname"="peptide")) %>%
+  as.data.frame()
+
+full_position_df <- data.frame()
+for(i in 1:nrow(subsampled_mimicry)){
+  active_protein <- subsampled_mimicry[i, 4]
+  active_position <- subsampled_mimicry[i, 2]
+  tmp <- data.frame(peptide_id = rep(active_protein, 8),
+                    mismatches = rep(subsampled_mimicry[i, 3], 8),
+                    name = active_position:(active_position+7))
+  full_position_df <- rbind.data.frame(full_position_df, tmp)
+}
+
+gg2 <- MS_phipseq %>%
+  filter(peptide_id %in% graph_data$peptide_id) %>%
+  distinct(gene, peptide_id, sequence) %>%
+  separate(sequence,sep = "", as.character(c("empty", 1:49))) %>%
+  select(-empty) %>%
+  pivot_longer(cols = c(-gene, -peptide_id)) %>%
+  mutate(name = as.numeric(name)) %>%
+  left_join(full_position_df %>%
+              group_by(peptide_id, name) %>%
+              slice_min(mismatches) %>%
+              distinct(), by = c("name", "peptide_id")) %>%
+  mutate(mismatches = ifelse(is.na(mismatches), ">2", mismatches)) %>%
+  ggplot(aes(x=name, y= peptide_id)) +
+  geom_tile(fill = NA, color = NA) +
+  geom_text(aes(label = value, color = mismatches), size = 2.5, family = "Roboto Mono") +
+  theme_void() +
+  scale_color_manual(values = c("1" = "#FF00C3",
+                                 "2" = "#FF0000", ">2" = "black"))+
+  theme(
+    axis.text.x = element_text(color="black", size = 5)
+  )
+gg2
+
+library(aplot)
+gg1 %>% insert_left(gg2, width = 3)
+ggsave(paste0(out_dir, "Figure7B.pdf"), width =8, height = 6)
+```
+
+## Supplemental Material
+
+### Figure S8
+
+```{r, fig.width = 8, fig.height =8}
+library(ComplexHeatmap)
+library(circlize)
+col_fun = colorRamp2(c(0,10, 100), c("white", "orange", "red"))
+
+top_new_AutoAbs <- graph_data$peptide_id
+ms_pre_FC <- as.data.frame(ms_pre_FC)
+rownames(ms_pre_FC) <- MS_phipseq$peptide_id
+heat_df <- cbind.data.frame(ms_pre_FC, ms_post_FC)
+heat_df_pre <- heat_df[rownames(heat_df) %in% c(top_new_AutoAbs, IC_cluster),]
+
+write.csv(heat_df_pre, paste0(out_dir, "FigureS8_datapoints.csv"))
+
+hm <- Heatmap((data.matrix(heat_df_pre)), cluster_rows = F, cluster_columns = T,show_column_dend = F, 
+        show_column_names = F, col = col_fun, border = T, name = "FC over\nHealthy Controls",
+        row_split = ifelse(rownames(heat_df_pre) %in% IC_cluster, "IC Cluster", "Other MS Associated Auto-Antibodies"),
+        column_split = ifelse(colnames(heat_df_pre) %in% colnames(ms_pre), "Pre-Diagnosis", "Post-Diagnosis"))
+hm
+pdf(file=paste0(out_dir, "FigureS8.pdf"), width = 8, height = 11)
+ draw(hm)
+ dev.off()
+```
