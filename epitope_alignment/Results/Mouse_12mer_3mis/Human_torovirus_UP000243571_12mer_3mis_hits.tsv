@@ -1,0 +1,4 @@
+query	query_seqname	query_start	target_seqname	target_start	target
+INNVSVSIQFSL	tr|A0A0K0KAR3|A0A0K0KAR3_HUTV Sialate O-acetylesterase (Fragment) OS=Human torovirus OX=67605 PE=3 SV=1	183	tr|Q7TR35|Q7TR35_MOUSE Olfactory receptor OS=Mus musculus OX=10090 GN=Or12e13 PE=3 SV=1	9	INNVSTVIQFVL
+KYHLFILQGVAD	tr|A0A0K0KBV7|A0A0K0KBV7_HUTV Membrane protein (Fragment) OS=Human torovirus OX=67605 PE=4 SV=1	5	tr|A0A571BDQ7|A0A571BDQ7_MOUSE Cilia and flagella associated protein 92 OS=Mus musculus OX=10090 GN=Cfap92 PE=4 SV=1	717	KIHLFILEGLAD
+KYHLFILQGVAD	tr|A0A0K0KBV7|A0A0K0KBV7_HUTV Membrane protein (Fragment) OS=Human torovirus OX=67605 PE=4 SV=1	5	tr|A0A571BED7|A0A571BED7_MOUSE Cilia and flagella associated protein 92 (Fragment) OS=Mus musculus OX=10090 GN=Cfap92 PE=4 SV=1	108	KIHLFILEGLAD
