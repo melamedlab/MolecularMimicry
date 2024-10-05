@@ -800,7 +800,7 @@ mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.nu
 mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((8-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((8-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 
-xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mers", col.names = TRUE, row.names = TRUE)
+xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "8mers", col.names = TRUE, row.names = TRUE)
 
 testing_data <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
@@ -811,7 +811,7 @@ wt <- compare_means(data = testing_data, formula = value ~ Chronic.or.Acute,
               group.by = c("name"), method = "wilcox.test") %>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-xlsx::write.xlsx(wt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "8mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 
 panel_d <- mismatch_data_meta %>%
@@ -841,6 +841,7 @@ panel_d <- mismatch_data_meta %>%
            label = wt$p.adj.star, size = 4, lineheight = 0.5) +
   theme(legend.position = "none")
 panel_d
+write.csv(panel_d$data, paste0(out_dir, "FigureS1d_datapoints.csv"))
 ```
 
 ## Panel E
@@ -895,10 +896,10 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA)))) %>%
   mutate(group1 = "Herpesviridae")
-xlsx::write.xlsx(kt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.p, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.h, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.hp, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "8mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(kt, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "8mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.p, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "8mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.h, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "8mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.hp, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "8mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 panel_e <- mismatch_data_meta %>%
   #mutate(Family = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Family_Viral_Zone)) %>%
@@ -932,6 +933,7 @@ panel_e <- mismatch_data_meta %>%
            color = Family_palette_v2["Poxviridae"])  +
   theme(legend.position = "none")
 panel_e
+write.csv(panel_e$data, paste0(out_dir, "FigureS1e_datapoints.csv"))
 ```
 
 ## Panel F
@@ -966,7 +968,7 @@ mismatch_data_meta$`1_corrected` <- as.numeric(mismatch_data_meta$`1`) /  (as.nu
 mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((12-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((12-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 
-xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mers", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "12mers", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 testing_data <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
@@ -977,7 +979,7 @@ wt <- compare_means(data = testing_data, formula = value ~ Chronic.or.Acute,
               group.by = c("name"), method = "wilcox.test") %>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-xlsx::write.xlsx(wt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "12mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 
 panel_f <- mismatch_data_meta %>%
@@ -1009,6 +1011,7 @@ panel_f <- mismatch_data_meta %>%
         legend.key.width= unit(0.4, 'cm'),
         legend.position = "none")
 panel_f
+write.csv(panel_f$data, paste0(out_dir, "FigureS1f_datapoints.csv"))
 ```
 
 ## Panel G
@@ -1063,10 +1066,10 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA)))) %>%
   mutate(group1 = "Herpesviridae")
-xlsx::write.xlsx(kt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.p, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.h, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.hp, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "12mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(kt, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "12mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.p, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "12mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.h, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "12mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.hp, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "12mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 panel_g <- mismatch_data_meta %>%
   #mutate(Family = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Family_Viral_Zone)) %>%
@@ -1104,6 +1107,7 @@ panel_g <- mismatch_data_meta %>%
   scale_y_continuous(trans = log10_trans(),
      breaks = trans_breaks("log10", function(x) round(10^x, 3)))
 panel_g
+write.csv(panel_g$data, paste0(out_dir, "FigureS1g_datapoints.csv"))
 ```
 
 ## Panel H
@@ -1138,7 +1142,7 @@ mismatch_data_meta$`2_corrected` <- as.numeric(mismatch_data_meta$`2`) /  (as.nu
 mismatch_data_meta$`3_corrected` <- as.numeric(mismatch_data_meta$`3`) /  (as.numeric(mismatch_data_meta$`Proteome Length`) -((18-1)*as.numeric(mismatch_data_meta$`Number of Proteins`)))*100
 
 
-xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mers", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(mismatch_data_meta, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "18mers", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 testing_data <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
@@ -1149,7 +1153,7 @@ wt <- compare_means(data = testing_data, formula = value ~ Chronic.or.Acute,
               group.by = c("name"), method = "wilcox.test") %>%
   mutate(p.adj.star = ifelse(p.adj <= 0.001, "*\n*\n*", ifelse(p.adj <= 0.01, "*\n*",
                                                         ifelse(p.adj<=0.05, "*", NA))))
-xlsx::write.xlsx(wt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "18mer_Chronic_vs_Acute_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 
 panel_h <- mismatch_data_meta %>%
   filter(grepl("Virus", Taxonomic.lineage)) %>%
@@ -1176,6 +1180,7 @@ panel_h <- mismatch_data_meta %>%
            label = wt$p.adj.star, size = 4, lineheight = 0.5) +
   theme(legend.position = "none")
 panel_h
+write.csv(panel_h$data, paste0(out_dir, "FigureS1h_datapoints.csv"))
 ```
 
 ## Panel I
@@ -1231,10 +1236,10 @@ wt.hp <- compare_means(data = testing_data %>% filter(Family %in% c("Herpesvirid
                                                         ifelse(p.adj<=0.05, "*", NA)))) %>%
   mutate(group1 = "Herpesviridae")
 
-xlsx::write.xlsx(kt, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.p, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.h, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
-xlsx::write.xlsx(wt.hp, paste0(out_dir, "FigureS1_data.xlsx"), sheetName = "18mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(kt, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "18mer_Viral_Family_Kruskal", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.p, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "18mer_Pox_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.h, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "18mer_Herpes_vs_Others_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
+xlsx::write.xlsx(wt.hp, paste0(out_dir, "SupplementalData3.xlsx"), sheetName = "18mer_Herpes_vs_Pox_Wilcox", col.names = TRUE, row.names = TRUE, append = TRUE)
 panel_i <- mismatch_data_meta %>%
   #mutate(Family = ifelse(grepl("Bacteria", Taxonomic.lineage), "Bacteria", Family_Viral_Zone)) %>%
   filter(!is.na(Family_Viral_Zone)) %>%
@@ -1264,20 +1269,9 @@ panel_i <- mismatch_data_meta %>%
   annotate("text", x= c(1.1,2.1,3.1,4.1), y= c(0.03, 0.05, 0.075, 0.1),
            label = wt.p$p.adj.star, size = 4, lineheight = 0.5,
            color = Family_palette_v2["Poxviridae"]) +
-  # geom_errorbar(inherit.aes = FALSE, aes(x=0.85, ymin = 0.018380776, ymax = 0.075685311), color = "#545252",
-  #               size = 0.3, width = 0.1) +
-  # geom_errorbar(inherit.aes = FALSE, aes(x=1.85, ymin = 0.051403280, ymax = 0.182375884), color = "#545252",
-  #               size = 0.3, width = 0.1) +
-  # geom_errorbar(inherit.aes = FALSE, aes(x=2.85, ymin = 0.085500719, ymax = 0.345138406), color = "#545252",
-  #               size = 0.3, width = 0.1) +
-  # geom_errorbar(inherit.aes = FALSE, aes(x=3.85, ymin = 0.145041702, ymax = 0.536979034), color = "#545252",
-  #               size = 0.3, width = 0.1) +
-  # annotate("text", x= c(0.75, 1.8, 2.8, 3.8), y= c(0.04557349, 0.1136466,
-  #                                                  0.2057032, 0.3237431),
-  #          label = wt.hp$p.adj.star, size = 4, lineheight = 0.5,
-  #          color = "#545252") +
   theme(legend.position = "none")
 panel_i
+write.csv(panel_i$data, paste0(out_dir, "FigureS1i_datapoints.csv"))
 ```
 
 ## Panel Assembly

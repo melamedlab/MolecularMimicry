@@ -1,0 +1,206 @@
+---
+title: "Mouse_vs_Human"
+format: html
+editor: visual
+---
+
+## Mouse vs Human
+
+```{r}
+library(Biostrings)
+library(tidyverse)
+library(data.table)
+library(dtplyr)
+library(plyr)
+library(readxl)
+library(readr)
+library(RColorBrewer)
+library(openxlsx)
+library(ggbeeswarm)
+library(ggpubr)
+library(scales)
+library(wesanderson)
+library(aplot)
+library(cowplot)
+library(biomaRt)
+library(treeio)
+library(ggtree)
+library(ade4)
+library(aplot)
+library(ggbeeswarm)
+
+source("../../Utilities.R")
+
+meta_path <- "../../Metadata/"
+metadata <- openxlsx::read.xlsx(paste0(meta_path, "Final_Cohort_Metadata_v5.xlsx"), sheet = 1)
+
+duplicated_proteins <- read_csv(paste0(meta_path, "duplicated_proteins.csv"))
+out_dir <- "../output/"
+```
+
+## Calculate Mouse corrective size
+
+```{r}
+
+mouse_proteome <- seqinr::read.fasta("../../../epitope_alignment/Mouse_Proteome/uniprotkb_proteome_UP000000589_2024_08_01.fasta.gz")
+human_proteome <- seqinr::read.fasta("../../../epitope_alignment/Human_Proteome/homo_sapiens_proteome.fasta.gz")
+
+mouse_total_length <- sum(unlist(lapply(mouse_proteome, length)))
+human_total_length <- sum(unlist(lapply(human_proteome, length)))
+
+total_mouse_kmers <- mouse_total_length - ((12-1) * length(mouse_proteome))
+total_human_kmers <- human_total_length - ((12-1) * length(human_proteome))
+
+```
+
+## Calculate Ratio
+
+### Human
+
+```{r}
+out_final_human <- fread("../../Key_Data/12mer_proteome_everything_elmfilter_regex.csv")
+```
+
+### Mouse
+
+```{r data_annotate_12mer}
+#| eval: false
+mode = "tight_elm"
+kmer_length = 12
+elm_instance_df <- fread("../../Key_Data/elm_labeled_viral_sequences_v2.csv.gz")
+setwd("../../../epitope_alignment/Results/Mouse_12mer_3mis/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+files_completed <- list.files("../../../Analysis/12mer_annotated_mouse/")
+
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID, collapse = "|"), files_to_read)]
+
+out_final <- data.frame(mismatches = c("0", "1", "2", "3"))
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " ", Sys.time()))
+  active_data <- fread(active_file, sep = "\t", nThread = 12)
+  if(nrow(active_data) == 0){
+    out_final[,gsub("_12mer_3mis_hits.csv.gz", "", active_file)] <- c(0,0,0,0)
+  }
+
+ active_data[, uniprot := id_split_fast(target_seqname), by = seq_len(nrow(active_data))]
+ active_data[, viral_id := id_split_fast(query_seqname), by = seq_len(nrow(active_data))]
+ active_data[, mismatches := mismatch_calling_fast(query, target), by = seq_len(nrow(active_data))]
+  
+ 
+ active_data <- active_data  %>%
+    ## Remove duplicated pathogen proteins identified in 
+    ## ../../Scripts/Duplicate_Protein_Screen.R
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) 
+ 
+ if(mode == "tight_elm"){
+    active_data <- active_data %>%
+      mutate(query_end = query_start + (kmer_length-1)) %>%
+      left_join(elm_instance_df %>% distinct(viral_protein, start, end, Regex) %>%
+                  mutate(viral_protein = gsub(">", "", viral_protein)),
+                by = c("query_seqname" = "viral_protein")) %>%
+      mutate(in_elm = ((query_start >= start & query_start <= end) | (query_end >= start & query_end <= end))) %>%
+      group_by(query, query_seqname, query_start, mismatches) %>%
+      slice_max(in_elm) %>%
+      distinct(query, query_seqname, query_start, mismatches, in_elm) %>%
+      filter(!in_elm)
+ } 
+ 
+  out <- as.data.frame(table(active_data$mismatches))
+  if(nrow(out) == 0){out <- data.frame(mismatches = c(0,1,2,3), V2 = c(0,0,0,0))}
+  colnames(out) <- c("mismatches", gsub("_12mer_3mis_hits.csv.gz", "", active_file))
+ out_final <- merge(out_final, out, by = "mismatches", all.x = T)
+}
+
+out_final_mouse <- out_final
+write.csv(out_final_mouse, paste0(out_dir, "mouse_12mer_data.csv"))
+```
+
+### Panel S1J Assembly
+
+```{r, fig.width = 4, fig.height = 3}
+out_final_mouse <- read_csv(paste0(out_dir, "mouse_12mer_data.csv"))[,-1]
+mouse_ready <- as.data.frame(t(out_final_mouse))
+mouse_ready <- mouse_ready[-1,]
+colnames(mouse_ready) <- c("0", "1", "2", "3")
+mouse_ready$`0` <- as.numeric(mouse_ready$`0`)
+mouse_ready$`1` <- as.numeric(mouse_ready$`1`)
+mouse_ready$`2` <- as.numeric(mouse_ready$`2`)
+mouse_ready$`3` <- as.numeric(mouse_ready$`3`)
+mouse_ready[is.na(mouse_ready)] <- 0
+rownames(mouse_ready) <- gsub("_12mer_3mis_hits.tsv", "", rownames(mouse_ready))
+mouse_ready2 <- mouse_ready %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup()
+rownames(mouse_ready2) <- rownames(mouse_ready)
+
+human_ready <- as.data.frame(t(out_final_human))
+human_ready <- human_ready[-1:-2,]
+colnames(human_ready) <- c("0", "1", "2", "3", "Number of Proteins", "Proteome Length")
+human_ready$`0` <- as.numeric(human_ready$`0`)
+human_ready$`1` <- as.numeric(human_ready$`1`)
+human_ready$`2` <- as.numeric(human_ready$`2`)
+human_ready$`3` <- as.numeric(human_ready$`3`)
+human_ready$`Number of Proteins` <- as.numeric(human_ready$`Number of Proteins`)
+human_ready$`Proteome Length` <- as.numeric(human_ready$`Proteome Length`)
+human_ready[is.na(human_ready)] <- 0
+human_ready2 <- human_ready %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup()
+rownames(human_ready2) <- rownames(human_ready)
+
+all_together <- human_ready2 %>%
+  rownames_to_column("virus") %>%
+  left_join(mouse_ready2 %>%
+  rownames_to_column("virus"), by = "virus", suffix = c(".human", ".mouse"))
+corrective_factor <- total_mouse_kmers / total_human_kmers
+
+test <- all_together %>%
+  mutate(`0.mouse` = `0.mouse` * corrective_factor,
+         `1.mouse` = `1.mouse` * corrective_factor,
+         `2.mouse` = `2.mouse` * corrective_factor,
+         `3.mouse` = `3.mouse` * corrective_factor) %>%
+  ungroup() %>%
+  rowwise() %>%
+  mutate(`0.ratio` = (`0.human` + 10) / (`0.mouse` + 10),
+         `1.ratio` = (`1.human` + 10) / (`1.mouse` + 10),
+         `2.ratio` = (`2.human` + 10) / (`2.mouse` + 10),
+         `3.ratio` = (`3.human` + 10) / (`3.mouse` + 10))
+
+panel_S1j <- test %>%
+  mutate(Proteome.ID = gsub(".*_UP", "UP", virus)) %>%
+  left_join(metadata) %>%
+  filter(!is.na(Family_Viral_Zone)) %>%
+  mutate(Family = Family_Viral_Zone) %>%
+  pivot_longer(cols=paste0(c(0,1,2,3), (".ratio"))) %>%
+  group_by(Family, name) %>%
+  mutate(value = ifelse(is.na(value), 0, value)) %>%
+  dplyr::summarize(mean_value = mean(value), count = n(), sd = sd(value)) %>%
+  filter(Family %in% names(Family_palette_v2)) %>%
+  mutate(value_stderr = sd/sqrt(count)) %>%
+  mutate(name = gsub(".ratio", "", name)) %>%
+  mutate(name =ifelse(name != "0",  paste0("≤", name), name)) %>%
+  mutate(name = factor(name, c("0", "≤1", "≤2", "≤3"))) %>%
+  mutate(mean_value = ifelse(mean_value == 0, 1E-3, mean_value)) %>%
+  ggplot(aes(x=name, y=mean_value, color = `Family`)) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+    geom_point() +
+    geom_line(aes(group = `Family`)) +
+    theme_classic() +
+    geom_errorbar(aes(ymin=mean_value-value_stderr, ymax=mean_value+value_stderr, position=name), width=.1)+
+    xlab("Number of mismatches") +
+  scale_color_manual(values =Family_palette_v2) +
+  ylab("Human to Mouse Ratio") +
+  theme(legend.key.height= unit(0.4, 'cm'),
+        legend.key.width= unit(0.4, 'cm'))
+panel_S1j
+ggsave(paste0(out_dir, "FigureS1J.pdf"), width = 4, height = 3)
+```

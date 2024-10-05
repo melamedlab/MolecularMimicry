@@ -2,7 +2,7 @@
 library(stringr)
 library(seqinr)
 
-viral.files <- list.files("/stor/work/Ehrlich_COVID19/Cole/Molecular_Mimicry/epitope_alignment/Viral_Proteomes/Complete_Final_Set_easy")
+viral.files <- list.files("./Viral_Proteomes/Complete_Final_Set_easy")
 viral.files <-viral.files[grepl("virus", viral.files)]
 
 hydrophobic <- rep("1", 5); names(hydrophobic) <- c("A", "V", "L", "I", "M")
@@ -17,9 +17,9 @@ replace_with <- c(hydrophobic, hydrophilic, positive, negative, aromatic)
 ## Note for the 30 permutations, we keep the active_viral_base unedited so we don't keep rereading it in
 for(active_file in viral.files){
   active_viral_base <-
-    read.fasta(paste0("/stor/work/Ehrlich_COVID19/Cole/Molecular_Mimicry/epitope_alignment/Viral_Proteomes/Complete_Final_Set_easy/", active_file),
+    read.fasta(paste0("./Viral_Proteomes/Complete_Final_Set_easy/", active_file),
                seqtype = "AA")
-  dir.create(paste0("/stor/work/Ehrlich_COVID19/Cole/Molecular_Mimicry/epitope_alignment/Viral_Proteomes/Permutation_Experiment_AAClass/",
+  dir.create(paste0("./Viral_Proteomes/Permutation_Experiment_AAClass/",
                     gsub(".fasta.gz", "", active_file)), showWarnings = FALSE)
   ## Run the permutation 30 times
   for(round_i in 1:30){
@@ -36,7 +36,7 @@ for(active_file in viral.files){
     }
     ## Save the object, indicating the permutation number in the file name
     write.fasta(active_viral_base_modded, names = names(active_viral_base_modded),
-                file.out = paste0("/stor/work/Ehrlich_COVID19/Cole/Molecular_Mimicry/epitope_alignment/Viral_Proteomes/Permutation_Experiment_AAClass/",
+                file.out = paste0("./Viral_Proteomes/Permutation_Experiment_AAClass/",
                                   gsub(".fasta.gz", "", active_file),
                                   "/AAClass_Scramble_",  gsub(".fasta.gz", "", active_file), "-",round_i ,".fasta.gz" ))
   }
