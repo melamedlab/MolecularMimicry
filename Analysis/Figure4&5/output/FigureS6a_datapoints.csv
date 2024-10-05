@@ -1,0 +1,595 @@
+"","Proteome.ID","Pathogen","chromosome_name","mismatches","FC"
+"1","UP000000344","Vaccinia virus","Auto","≤1 mismatches",141.666666666667
+"2","UP000000344","Vaccinia virus","Auto","≤2 mismatches",276.666666666667
+"3","UP000000344","Vaccinia virus","Auto","≤3 mismatches",753
+"4","UP000000344","Vaccinia virus","X","≤1 mismatches",1
+"5","UP000000344","Vaccinia virus","X","≤2 mismatches",5.66666666666667
+"6","UP000000344","Vaccinia virus","X","≤3 mismatches",17.6666666666667
+"7","UP000000344","Vaccinia virus","Y","≤1 mismatches",1
+"8","UP000000344","Vaccinia virus","Y","≤2 mismatches",1
+"9","UP000000344","Vaccinia virus","Y","≤3 mismatches",1.33333333333333
+"10","UP000000354","Severe acute respiratory syndrome coronavirus (SARS-CoV)","Auto","≤1 mismatches",1
+"11","UP000000354","Severe acute respiratory syndrome coronavirus (SARS-CoV)","Auto","≤2 mismatches",9.33333333333333
+"12","UP000000354","Severe acute respiratory syndrome coronavirus (SARS-CoV)","Auto","≤3 mismatches",117
+"13","UP000000354","Severe acute respiratory syndrome coronavirus (SARS-CoV)","X","≤1 mismatches",1
+"14","UP000000354","Severe acute respiratory syndrome coronavirus (SARS-CoV)","X","≤2 mismatches",6.66666666666667
+"15","UP000000354","Severe acute respiratory syndrome coronavirus (SARS-CoV)","X","≤3 mismatches",12.3333333333333
+"16","UP000000356","Poliovirus type 1","Auto","≤1 mismatches",1
+"17","UP000000356","Poliovirus type 1","Auto","≤2 mismatches",1.33333333333333
+"18","UP000000356","Poliovirus type 1","Auto","≤3 mismatches",16.6666666666667
+"19","UP000000356","Poliovirus type 1","X","≤1 mismatches",1
+"20","UP000000356","Poliovirus type 1","X","≤2 mismatches",1
+"21","UP000000356","Poliovirus type 1","X","≤3 mismatches",1.33333333333333
+"22","UP000000360","Yellow fever virus","Auto","≤1 mismatches",1
+"23","UP000000360","Yellow fever virus","Auto","≤2 mismatches",2.33333333333333
+"24","UP000000360","Yellow fever virus","Auto","≤3 mismatches",32.3333333333333
+"25","UP000000360","Yellow fever virus","X","≤1 mismatches",1
+"26","UP000000360","Yellow fever virus","X","≤2 mismatches",1
+"27","UP000000360","Yellow fever virus","X","≤3 mismatches",2.33333333333333
+"28","UP000000518","Hepatitis C virus genotype 1a","Auto","≤1 mismatches",1
+"29","UP000000518","Hepatitis C virus genotype 1a","Auto","≤2 mismatches",5
+"30","UP000000518","Hepatitis C virus genotype 1a","Auto","≤3 mismatches",47.6666666666667
+"31","UP000000518","Hepatitis C virus genotype 1a","X","≤1 mismatches",1
+"32","UP000000518","Hepatitis C virus genotype 1a","X","≤2 mismatches",1
+"33","UP000000518","Hepatitis C virus genotype 1a","X","≤3 mismatches",2
+"34","UP000000569","Chikungunya virus","Auto","≤1 mismatches",1
+"35","UP000000569","Chikungunya virus","Auto","≤2 mismatches",1.66666666666667
+"36","UP000000569","Chikungunya virus","Auto","≤3 mismatches",38.6666666666667
+"37","UP000000570","Semliki forest virus","Auto","≤1 mismatches",1
+"38","UP000000570","Semliki forest virus","Auto","≤2 mismatches",1
+"39","UP000000570","Semliki forest virus","Auto","≤3 mismatches",31
+"40","UP000000570","Semliki forest virus","X","≤1 mismatches",1
+"41","UP000000570","Semliki forest virus","X","≤2 mismatches",1
+"42","UP000000570","Semliki forest virus","X","≤3 mismatches",3.33333333333333
+"43","UP000000670","Echovirus 23","Auto","≤1 mismatches",1
+"44","UP000000670","Echovirus 23","Auto","≤2 mismatches",1.33333333333333
+"45","UP000000670","Echovirus 23","Auto","≤3 mismatches",10.3333333333333
+"46","UP000000869","Molluscum contagiosum virus subtype 1","Auto","≤1 mismatches",47
+"47","UP000000869","Molluscum contagiosum virus subtype 1","Auto","≤2 mismatches",135
+"48","UP000000869","Molluscum contagiosum virus subtype 1","Auto","≤3 mismatches",966.666666666667
+"49","UP000000869","Molluscum contagiosum virus subtype 1","X","≤1 mismatches",8
+"50","UP000000869","Molluscum contagiosum virus subtype 1","X","≤2 mismatches",34.3333333333333
+"51","UP000000869","Molluscum contagiosum virus subtype 1","X","≤3 mismatches",92.3333333333333
+"52","UP000000869","Molluscum contagiosum virus subtype 1","Y","≤1 mismatches",1
+"53","UP000000869","Molluscum contagiosum virus subtype 1","Y","≤2 mismatches",1
+"54","UP000000869","Molluscum contagiosum virus subtype 1","Y","≤3 mismatches",2.33333333333333
+"55","UP000000870","Orf virus","Auto","≤1 mismatches",44.6666666666667
+"56","UP000000870","Orf virus","Auto","≤2 mismatches",105.333333333333
+"57","UP000000870","Orf virus","Auto","≤3 mismatches",693
+"58","UP000000870","Orf virus","X","≤1 mismatches",9.66666666666667
+"59","UP000000870","Orf virus","X","≤2 mismatches",25.3333333333333
+"60","UP000000870","Orf virus","X","≤3 mismatches",58.3333333333333
+"61","UP000000870","Orf virus","Y","≤1 mismatches",1
+"62","UP000000870","Orf virus","Y","≤2 mismatches",1
+"63","UP000000870","Orf virus","Y","≤3 mismatches",1.66666666666667
+"64","UP000000938","Human cytomegalovirus (Merlin)","Auto","≤1 mismatches",30.3333333333333
+"65","UP000000938","Human cytomegalovirus (Merlin)","Auto","≤2 mismatches",15.5357142857143
+"66","UP000000938","Human cytomegalovirus (Merlin)","Auto","≤3 mismatches",2.32480454868515
+"67","UP000000938","Human cytomegalovirus (Merlin)","X","≤1 mismatches",25.3333333333333
+"68","UP000000938","Human cytomegalovirus (Merlin)","X","≤2 mismatches",59.25
+"69","UP000000938","Human cytomegalovirus (Merlin)","X","≤3 mismatches",10.5
+"70","UP000000938","Human cytomegalovirus (Merlin)","Y","≤1 mismatches",1.66666666666667
+"71","UP000000938","Human cytomegalovirus (Merlin)","Y","≤2 mismatches",4
+"72","UP000000938","Human cytomegalovirus (Merlin)","Y","≤3 mismatches",4.5
+"73","UP000000942","Human herpesvirus 8 type P","Auto","≤1 mismatches",48
+"74","UP000000942","Human herpesvirus 8 type P","Auto","≤2 mismatches",124.666666666667
+"75","UP000000942","Human herpesvirus 8 type P","Auto","≤3 mismatches",637.333333333333
+"76","UP000000942","Human herpesvirus 8 type P","X","≤1 mismatches",14.3333333333333
+"77","UP000000942","Human herpesvirus 8 type P","X","≤2 mismatches",28.6666666666667
+"78","UP000000942","Human herpesvirus 8 type P","X","≤3 mismatches",58
+"79","UP000000942","Human herpesvirus 8 type P","Y","≤1 mismatches",1
+"80","UP000000942","Human herpesvirus 8 type P","Y","≤2 mismatches",1
+"81","UP000000942","Human herpesvirus 8 type P","Y","≤3 mismatches",2
+"82","UP000001061","Human T-cell leukemia virus 1","Auto","≤1 mismatches",1.66666666666667
+"83","UP000001061","Human T-cell leukemia virus 1","Auto","≤2 mismatches",5
+"84","UP000001061","Human T-cell leukemia virus 1","Auto","≤3 mismatches",92.3333333333333
+"85","UP000001061","Human T-cell leukemia virus 1","X","≤1 mismatches",1.66666666666667
+"86","UP000001061","Human T-cell leukemia virus 1","X","≤2 mismatches",1.66666666666667
+"87","UP000001061","Human T-cell leukemia virus 1","X","≤3 mismatches",4
+"88","UP000001061","Human T-cell leukemia virus 1","Y","≤1 mismatches",1
+"89","UP000001061","Human T-cell leukemia virus 1","Y","≤2 mismatches",1
+"90","UP000001061","Human T-cell leukemia virus 1","Y","≤3 mismatches",1.33333333333333
+"91","UP000001063","Simian foamy virus","Auto","≤1 mismatches",1
+"92","UP000001063","Simian foamy virus","Auto","≤2 mismatches",1.33333333333333
+"93","UP000001063","Simian foamy virus","Auto","≤3 mismatches",28.3333333333333
+"94","UP000001063","Simian foamy virus","X","≤1 mismatches",1
+"95","UP000001063","Simian foamy virus","X","≤2 mismatches",1
+"96","UP000001063","Simian foamy virus","X","≤3 mismatches",3.66666666666667
+"97","UP000001874","Human herpesvirus 2 (strain HG52)","Auto","≤1 mismatches",30.6666666666667
+"98","UP000001874","Human herpesvirus 2 (strain HG52)","Auto","≤2 mismatches",108
+"99","UP000001874","Human herpesvirus 2 (strain HG52)","Auto","≤3 mismatches",1055.66666666667
+"100","UP000001874","Human herpesvirus 2 (strain HG52)","X","≤1 mismatches",26.6666666666667
+"101","UP000001874","Human herpesvirus 2 (strain HG52)","X","≤2 mismatches",58.3333333333333
+"102","UP000001874","Human herpesvirus 2 (strain HG52)","X","≤3 mismatches",117.333333333333
+"103","UP000001874","Human herpesvirus 2 (strain HG52)","Y","≤1 mismatches",1
+"104","UP000001874","Human herpesvirus 2 (strain HG52)","Y","≤2 mismatches",2.66666666666667
+"105","UP000001874","Human herpesvirus 2 (strain HG52)","Y","≤3 mismatches",12.6666666666667
+"106","UP000002060","Variola virus","Auto","≤1 mismatches",131.666666666667
+"107","UP000002060","Variola virus","Auto","≤2 mismatches",251.666666666667
+"108","UP000002060","Variola virus","Auto","≤3 mismatches",681.666666666667
+"109","UP000002060","Variola virus","X","≤1 mismatches",1
+"110","UP000002060","Variola virus","X","≤2 mismatches",6.66666666666667
+"111","UP000002060","Variola virus","X","≤3 mismatches",19
+"112","UP000002060","Variola virus","Y","≤1 mismatches",1
+"113","UP000002060","Variola virus","Y","≤2 mismatches",1
+"114","UP000002060","Variola virus","Y","≤3 mismatches",2
+"115","UP000002241","Human immunodeficiency virus type 1 group M subtype B","Auto","≤1 mismatches",1
+"116","UP000002241","Human immunodeficiency virus type 1 group M subtype B","Auto","≤2 mismatches",1
+"117","UP000002241","Human immunodeficiency virus type 1 group M subtype B","Auto","≤3 mismatches",22.6666666666667
+"118","UP000002241","Human immunodeficiency virus type 1 group M subtype B","X","≤1 mismatches",1
+"119","UP000002241","Human immunodeficiency virus type 1 group M subtype B","X","≤2 mismatches",1
+"120","UP000002241","Human immunodeficiency virus type 1 group M subtype B","X","≤3 mismatches",1.33333333333333
+"121","UP000002242","Human immunodeficiency virus type 2 subtype A","Auto","≤1 mismatches",1
+"122","UP000002242","Human immunodeficiency virus type 2 subtype A","Auto","≤2 mismatches",4
+"123","UP000002242","Human immunodeficiency virus type 2 subtype A","Auto","≤3 mismatches",53
+"124","UP000002242","Human immunodeficiency virus type 2 subtype A","X","≤1 mismatches",1
+"125","UP000002242","Human immunodeficiency virus type 2 subtype A","X","≤2 mismatches",1.33333333333333
+"126","UP000002242","Human immunodeficiency virus type 2 subtype A","X","≤3 mismatches",3.33333333333333
+"127","UP000002319","Encephalomyocarditis virus","Auto","≤1 mismatches",1
+"128","UP000002319","Encephalomyocarditis virus","Auto","≤2 mismatches",1.66666666666667
+"129","UP000002319","Encephalomyocarditis virus","Auto","≤3 mismatches",18
+"130","UP000002319","Encephalomyocarditis virus","X","≤1 mismatches",1
+"131","UP000002319","Encephalomyocarditis virus","X","≤2 mismatches",1
+"132","UP000002319","Encephalomyocarditis virus","X","≤3 mismatches",3.33333333333333
+"133","UP000002327","Vesicular stomatitis Indiana virus","Auto","≤1 mismatches",1
+"134","UP000002327","Vesicular stomatitis Indiana virus","Auto","≤2 mismatches",1
+"135","UP000002327","Vesicular stomatitis Indiana virus","Auto","≤3 mismatches",25
+"136","UP000002327","Vesicular stomatitis Indiana virus","X","≤1 mismatches",1
+"137","UP000002327","Vesicular stomatitis Indiana virus","X","≤2 mismatches",1
+"138","UP000002327","Vesicular stomatitis Indiana virus","X","≤3 mismatches",2
+"139","UP000002331","Mumps virus","Auto","≤1 mismatches",1
+"140","UP000002331","Mumps virus","Auto","≤2 mismatches",1
+"141","UP000002331","Mumps virus","Auto","≤3 mismatches",36.3333333333333
+"142","UP000002331","Mumps virus","X","≤1 mismatches",1
+"143","UP000002331","Mumps virus","X","≤2 mismatches",1
+"144","UP000002331","Mumps virus","X","≤3 mismatches",3.66666666666667
+"145","UP000002331","Mumps virus","Y","≤1 mismatches",1
+"146","UP000002331","Mumps virus","Y","≤2 mismatches",1
+"147","UP000002331","Mumps virus","Y","≤3 mismatches",1.66666666666667
+"148","UP000002473","Lassa virus","Auto","≤1 mismatches",1
+"149","UP000002473","Lassa virus","Auto","≤2 mismatches",1.33333333333333
+"150","UP000002473","Lassa virus","Auto","≤3 mismatches",26
+"151","UP000002473","Lassa virus","X","≤1 mismatches",1
+"152","UP000002473","Lassa virus","X","≤2 mismatches",1
+"153","UP000002473","Lassa virus","X","≤3 mismatches",1.66666666666667
+"154","UP000002474","Lymphocytic choriomeningitis virus","Auto","≤1 mismatches",1
+"155","UP000002474","Lymphocytic choriomeningitis virus","Auto","≤2 mismatches",1
+"156","UP000002474","Lymphocytic choriomeningitis virus","Auto","≤3 mismatches",23.6666666666667
+"157","UP000002474","Lymphocytic choriomeningitis virus","X","≤1 mismatches",1
+"158","UP000002474","Lymphocytic choriomeningitis virus","X","≤2 mismatches",1
+"159","UP000002474","Lymphocytic choriomeningitis virus","X","≤3 mismatches",2
+"160","UP000002477","Rift valley fever virus","Auto","≤1 mismatches",1
+"161","UP000002477","Rift valley fever virus","Auto","≤2 mismatches",1
+"162","UP000002477","Rift valley fever virus","Auto","≤3 mismatches",22.6666666666667
+"163","UP000002477","Rift valley fever virus","X","≤1 mismatches",1
+"164","UP000002477","Rift valley fever virus","X","≤2 mismatches",1
+"165","UP000002477","Rift valley fever virus","X","≤3 mismatches",1.33333333333333
+"166","UP000002500","Dengue virus type 1","Auto","≤1 mismatches",1
+"167","UP000002500","Dengue virus type 1","Auto","≤2 mismatches",1
+"168","UP000002500","Dengue virus type 1","Auto","≤3 mismatches",22
+"169","UP000002602","Varicella-zoster virus","Auto","≤1 mismatches",15.6666666666667
+"170","UP000002602","Varicella-zoster virus","Auto","≤2 mismatches",52.3333333333333
+"171","UP000002602","Varicella-zoster virus","Auto","≤3 mismatches",389.333333333333
+"172","UP000002602","Varicella-zoster virus","X","≤1 mismatches",2
+"173","UP000002602","Varicella-zoster virus","X","≤2 mismatches",9.66666666666667
+"174","UP000002602","Varicella-zoster virus","X","≤3 mismatches",25.3333333333333
+"175","UP000006579","Ross river virus","Auto","≤1 mismatches",1
+"176","UP000006579","Ross river virus","Auto","≤2 mismatches",2.33333333333333
+"177","UP000006579","Ross river virus","Auto","≤3 mismatches",30.3333333333333
+"178","UP000006579","Ross river virus","X","≤1 mismatches",1
+"179","UP000006579","Ross river virus","X","≤2 mismatches",1
+"180","UP000006579","Ross river virus","X","≤3 mismatches",2
+"181","UP000006710","Sindbis virus","Auto","≤1 mismatches",1
+"182","UP000006710","Sindbis virus","Auto","≤2 mismatches",3.66666666666667
+"183","UP000006710","Sindbis virus","Auto","≤3 mismatches",47
+"184","UP000006710","Sindbis virus","X","≤1 mismatches",1
+"185","UP000006710","Sindbis virus","X","≤2 mismatches",1
+"186","UP000006710","Sindbis virus","X","≤3 mismatches",2
+"187","UP000006716","Human coronavirus 229E (HCoV-229E)","Auto","≤1 mismatches",1
+"188","UP000006716","Human coronavirus 229E (HCoV-229E)","Auto","≤2 mismatches",6.66666666666667
+"189","UP000006716","Human coronavirus 229E (HCoV-229E)","Auto","≤3 mismatches",82.3333333333333
+"190","UP000006716","Human coronavirus 229E (HCoV-229E)","X","≤1 mismatches",1
+"191","UP000006716","Human coronavirus 229E (HCoV-229E)","X","≤2 mismatches",1.66666666666667
+"192","UP000006716","Human coronavirus 229E (HCoV-229E)","X","≤3 mismatches",6
+"193","UP000006724","Human hepatitis A virus genotype IB","Auto","≤1 mismatches",1
+"194","UP000006724","Human hepatitis A virus genotype IB","Auto","≤2 mismatches",1
+"195","UP000006724","Human hepatitis A virus genotype IB","Auto","≤3 mismatches",7.66666666666667
+"196","UP000006724","Human hepatitis A virus genotype IB","X","≤1 mismatches",1
+"197","UP000006724","Human hepatitis A virus genotype IB","X","≤2 mismatches",1
+"198","UP000006724","Human hepatitis A virus genotype IB","X","≤3 mismatches",1.33333333333333
+"199","UP000006826","Mokola virus","Auto","≤1 mismatches",1
+"200","UP000006826","Mokola virus","Auto","≤2 mismatches",1.66666666666667
+"201","UP000006826","Mokola virus","Auto","≤3 mismatches",24.6666666666667
+"202","UP000006826","Mokola virus","X","≤1 mismatches",1
+"203","UP000006826","Mokola virus","X","≤2 mismatches",1
+"204","UP000006826","Mokola virus","X","≤3 mismatches",2.66666666666667
+"205","UP000006848","Tick-borne powassan virus","Auto","≤1 mismatches",1
+"206","UP000006848","Tick-borne powassan virus","Auto","≤2 mismatches",1.66666666666667
+"207","UP000006848","Tick-borne powassan virus","Auto","≤3 mismatches",30.3333333333333
+"208","UP000006848","Tick-borne powassan virus","X","≤1 mismatches",1
+"209","UP000006848","Tick-borne powassan virus","X","≤2 mismatches",1
+"210","UP000006848","Tick-borne powassan virus","X","≤3 mismatches",1.33333333333333
+"211","UP000006930","Human herpesvirus 6B (strain Z29)","Auto","≤1 mismatches",41.6666666666667
+"212","UP000006930","Human herpesvirus 6B (strain Z29)","Auto","≤2 mismatches",29.2222222222222
+"213","UP000006930","Human herpesvirus 6B (strain Z29)","Auto","≤3 mismatches",1.82015503875969
+"214","UP000006930","Human herpesvirus 6B (strain Z29)","X","≤1 mismatches",7
+"215","UP000006930","Human herpesvirus 6B (strain Z29)","X","≤2 mismatches",13
+"216","UP000006930","Human herpesvirus 6B (strain Z29)","X","≤3 mismatches",2.3125
+"217","UP000006934","Australian bat lyssavirus","Auto","≤1 mismatches",1
+"218","UP000006934","Australian bat lyssavirus","Auto","≤2 mismatches",1
+"219","UP000006934","Australian bat lyssavirus","Auto","≤3 mismatches",16.6666666666667
+"220","UP000006934","Australian bat lyssavirus","X","≤1 mismatches",1
+"221","UP000006934","Australian bat lyssavirus","X","≤2 mismatches",1
+"222","UP000006934","Australian bat lyssavirus","X","≤3 mismatches",2.33333333333333
+"223","UP000007070","Human rhinovirus A serotype 89","Auto","≤1 mismatches",1
+"224","UP000007070","Human rhinovirus A serotype 89","Auto","≤2 mismatches",2
+"225","UP000007070","Human rhinovirus A serotype 89","Auto","≤3 mismatches",16
+"226","UP000007070","Human rhinovirus A serotype 89","X","≤1 mismatches",1
+"227","UP000007070","Human rhinovirus A serotype 89","X","≤2 mismatches",1
+"228","UP000007070","Human rhinovirus A serotype 89","X","≤3 mismatches",1.66666666666667
+"229","UP000007138","Sagiyama virus","Auto","≤1 mismatches",1
+"230","UP000007138","Sagiyama virus","Auto","≤2 mismatches",2.66666666666667
+"231","UP000007138","Sagiyama virus","Auto","≤3 mismatches",26.6666666666667
+"232","UP000007138","Sagiyama virus","X","≤1 mismatches",1
+"233","UP000007138","Sagiyama virus","X","≤2 mismatches",1
+"234","UP000007138","Sagiyama virus","X","≤3 mismatches",1.66666666666667
+"235","UP000007214","Japanese encephalitis virus","Auto","≤1 mismatches",1
+"236","UP000007214","Japanese encephalitis virus","Auto","≤2 mismatches",1.33333333333333
+"237","UP000007214","Japanese encephalitis virus","Auto","≤3 mismatches",33.6666666666667
+"238","UP000007214","Japanese encephalitis virus","X","≤1 mismatches",1
+"239","UP000007214","Japanese encephalitis virus","X","≤2 mismatches",1
+"240","UP000007214","Japanese encephalitis virus","X","≤3 mismatches",1.33333333333333
+"241","UP000007232","Simian virus 5","Auto","≤1 mismatches",1
+"242","UP000007232","Simian virus 5","Auto","≤2 mismatches",1.33333333333333
+"243","UP000007232","Simian virus 5","Auto","≤3 mismatches",32.6666666666667
+"244","UP000007232","Simian virus 5","X","≤1 mismatches",1
+"245","UP000007232","Simian virus 5","X","≤2 mismatches",1
+"246","UP000007232","Simian virus 5","X","≤3 mismatches",3
+"247","UP000007609","Barmah forest virus","Auto","≤1 mismatches",1
+"248","UP000007609","Barmah forest virus","Auto","≤2 mismatches",2.66666666666667
+"249","UP000007609","Barmah forest virus","Auto","≤3 mismatches",28.3333333333333
+"250","UP000007609","Barmah forest virus","X","≤1 mismatches",1
+"251","UP000007609","Barmah forest virus","X","≤2 mismatches",1
+"252","UP000007609","Barmah forest virus","X","≤3 mismatches",2
+"253","UP000007644","Louping ill virus","Auto","≤1 mismatches",1
+"254","UP000007644","Louping ill virus","Auto","≤2 mismatches",1
+"255","UP000007644","Louping ill virus","Auto","≤3 mismatches",28.3333333333333
+"256","UP000007757","Coxsackievirus A16","Auto","≤1 mismatches",1
+"257","UP000007757","Coxsackievirus A16","Auto","≤2 mismatches",1
+"258","UP000007757","Coxsackievirus A16","Auto","≤3 mismatches",13.3333333333333
+"259","UP000007757","Coxsackievirus A16","X","≤1 mismatches",1
+"260","UP000007757","Coxsackievirus A16","X","≤2 mismatches",1
+"261","UP000007757","Coxsackievirus A16","X","≤3 mismatches",1.66666666666667
+"262","UP000007774","Mayaro virus","Auto","≤1 mismatches",1
+"263","UP000007774","Mayaro virus","Auto","≤2 mismatches",1.33333333333333
+"264","UP000007774","Mayaro virus","Auto","≤3 mismatches",30
+"265","UP000007774","Mayaro virus","X","≤1 mismatches",1
+"266","UP000007774","Mayaro virus","X","≤2 mismatches",1
+"267","UP000007774","Mayaro virus","X","≤3 mismatches",3.66666666666667
+"268","UP000008448","Chandipura virus","Auto","≤1 mismatches",1
+"269","UP000008448","Chandipura virus","Auto","≤2 mismatches",1
+"270","UP000008448","Chandipura virus","Auto","≤3 mismatches",18.6666666666667
+"271","UP000008448","Chandipura virus","X","≤1 mismatches",1
+"272","UP000008448","Chandipura virus","X","≤2 mismatches",1.33333333333333
+"273","UP000008448","Chandipura virus","X","≤3 mismatches",2
+"274","UP000008478","JC polyomavirus","Auto","≤1 mismatches",1
+"275","UP000008478","JC polyomavirus","Auto","≤2 mismatches",1.33333333333333
+"276","UP000008478","JC polyomavirus","Auto","≤3 mismatches",16.3333333333333
+"277","UP000008478","JC polyomavirus","X","≤1 mismatches",1
+"278","UP000008478","JC polyomavirus","X","≤2 mismatches",1
+"279","UP000008478","JC polyomavirus","X","≤3 mismatches",1.33333333333333
+"280","UP000008595","Uukuniemi virus","Auto","≤1 mismatches",1
+"281","UP000008595","Uukuniemi virus","Auto","≤2 mismatches",1.33333333333333
+"282","UP000008595","Uukuniemi virus","Auto","≤3 mismatches",23
+"283","UP000008595","Uukuniemi virus","X","≤1 mismatches",1
+"284","UP000008595","Uukuniemi virus","X","≤2 mismatches",1
+"285","UP000008595","Uukuniemi virus","X","≤3 mismatches",1.33333333333333
+"286","UP000008596","Yaba monkey tumor virus","Auto","≤1 mismatches",55
+"287","UP000008596","Yaba monkey tumor virus","Auto","≤2 mismatches",103
+"288","UP000008596","Yaba monkey tumor virus","Auto","≤3 mismatches",351
+"289","UP000008596","Yaba monkey tumor virus","X","≤1 mismatches",2
+"290","UP000008596","Yaba monkey tumor virus","X","≤2 mismatches",5.66666666666667
+"291","UP000008596","Yaba monkey tumor virus","X","≤3 mismatches",17
+"292","UP000008596","Yaba monkey tumor virus","Y","≤1 mismatches",1
+"293","UP000008596","Yaba monkey tumor virus","Y","≤2 mismatches",1
+"294","UP000008596","Yaba monkey tumor virus","Y","≤3 mismatches",1.66666666666667
+"295","UP000008649","Rabies virus","Auto","≤1 mismatches",1
+"296","UP000008649","Rabies virus","Auto","≤2 mismatches",2
+"297","UP000008649","Rabies virus","Auto","≤3 mismatches",26.6666666666667
+"298","UP000008649","Rabies virus","X","≤1 mismatches",1
+"299","UP000008649","Rabies virus","X","≤2 mismatches",1
+"300","UP000008649","Rabies virus","X","≤3 mismatches",2.33333333333333
+"301","UP000008663","Mengo encephalomyocarditis virus","Auto","≤1 mismatches",1
+"302","UP000008663","Mengo encephalomyocarditis virus","Auto","≤2 mismatches",1.33333333333333
+"303","UP000008663","Mengo encephalomyocarditis virus","Auto","≤3 mismatches",1.88888888888889
+"304","UP000008683","Human enterovirus 70","Auto","≤1 mismatches",1
+"305","UP000008683","Human enterovirus 70","Auto","≤2 mismatches",1.33333333333333
+"306","UP000008683","Human enterovirus 70","Auto","≤3 mismatches",14
+"307","UP000008683","Human enterovirus 70","X","≤1 mismatches",1
+"308","UP000008683","Human enterovirus 70","X","≤2 mismatches",1
+"309","UP000008683","Human enterovirus 70","X","≤3 mismatches",1.66666666666667
+"310","UP000008699","Measles virus","Auto","≤1 mismatches",1
+"311","UP000008699","Measles virus","Auto","≤2 mismatches",1.66666666666667
+"312","UP000008699","Measles virus","Auto","≤3 mismatches",42
+"313","UP000008771","Hendra virus","Auto","≤1 mismatches",1
+"314","UP000008771","Hendra virus","Auto","≤2 mismatches",1
+"315","UP000008771","Hendra virus","Auto","≤3 mismatches",41.6666666666667
+"316","UP000008771","Hendra virus","X","≤1 mismatches",1
+"317","UP000008771","Hendra virus","X","≤2 mismatches",1
+"318","UP000008771","Hendra virus","X","≤3 mismatches",2
+"319","UP000008863","Murray valley encephalitis virus","Auto","≤1 mismatches",1
+"320","UP000008863","Murray valley encephalitis virus","Auto","≤2 mismatches",1
+"321","UP000008863","Murray valley encephalitis virus","Auto","≤3 mismatches",19.6666666666667
+"322","UP000008863","Murray valley encephalitis virus","X","≤1 mismatches",1
+"323","UP000008863","Murray valley encephalitis virus","X","≤2 mismatches",1
+"324","UP000008863","Murray valley encephalitis virus","X","≤3 mismatches",2.66666666666667
+"325","UP000008868","Onyong-nyong virus","Auto","≤1 mismatches",1
+"326","UP000008868","Onyong-nyong virus","Auto","≤2 mismatches",1.66666666666667
+"327","UP000008868","Onyong-nyong virus","Auto","≤3 mismatches",20
+"328","UP000008926","European bat lyssavirus 1","Auto","≤1 mismatches",1
+"329","UP000008926","European bat lyssavirus 1","Auto","≤2 mismatches",1
+"330","UP000008926","European bat lyssavirus 1","Auto","≤3 mismatches",20.6666666666667
+"331","UP000008926","European bat lyssavirus 1","X","≤1 mismatches",1
+"332","UP000008926","European bat lyssavirus 1","X","≤2 mismatches",1
+"333","UP000008926","European bat lyssavirus 1","X","≤3 mismatches",3
+"334","UP000009246","Human herpesvirus 7","Auto","≤1 mismatches",6.33333333333333
+"335","UP000009246","Human herpesvirus 7","Auto","≤2 mismatches",18
+"336","UP000009246","Human herpesvirus 7","Auto","≤3 mismatches",262.333333333333
+"337","UP000009246","Human herpesvirus 7","X","≤1 mismatches",1.66666666666667
+"338","UP000009246","Human herpesvirus 7","X","≤2 mismatches",3.33333333333333
+"339","UP000009246","Human herpesvirus 7","X","≤3 mismatches",13.3333333333333
+"340","UP000009294","Human herpesvirus 1 (strain 17)","Auto","≤1 mismatches",31
+"341","UP000009294","Human herpesvirus 1 (strain 17)","Auto","≤2 mismatches",101.333333333333
+"342","UP000009294","Human herpesvirus 1 (strain 17)","Auto","≤3 mismatches",901.666666666667
+"343","UP000009294","Human herpesvirus 1 (strain 17)","X","≤1 mismatches",29
+"344","UP000009294","Human herpesvirus 1 (strain 17)","X","≤2 mismatches",49.6666666666667
+"345","UP000009294","Human herpesvirus 1 (strain 17)","X","≤3 mismatches",97
+"346","UP000009295","Human herpesvirus 6A","Auto","≤1 mismatches",36
+"347","UP000009295","Human herpesvirus 6A","Auto","≤2 mismatches",14.5185185185185
+"348","UP000009295","Human herpesvirus 6A","Auto","≤3 mismatches",2.02668539325843
+"349","UP000009295","Human herpesvirus 6A","X","≤1 mismatches",5
+"350","UP000009295","Human herpesvirus 6A","X","≤2 mismatches",5.25
+"351","UP000009295","Human herpesvirus 6A","X","≤3 mismatches",1.83673469387755
+"352","UP000009295","Human herpesvirus 6A","Y","≤1 mismatches",1
+"353","UP000009295","Human herpesvirus 6A","Y","≤2 mismatches",1
+"354","UP000009295","Human herpesvirus 6A","Y","≤3 mismatches",1
+"355","UP000029742","Salivirus A","Auto","≤1 mismatches",1.66666666666667
+"356","UP000029742","Salivirus A","Auto","≤2 mismatches",3
+"357","UP000029742","Salivirus A","Auto","≤3 mismatches",27
+"358","UP000029742","Salivirus A","X","≤1 mismatches",1
+"359","UP000029742","Salivirus A","X","≤2 mismatches",1
+"360","UP000029742","Salivirus A","X","≤3 mismatches",2
+"361","UP000029743","Rosavirus A2","Auto","≤1 mismatches",1
+"362","UP000029743","Rosavirus A2","Auto","≤2 mismatches",1
+"363","UP000029743","Rosavirus A2","Auto","≤3 mismatches",22
+"364","UP000029743","Rosavirus A2","X","≤1 mismatches",1
+"365","UP000029743","Rosavirus A2","X","≤2 mismatches",1
+"366","UP000029743","Rosavirus A2","X","≤3 mismatches",3.33333333333333
+"367","UP000029753","Cosavirus A","Auto","≤1 mismatches",1
+"368","UP000029753","Cosavirus A","Auto","≤2 mismatches",2
+"369","UP000029753","Cosavirus A","Auto","≤3 mismatches",18.6666666666667
+"370","UP000029753","Cosavirus A","X","≤1 mismatches",1
+"371","UP000029753","Cosavirus A","X","≤2 mismatches",1.66666666666667
+"372","UP000029753","Cosavirus A","X","≤3 mismatches",3.33333333333333
+"373","UP000054557","Zika virus","Auto","≤1 mismatches",1
+"374","UP000054557","Zika virus","Auto","≤2 mismatches",1.33333333333333
+"375","UP000054557","Zika virus","Auto","≤3 mismatches",24.3333333333333
+"376","UP000054557","Zika virus","X","≤1 mismatches",1
+"377","UP000054557","Zika virus","X","≤2 mismatches",1
+"378","UP000054557","Zika virus","X","≤3 mismatches",3
+"379","UP000101269","Monkeypox virus","Auto","≤1 mismatches",148.333333333333
+"380","UP000101269","Monkeypox virus","Auto","≤2 mismatches",285.333333333333
+"381","UP000101269","Monkeypox virus","Auto","≤3 mismatches",780.333333333333
+"382","UP000101269","Monkeypox virus","X","≤1 mismatches",1
+"383","UP000101269","Monkeypox virus","X","≤2 mismatches",3.33333333333333
+"384","UP000101269","Monkeypox virus","X","≤3 mismatches",17.6666666666667
+"385","UP000101269","Monkeypox virus","Y","≤1 mismatches",1
+"386","UP000101269","Monkeypox virus","Y","≤2 mismatches",1.33333333333333
+"387","UP000101269","Monkeypox virus","Y","≤3 mismatches",1.33333333333333
+"388","UP000107189","KI Polyomavirus","Auto","≤1 mismatches",1
+"389","UP000107189","KI Polyomavirus","Auto","≤2 mismatches",1
+"390","UP000107189","KI Polyomavirus","Auto","≤3 mismatches",13.3333333333333
+"391","UP000109776","Human parainfluenza type 1 strain Washington/1964","Auto","≤1 mismatches",1
+"392","UP000109776","Human parainfluenza type 1 strain Washington/1964","Auto","≤2 mismatches",1.5
+"393","UP000109776","Human parainfluenza type 1 strain Washington/1964","Auto","≤3 mismatches",1.11320754716981
+"394","UP000109776","Human parainfluenza type 1 strain Washington/1964","X","≤1 mismatches",1
+"395","UP000109776","Human parainfluenza type 1 strain Washington/1964","X","≤2 mismatches",1
+"396","UP000109776","Human parainfluenza type 1 strain Washington/1964","X","≤3 mismatches",1
+"397","UP000110644","Eastern equine encephalitis virus","Auto","≤1 mismatches",1
+"398","UP000110644","Eastern equine encephalitis virus","Auto","≤2 mismatches",1
+"399","UP000110644","Eastern equine encephalitis virus","Auto","≤3 mismatches",30.6666666666667
+"400","UP000110644","Eastern equine encephalitis virus","X","≤1 mismatches",1
+"401","UP000110644","Eastern equine encephalitis virus","X","≤2 mismatches",1
+"402","UP000110644","Eastern equine encephalitis virus","X","≤3 mismatches",3
+"403","UP000111173","Horsepox virus","Auto","≤1 mismatches",122.333333333333
+"404","UP000111173","Horsepox virus","Auto","≤2 mismatches",249
+"405","UP000111173","Horsepox virus","Auto","≤3 mismatches",741.666666666667
+"406","UP000111173","Horsepox virus","X","≤1 mismatches",1
+"407","UP000111173","Horsepox virus","X","≤2 mismatches",6.33333333333333
+"408","UP000111173","Horsepox virus","X","≤3 mismatches",21.3333333333333
+"409","UP000111173","Horsepox virus","Y","≤1 mismatches",1
+"410","UP000111173","Horsepox virus","Y","≤2 mismatches",1
+"411","UP000111173","Horsepox virus","Y","≤3 mismatches",1.33333333333333
+"412","UP000117552","Duvenhage virus","Auto","≤1 mismatches",1
+"413","UP000117552","Duvenhage virus","Auto","≤2 mismatches",1
+"414","UP000117552","Duvenhage virus","Auto","≤3 mismatches",18.3333333333333
+"415","UP000117552","Duvenhage virus","X","≤1 mismatches",1
+"416","UP000117552","Duvenhage virus","X","≤2 mismatches",1
+"417","UP000117552","Duvenhage virus","X","≤3 mismatches",2.33333333333333
+"418","UP000118542","WU polyomavirus","Auto","≤1 mismatches",1
+"419","UP000118542","WU polyomavirus","Auto","≤2 mismatches",1.66666666666667
+"420","UP000118542","WU polyomavirus","Auto","≤3 mismatches",18
+"421","UP000118542","WU polyomavirus","X","≤1 mismatches",1
+"422","UP000118542","WU polyomavirus","X","≤2 mismatches",1
+"423","UP000118542","WU polyomavirus","X","≤3 mismatches",2
+"424","UP000119554","Aichi virus","Auto","≤1 mismatches",1.66666666666667
+"425","UP000119554","Aichi virus","Auto","≤2 mismatches",5
+"426","UP000119554","Aichi virus","Auto","≤3 mismatches",34.3333333333333
+"427","UP000119554","Aichi virus","X","≤1 mismatches",1
+"428","UP000119554","Aichi virus","X","≤2 mismatches",2.66666666666667
+"429","UP000119554","Aichi virus","X","≤3 mismatches",3.66666666666667
+"430","UP000127886","Junin mammarenavirus","Auto","≤1 mismatches",1
+"431","UP000127886","Junin mammarenavirus","Auto","≤2 mismatches",1
+"432","UP000127886","Junin mammarenavirus","Auto","≤3 mismatches",18
+"433","UP000127886","Junin mammarenavirus","X","≤1 mismatches",1
+"434","UP000127886","Junin mammarenavirus","X","≤2 mismatches",1
+"435","UP000127886","Junin mammarenavirus","X","≤3 mismatches",2
+"436","UP000128494","Western equine encephalitis virus","Auto","≤1 mismatches",1
+"437","UP000128494","Western equine encephalitis virus","Auto","≤2 mismatches",1
+"438","UP000128494","Western equine encephalitis virus","Auto","≤3 mismatches",22.6666666666667
+"439","UP000128494","Western equine encephalitis virus","X","≤1 mismatches",1
+"440","UP000128494","Western equine encephalitis virus","X","≤2 mismatches",1
+"441","UP000128494","Western equine encephalitis virus","X","≤3 mismatches",1.66666666666667
+"442","UP000136458","West Nile virus","Auto","≤1 mismatches",1
+"443","UP000136458","West Nile virus","Auto","≤2 mismatches",1.66666666666667
+"444","UP000136458","West Nile virus","Auto","≤3 mismatches",27.3333333333333
+"445","UP000136458","West Nile virus","X","≤1 mismatches",1
+"446","UP000136458","West Nile virus","X","≤2 mismatches",1
+"447","UP000136458","West Nile virus","X","≤3 mismatches",2.33333333333333
+"448","UP000136581","Yaba-like disease virus","Auto","≤1 mismatches",69.3333333333333
+"449","UP000136581","Yaba-like disease virus","Auto","≤2 mismatches",130
+"450","UP000136581","Yaba-like disease virus","Auto","≤3 mismatches",446.333333333333
+"451","UP000136581","Yaba-like disease virus","X","≤1 mismatches",3.66666666666667
+"452","UP000136581","Yaba-like disease virus","X","≤2 mismatches",6.33333333333333
+"453","UP000136581","Yaba-like disease virus","X","≤3 mismatches",17.3333333333333
+"454","UP000136581","Yaba-like disease virus","Y","≤1 mismatches",1
+"455","UP000136581","Yaba-like disease virus","Y","≤2 mismatches",1
+"456","UP000136581","Yaba-like disease virus","Y","≤3 mismatches",1.33333333333333
+"457","UP000137988","Cercopithecine alphaherpesvirus 2","Auto","≤1 mismatches",9.33333333333333
+"458","UP000137988","Cercopithecine alphaherpesvirus 2","Auto","≤2 mismatches",102.666666666667
+"459","UP000137988","Cercopithecine alphaherpesvirus 2","Auto","≤3 mismatches",1234.66666666667
+"460","UP000137988","Cercopithecine alphaherpesvirus 2","X","≤1 mismatches",6.66666666666667
+"461","UP000137988","Cercopithecine alphaherpesvirus 2","X","≤2 mismatches",35.6666666666667
+"462","UP000137988","Cercopithecine alphaherpesvirus 2","X","≤3 mismatches",112.666666666667
+"463","UP000137988","Cercopithecine alphaherpesvirus 2","Y","≤1 mismatches",1
+"464","UP000137988","Cercopithecine alphaherpesvirus 2","Y","≤2 mismatches",1
+"465","UP000137988","Cercopithecine alphaherpesvirus 2","Y","≤3 mismatches",2
+"466","UP000138183","Kunjin virus","Auto","≤1 mismatches",1
+"467","UP000138183","Kunjin virus","Auto","≤2 mismatches",1.66666666666667
+"468","UP000138183","Kunjin virus","Auto","≤3 mismatches",27
+"469","UP000138183","Kunjin virus","X","≤1 mismatches",1
+"470","UP000138183","Kunjin virus","X","≤2 mismatches",1
+"471","UP000138183","Kunjin virus","X","≤3 mismatches",2.33333333333333
+"472","UP000138352","Human spumaretrovirus","Auto","≤1 mismatches",1
+"473","UP000138352","Human spumaretrovirus","Auto","≤2 mismatches",1
+"474","UP000138352","Human spumaretrovirus","Auto","≤3 mismatches",25.3333333333333
+"475","UP000138352","Human spumaretrovirus","X","≤1 mismatches",1
+"476","UP000138352","Human spumaretrovirus","X","≤2 mismatches",1
+"477","UP000138352","Human spumaretrovirus","X","≤3 mismatches",3
+"478","UP000139415","Pichinde mammarenavirus","Auto","≤1 mismatches",1
+"479","UP000139415","Pichinde mammarenavirus","Auto","≤2 mismatches",1
+"480","UP000139415","Pichinde mammarenavirus","Auto","≤3 mismatches",20.3333333333333
+"481","UP000139415","Pichinde mammarenavirus","X","≤1 mismatches",1
+"482","UP000139415","Pichinde mammarenavirus","X","≤2 mismatches",1
+"483","UP000139415","Pichinde mammarenavirus","X","≤3 mismatches",2.33333333333333
+"484","UP000142444","Toscana virus","Auto","≤1 mismatches",1
+"485","UP000142444","Toscana virus","Auto","≤2 mismatches",1
+"486","UP000142444","Toscana virus","Auto","≤3 mismatches",26.6666666666667
+"487","UP000142444","Toscana virus","X","≤1 mismatches",1
+"488","UP000142444","Toscana virus","X","≤2 mismatches",1
+"489","UP000142444","Toscana virus","X","≤3 mismatches",3.33333333333333
+"490","UP000143570","Human enterovirus D68","Auto","≤1 mismatches",1
+"491","UP000143570","Human enterovirus D68","Auto","≤2 mismatches",1.33333333333333
+"492","UP000143570","Human enterovirus D68","Auto","≤3 mismatches",13
+"493","UP000143570","Human enterovirus D68","X","≤1 mismatches",1
+"494","UP000143570","Human enterovirus D68","X","≤2 mismatches",1
+"495","UP000143570","Human enterovirus D68","X","≤3 mismatches",2.33333333333333
+"496","UP000145981","BK polyomavirus","Auto","≤1 mismatches",1
+"497","UP000145981","BK polyomavirus","Auto","≤2 mismatches",2.33333333333333
+"498","UP000145981","BK polyomavirus","Auto","≤3 mismatches",9.66666666666667
+"499","UP000147828","SARS coronavirus PUMC03","Auto","≤1 mismatches",1
+"500","UP000147828","SARS coronavirus PUMC03","Auto","≤2 mismatches",5.66666666666667
+"501","UP000147828","SARS coronavirus PUMC03","Auto","≤3 mismatches",69.6666666666667
+"502","UP000147828","SARS coronavirus PUMC03","X","≤1 mismatches",1
+"503","UP000147828","SARS coronavirus PUMC03","X","≤2 mismatches",4
+"504","UP000147828","SARS coronavirus PUMC03","X","≤3 mismatches",7
+"505","UP000152733","Cowpox virus","Auto","≤1 mismatches",155.666666666667
+"506","UP000152733","Cowpox virus","Auto","≤2 mismatches",302.666666666667
+"507","UP000152733","Cowpox virus","Auto","≤3 mismatches",867
+"508","UP000152733","Cowpox virus","X","≤1 mismatches",2
+"509","UP000152733","Cowpox virus","X","≤2 mismatches",10
+"510","UP000152733","Cowpox virus","X","≤3 mismatches",34.6666666666667
+"511","UP000152733","Cowpox virus","Y","≤1 mismatches",1
+"512","UP000152733","Cowpox virus","Y","≤2 mismatches",1
+"513","UP000152733","Cowpox virus","Y","≤3 mismatches",1.33333333333333
+"514","UP000153037","Epstein-Barr virus","Auto","≤1 mismatches",107.333333333333
+"515","UP000153037","Epstein-Barr virus","Auto","≤2 mismatches",208.666666666667
+"516","UP000153037","Epstein-Barr virus","Auto","≤3 mismatches",1016
+"517","UP000153037","Epstein-Barr virus","X","≤1 mismatches",64.3333333333333
+"518","UP000153037","Epstein-Barr virus","X","≤2 mismatches",110.666666666667
+"519","UP000153037","Epstein-Barr virus","X","≤3 mismatches",162.333333333333
+"520","UP000153037","Epstein-Barr virus","Y","≤1 mismatches",1.33333333333333
+"521","UP000153037","Epstein-Barr virus","Y","≤2 mismatches",1.33333333333333
+"522","UP000153037","Epstein-Barr virus","Y","≤3 mismatches",2
+"523","UP000154903","Merkel cell polyomavirus","Auto","≤1 mismatches",1
+"524","UP000154903","Merkel cell polyomavirus","Auto","≤2 mismatches",2.33333333333333
+"525","UP000154903","Merkel cell polyomavirus","Auto","≤3 mismatches",29.6666666666667
+"526","UP000154903","Merkel cell polyomavirus","X","≤1 mismatches",1
+"527","UP000154903","Merkel cell polyomavirus","X","≤2 mismatches",1
+"528","UP000154903","Merkel cell polyomavirus","X","≤3 mismatches",3.66666666666667
+"529","UP000161306","Lagos bat virus","Auto","≤1 mismatches",1
+"530","UP000161306","Lagos bat virus","Auto","≤2 mismatches",1
+"531","UP000161306","Lagos bat virus","Auto","≤3 mismatches",21.3333333333333
+"532","UP000161306","Lagos bat virus","X","≤1 mismatches",1
+"533","UP000161306","Lagos bat virus","X","≤2 mismatches",1.33333333333333
+"534","UP000161306","Lagos bat virus","X","≤3 mismatches",2
+"535","UP000170143","Nipah virus","Auto","≤1 mismatches",1
+"536","UP000170143","Nipah virus","Auto","≤2 mismatches",1
+"537","UP000170143","Nipah virus","Auto","≤3 mismatches",28.6666666666667
+"538","UP000170143","Nipah virus","X","≤1 mismatches",1
+"539","UP000170143","Nipah virus","X","≤2 mismatches",1
+"540","UP000170143","Nipah virus","X","≤3 mismatches",2.66666666666667
+"541","UP000171441","Venezuelan equine encephalitis virus","Auto","≤1 mismatches",1
+"542","UP000171441","Venezuelan equine encephalitis virus","Auto","≤2 mismatches",3
+"543","UP000171441","Venezuelan equine encephalitis virus","Auto","≤3 mismatches",35.6666666666667
+"544","UP000171441","Venezuelan equine encephalitis virus","X","≤1 mismatches",1
+"545","UP000171441","Venezuelan equine encephalitis virus","X","≤2 mismatches",1
+"546","UP000171441","Venezuelan equine encephalitis virus","X","≤3 mismatches",1.33333333333333
+"547","UP000171556","St. louis encephalitis virus","Auto","≤1 mismatches",1
+"548","UP000171556","St. louis encephalitis virus","Auto","≤2 mismatches",1
+"549","UP000171556","St. louis encephalitis virus","Auto","≤3 mismatches",23.6666666666667
+"550","UP000171556","St. louis encephalitis virus","X","≤1 mismatches",1
+"551","UP000171556","St. louis encephalitis virus","X","≤2 mismatches",1
+"552","UP000171556","St. louis encephalitis virus","X","≤3 mismatches",3
+"553","UP000171868","MERS","Auto","≤1 mismatches",1
+"554","UP000171868","MERS","Auto","≤2 mismatches",0.818181818181818
+"555","UP000171868","MERS","Auto","≤3 mismatches",1.07782101167315
+"556","UP000171868","MERS","X","≤1 mismatches",1
+"557","UP000171868","MERS","X","≤2 mismatches",1
+"558","UP000171868","MERS","X","≤3 mismatches",2
+"559","UP000180575","Langat virus","Auto","≤1 mismatches",1
+"560","UP000180575","Langat virus","Auto","≤2 mismatches",1.66666666666667
+"561","UP000180575","Langat virus","Auto","≤3 mismatches",30.3333333333333
+"562","UP000180575","Langat virus","X","≤1 mismatches",1
+"563","UP000180575","Langat virus","X","≤2 mismatches",1
+"564","UP000180575","Langat virus","X","≤3 mismatches",2
+"565","UP000204017","Isfahan virus","Auto","≤1 mismatches",1
+"566","UP000204017","Isfahan virus","Auto","≤2 mismatches",1
+"567","UP000204017","Isfahan virus","Auto","≤3 mismatches",20.3333333333333
+"568","UP000204017","Isfahan virus","X","≤1 mismatches",1
+"569","UP000204017","Isfahan virus","X","≤2 mismatches",1
+"570","UP000204017","Isfahan virus","X","≤3 mismatches",1.33333333333333
+"571","UP000207632","Sandfly fever Turkey virus","Auto","≤1 mismatches",1
+"572","UP000207632","Sandfly fever Turkey virus","Auto","≤2 mismatches",1
+"573","UP000207632","Sandfly fever Turkey virus","Auto","≤3 mismatches",23.6666666666667
+"574","UP000207632","Sandfly fever Turkey virus","X","≤1 mismatches",1
+"575","UP000207632","Sandfly fever Turkey virus","X","≤2 mismatches",1
+"576","UP000207632","Sandfly fever Turkey virus","X","≤3 mismatches",2.33333333333333
+"577","UP000214480","Punta toro phlebovirus","Auto","≤1 mismatches",1
+"578","UP000214480","Punta toro phlebovirus","Auto","≤2 mismatches",1
+"579","UP000214480","Punta toro phlebovirus","Auto","≤3 mismatches",19.3333333333333
+"580","UP000214480","Punta toro phlebovirus","X","≤1 mismatches",1
+"581","UP000214480","Punta toro phlebovirus","X","≤2 mismatches",1
+"582","UP000214480","Punta toro phlebovirus","X","≤3 mismatches",1.66666666666667
+"583","UP000233900","Machupo virus","Auto","≤1 mismatches",1
+"584","UP000233900","Machupo virus","Auto","≤2 mismatches",1.33333333333333
+"585","UP000233900","Machupo virus","Auto","≤3 mismatches",17.6666666666667
+"586","UP000233900","Machupo virus","X","≤1 mismatches",1
+"587","UP000233900","Machupo virus","X","≤2 mismatches",1
+"588","UP000233900","Machupo virus","X","≤3 mismatches",1.66666666666667
+"589","UP000464024","SARS coronavirus 2","Auto","≤1 mismatches",1
+"590","UP000464024","SARS coronavirus 2","Auto","≤2 mismatches",4.33333333333333
+"591","UP000464024","SARS coronavirus 2","Auto","≤3 mismatches",105.666666666667
+"592","UP000464024","SARS coronavirus 2","X","≤1 mismatches",1
+"593","UP000464024","SARS coronavirus 2","X","≤2 mismatches",2.33333333333333
+"594","UP000464024","SARS coronavirus 2","X","≤3 mismatches",5.66666666666667

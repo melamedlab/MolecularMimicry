@@ -1,0 +1,1259 @@
+---
+title: "Biological_Enrichment"
+format: html
+editor: visual
+---
+
+## Figure 4 & 5 - Biological Enrichment
+
+```{r}
+#| warning: false
+library(Biostrings)
+library(tidyverse)
+library(data.table)
+library(dtplyr)
+library(plyr)
+library(readxl)
+library(readr)
+library(RColorBrewer)
+library(openxlsx)
+library(ggbeeswarm)
+library(ggpubr)
+library(scales)
+library(aplot)
+library(cowplot)
+library(biomaRt)
+library(treeio)
+library(ggtree)
+library(ade4)
+library(aplot)
+library(ggbeeswarm)
+library(clusterProfiler)
+library(rstatix)
+library(lemon)
+
+mart <- useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl") ## , mirror = "useast"
+mart_retrieved <- getBM(
+  mart = mart, useCache = T, ## Cached last: 2024-02-24
+  attributes = c(
+    'ensembl_gene_id',
+    'entrezgene_id',
+    'external_gene_name',
+    'uniprot_gn_symbol',
+    'uniprot_gn_id',
+    'chromosome_name',
+    'description'),
+  uniqueRows=TRUE)
+
+source("../../Utilities.R")
+meta_path <- "../../Metadata/"
+metadata <- openxlsx::read.xlsx(paste0(meta_path, "Final_Cohort_Metadata_v5.xlsx"), sheet = 1)
+
+duplicated_proteins <- read_csv(paste0(meta_path, "duplicated_proteins.csv"))
+human_duplicated_proteins <- read_csv(paste0(meta_path, "human_duplicated_or_removed_proteins.csv")) %>%
+  dplyr::rename("uniprot" = 1)
+human_protein_metadata <- read_excel(paste0(meta_path, "uniprot_protein_metadata.xlsx"))
+colnames(human_protein_metadata) <- paste0(gsub(" ", "_", tolower(colnames(human_protein_metadata))), ".human")
+out_dir = "../output/"
+```
+
+## KEGG Enrichment testing
+
+### Actual mimic enrichment
+
+```{r}
+#| eval: false
+setwd("../../12mer_annotated/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".csv.gz", files_to_read)]
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+
+out_final <- list()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file))
+  active_data <- fread(active_file, nThread = 10) %>%
+    as.data.frame() %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot)
+  if(nrow(active_data) == 0){
+    next
+  }
+  Reactome <- enrichKEGG(gene         = unique(active_data$entrezgene_id)[!is.na(unique(active_data$entrezgene_id))],
+                   organism     = 'hsa', 
+                   use_internal_data = FALSE,
+                   pAdjustMethod = "fdr",
+                   pvalueCutoff = 0.05)
+  out_final <- c(out_final, Reactome)
+  names(out_final)[length(out_final)] <- gsub(".*_UP", "UP", gsub("_12mer.*", "", active_file))
+
+}
+saveRDS(out_final, "../Figure4/output/KEGG_results_2024-02-24.rds")
+
+df_out3 <- data.frame()
+for(i in 1:length(out_final)){
+  active_data <- out_final[[i]]@result
+  if(nrow(active_data) == 1 & is.na(active_data$Description[1])){
+    next
+  }
+  active_data$virus <- names(out_final)[i]
+  
+  df_out3 <- rbind.data.frame(df_out3, active_data)
+}
+write.csv(df_out3, "..//Figure4/output/KEGG_results_2024-02-24.csv")
+## Manually add to xlsx doc
+
+plot.data <- df_out3 %>%
+  mutate(p.adjust.manual = p.adjust(pvalue, "fdr")) %>%
+  mutate(virus = gsub("_", " ", virus)) %>%
+  filter(p.adjust.manual <= 0.05) %>%
+  mutate(log10.p.adjust = -log10(p.adjust.manual))
+
+gg2 <- plot.data %>%
+  filter(Description %in% plot.data$Description[duplicated(plot.data$Description)]) %>%
+  ggplot(aes(x=Description, y=virus, size = log10.p.adjust, col = log10.p.adjust)) +
+  geom_point() +
+  theme_classic() +
+  guides(size=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         color=guide_legend("-log10 Transformed\nAdjusted p-values")) +
+  scale_color_gradientn(colors=c("dodgerblue", "#bf5700")) +
+  scale_x_discrete(limits=rev) +
+  theme(panel.grid.major = element_line(color="grey", size=0.1), 
+        axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5,))
+gg2
+
+```
+
+### Motiff Enrichment
+
+```{r}
+#| eval: false
+## A subset analysis on the mimics with a greater frequency than 5
+out_protein_final_count_12mer <- read.csv("../../Key_Data/12mer_proteome_protein_everything_count.csv", row.names = 1) %>%
+  filter(count >= 5) %>%
+  mutate(viral_id = id_split(query_seqname))
+
+setwd("../../12mer_annotated/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".csv.gz", files_to_read)]
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+
+out_final <- list()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file))
+  active_data <- fread(active_file, nThread = 10) %>%
+    as.data.frame() %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    filter(!viral_id %in% out_protein_final_count_12mer$viral_id)
+  if(nrow(active_data) == 0){
+    next
+  }
+  Reactome <- enrichKEGG(gene         = unique(active_data$entrezgene_id)[!is.na(unique(active_data$entrezgene_id))],
+                   organism     = 'hsa', 
+                   use_internal_data = FALSE,
+                   pAdjustMethod = "fdr",
+                   pvalueCutoff = 0.05)
+  out_final <- c(out_final, Reactome)
+  names(out_final)[length(out_final)] <- gsub(".*_UP", "UP", gsub("_12mer.*", "", active_file))
+
+}
+saveRDS(out_final, "../Figure4/output/KEGG_results_2024-02-24_>=5gene_hits.rds")
+
+df_out3 <- data.frame()
+for(i in 1:length(out_final)){
+  active_data <- out_final[[i]]@result
+  if(nrow(active_data) == 1 & is.na(active_data$Description[1])){
+    next
+  }
+  active_data$virus <- names(out_final)[i]
+  
+  df_out3 <- rbind.data.frame(df_out3, active_data)
+}
+write.csv(df_out3, "../Figure4/output/KEGG_results_2024-02-24_>=5gene_hits.csv")
+## Manually add to xlsx document
+```
+
+### Permutation 1
+
+```{r}
+#| eval: false
+setwd("../../../epitope_alignment/Results/Permutation_exp1/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+
+out_final <- list()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file))
+  active_data <- fread(active_file, nThread = 10)
+  
+  if(nrow(active_data) == 0){
+    next
+  }
+  
+  active_data[, uniprot := id_split_fast(target_seqname), by = seq_len(nrow(active_data))]
+  active_data[, viral_id := id_split_fast(query_seqname), by = seq_len(nrow(active_data))]
+  active_data[, mismatches := mismatch_calling_fast(query, target), by = seq_len(nrow(active_data))]
+  
+  active_data <- active_data %>%
+     lazy_dt() %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    left_join(mart_retrieved %>% distinct(uniprot_gn_id, entrezgene_id), by = c("uniprot" = "uniprot_gn_id"),
+              relationship = "many-to-many") %>%
+    as.data.frame()
+  if(nrow(active_data) == 0){
+    next
+  }
+  Reactome <- enrichKEGG(gene         = unique(active_data$entrezgene_id)[!is.na(unique(active_data$entrezgene_id))],
+                   organism     = 'hsa', 
+                   use_internal_data = FALSE,
+                   pAdjustMethod = "fdr",
+                   pvalueCutoff = 0.05)
+  out_final <- c(out_final, Reactome)
+  names(out_final)[length(out_final)] <- gsub(".*_UP", "UP", gsub("_12mer.*", "", active_file))
+
+}
+saveRDS(out_final, "../../../Analysis/Figure4/output/KEGG_results_2024-02-24_perm1.rds")
+
+df_out3 <- data.frame()
+for(i in 1:length(out_final)){
+  active_data <- out_final[[i]]@result
+  if(nrow(active_data) == 1 & is.na(active_data$Description[1])){
+    next
+  }
+  active_data$virus <- names(out_final)[i]
+  
+  df_out3 <- rbind.data.frame(df_out3, active_data)
+}
+write.csv(df_out3, "../../../Analysis/Figure4/output/KEGG_results_2024-02-24_perm1.csv")
+
+df_out3_perm1 <- read.csv("../../../Analysis/Figure4/output/KEGG_results_2024-02-24_perm1.csv")
+
+plot.data_perm1 <- df_out3_perm1 %>%
+  mutate(p.adjust.manual = p.adjust(pvalue, "fdr")) %>%
+  #filter(grepl("virus", virus)) %>%
+  mutate(virus = gsub("_", " ", virus)) %>%
+  filter(p.adjust.manual <= 0.05) %>%
+  mutate(log10.p.adjust = -log10(p.adjust.manual)) #%>%
+
+
+gg2 <- plot.data_perm1 %>%
+  filter(Description %in% plot.data_perm1$Description[duplicated(plot.data_perm1$Description)]) %>%
+  ggplot(aes(x=Description, y=virus, size = log10.p.adjust, col = log10.p.adjust)) +
+  geom_point() +
+  theme_classic() +
+  guides(size=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         color=guide_legend("-log10 Transformed\nAdjusted p-values")) +
+  scale_color_gradientn(colors=c("dodgerblue", "#bf5700")) +
+  scale_x_discrete(limits=rev) +
+  theme(panel.grid.major = element_line(color="grey", size=0.1), 
+        axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5,))
+gg2
+
+```
+
+### Permutation 2
+
+```{r}
+#| eval: false
+setwd("../../../epitope_alignment/Results/Permutation_exp2/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+## For testing purposes use this subset
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+
+out_final <- list()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file))
+  active_data <- fread(active_file, nThread = 10)
+  
+  active_data[, uniprot := id_split_fast(target_seqname), by = seq_len(nrow(active_data))]
+  active_data[, viral_id := id_split_fast(query_seqname), by = seq_len(nrow(active_data))]
+  active_data[, mismatches := mismatch_calling_fast(query, target), by = seq_len(nrow(active_data))]
+  
+  active_data <- active_data %>%
+     lazy_dt() %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    left_join(mart_retrieved %>% distinct(uniprot_gn_id, entrezgene_id), by = c("uniprot" = "uniprot_gn_id"),
+              relationship = "many-to-many") %>%
+    as.data.frame()
+  if(nrow(active_data) == 0){
+    next
+  }
+  Reactome <- enrichKEGG(gene         = unique(active_data$entrezgene_id)[!is.na(unique(active_data$entrezgene_id))],
+                   organism     = 'hsa', 
+                   use_internal_data = FALSE,
+                   pAdjustMethod = "fdr",
+                   pvalueCutoff = 0.05)
+  out_final <- c(out_final, Reactome)
+  names(out_final)[length(out_final)] <- gsub(".*_UP", "UP", gsub("_12mer.*", "", active_file))
+
+}
+saveRDS(out_final, "../../../Analysis/Figure4/output/KEGG_results_2024-02-24_perm2.rds")
+
+df_out3 <- data.frame()
+for(i in 1:length(out_final)){
+  active_data <- out_final[[i]]@result
+  if(nrow(active_data) == 1 & is.na(active_data$Description[1])){
+    next
+  }
+  active_data$virus <- names(out_final)[i]
+  
+  df_out3 <- rbind.data.frame(df_out3, active_data)
+}
+write.csv(df_out3, "../../../Analysis/Figure4/output/KEGG_results_2024-02-24_perm2.csv")
+
+df_out3_perm2 <- read.csv("../../../Analysis/Figure4/output/KEGG_results_2024-02-24_perm2.csv")
+
+plot.data_perm2 <- df_out3_perm2 %>%
+  mutate(p.adjust.manual = p.adjust(pvalue, "fdr")) %>%
+  #filter(grepl("virus", virus)) %>%
+  mutate(virus = gsub("_", " ", virus)) %>%
+  filter(p.adjust.manual <= 0.05) %>%
+  mutate(log10.p.adjust = -log10(p.adjust.manual)) #%>%
+
+
+gg2 <- plot.data_perm2 %>%
+  filter(Description %in% plot.data_perm2$Description[duplicated(plot.data_perm2$Description)]) %>%
+  ggplot(aes(x=Description, y=virus, size = log10.p.adjust, col = log10.p.adjust)) +
+  geom_point() +
+  theme_classic() +
+  guides(size=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         color=guide_legend("-log10 Transformed\nAdjusted p-values")) +
+  scale_color_gradientn(colors=c("dodgerblue", "#bf5700")) +
+  scale_x_discrete(limits=rev) +
+  theme(panel.grid.major = element_line(color="grey", size=0.1), 
+        axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5,))
+gg2
+
+```
+
+### Permutation 3
+
+```{r}
+#| eval: false
+setwd("../../../epitope_alignment/Results/Permutation_exp3/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+
+out_final <- list()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file))
+  active_data <- fread(active_file, nThread = 10)
+  
+  active_data[, uniprot := id_split_fast(target_seqname), by = seq_len(nrow(active_data))]
+  active_data[, viral_id := id_split_fast(query_seqname), by = seq_len(nrow(active_data))]
+  active_data[, mismatches := mismatch_calling_fast(query, target), by = seq_len(nrow(active_data))]
+  
+  active_data <- active_data %>%
+     lazy_dt() %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    left_join(mart_retrieved %>% distinct(uniprot_gn_id, entrezgene_id), by = c("uniprot" = "uniprot_gn_id"),
+              relationship = "many-to-many") %>%
+    as.data.frame()
+  if(nrow(active_data) == 0){
+    next
+  }
+  Reactome <- enrichKEGG(gene         = unique(active_data$entrezgene_id)[!is.na(unique(active_data$entrezgene_id))],
+                   organism     = 'hsa', 
+                   use_internal_data = FALSE,
+                   pAdjustMethod = "fdr",
+                   pvalueCutoff = 0.05)
+  out_final <- c(out_final, Reactome)
+  names(out_final)[length(out_final)] <- gsub(".*_UP", "UP", gsub("_12mer.*", "", active_file))
+
+}
+saveRDS(out_final, "../../../Analysis/Figure4/output/KEGG_results_2024-02-24_perm3.rds")
+
+df_out3 <- data.frame()
+for(i in 1:length(out_final)){
+  active_data <- out_final[[i]]@result
+  if(nrow(active_data) == 1 & is.na(active_data$Description[1])){
+    next
+  }
+  active_data$virus <- names(out_final)[i]
+  
+  df_out3 <- rbind.data.frame(df_out3, active_data)
+}
+write.csv(df_out3, "../../../Figure4/output/KEGG_results_2024-02-24_perm3.csv")
+
+df_out3_perm3 <- read.csv("../../../Figure4/output/KEGG_results_2024-02-24_perm3.csv")
+
+plot.data_perm2 <- df_out3_perm3 %>%
+  mutate(p.adjust.manual = p.adjust(pvalue, "fdr")) %>%
+  mutate(virus = gsub("_", " ", virus)) %>%
+  filter(p.adjust.manual <= 0.05) %>%
+  mutate(log10.p.adjust = -log10(p.adjust.manual))
+
+
+gg2 <- plot.data_perm2 %>%
+  filter(Description %in% plot.data_perm2$Description[duplicated(plot.data_perm2$Description)]) %>%
+  ggplot(aes(x=Description, y=virus, size = log10.p.adjust, col = log10.p.adjust)) +
+  geom_point() +
+  theme_classic() +
+  guides(size=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         color=guide_legend("-log10 Transformed\nAdjusted p-values")) +
+  scale_color_gradientn(colors=c("dodgerblue", "#bf5700")) +
+  scale_x_discrete(limits=rev) +
+  theme(panel.grid.major = element_line(color="grey", size=0.1), 
+        axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5,))
+gg2
+
+```
+
+### Figure 4
+
+```{r, fig.width =9, fig.height = 12}
+#| warning: false
+enrichment_res <- read.csv("../output/KEGG_results_2024-02-24.csv")
+perm2_enrichment_res <- read.csv("../output/KEGG_results_2024-02-24_perm2.csv")
+motiff_enrichment_res <- read.csv("../output/KEGG_results_2024-02-24_>=5gene_hits.csv")
+
+plot.data_perm2 <- perm2_enrichment_res %>%
+  mutate(p.adjust.manual.perm2 = p.adjust(pvalue, "fdr")) %>%
+  mutate(virus = gsub("_", " ", virus)) %>%
+  filter(p.adjust.manual.perm2 <= 0.05) %>%
+  distinct(virus, ID, Description, p.adjust.manual.perm2)
+
+### If the pathway was not found in the reverse permutation, outline it in the original figure
+plot.data <- enrichment_res %>%
+  #mutate(p.adjust.manual = p.adjust(pvalue, "fdr")) %>%
+  mutate(p.adjust.manual = p.adjust) %>%
+  mutate(virus = gsub("_", " ", virus)) %>%
+  filter(p.adjust.manual <= 0.05) %>%
+  mutate(log10.p.adjust = -log10(p.adjust.manual)) %>%
+  full_join(plot.data_perm2) %>%
+  mutate(not_found_in_perm2 = ifelse(is.na(p.adjust.manual.perm2), "Not Found", "Found")) %>%
+  filter(!is.na(p.adjust))
+
+cluster_order <-plot.data %>%
+  distinct(Description, virus, p.adjust) %>%
+  mutate(p.adjust = -log10(p.adjust)) %>%
+  pivot_wider(id_cols = Description, names_from = virus, values_from = p.adjust) %>%
+  column_to_rownames("Description")
+cluster_order[is.na(cluster_order)] <- 0
+heir_cluster <- hclust(vegan::vegdist(cluster_order,method="jaccard"))
+```
+
+```{r, fig.height = 10, fig.width = 12}
+#| warning: false
+freq_df <- as.data.frame(table(plot.data$ID))
+
+taxa <- metadata %>% as.data.frame() %>%
+  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  filter(Proteome.ID %in% plot.data$virus[plot.data$ID %in% freq_df$Var1[freq_df$Freq >= 3]]) %>%
+  column_to_rownames("Taxon.mnemonic") %>%
+  dplyr::select(family, order, class, phylum, kingdom) %>%
+  as.data.frame()
+taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
+taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
+
+check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
+rownames(check) <- rownames(taxa)
+check <- check[complete.cases(check),]
+tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
+tax.phy <- as.phylo(tmp)
+
+gg_tree <- ggtree(tax.phy, branch.length='none')
+gg_tree[["data"]] <- gg_tree[["data"]] %>% 
+  left_join(metadata %>%
+               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
+
+gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
+   scale_fill_manual(values = Family_palette_v2)
+
+gg1 <- plot.data %>%
+  left_join(motiff_enrichment_res %>% distinct(virus, Description) %>% mutate(Motiff_bound = TRUE)) %>%
+  filter(ID %in% freq_df$Var1[freq_df$Freq >= 3]) %>%
+  left_join(metadata %>% dplyr::select(Proteome.ID, Pathogen, `Taxon.mnemonic`, `Organism`, Family_Viral_Zone) %>%
+              dplyr::rename("virus" = "Proteome.ID")) %>%
+  arrange(Family_Viral_Zone) %>%
+  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `virus`, Taxon.mnemonic)) %>%
+  mutate(Description = factor(Description, heir_cluster[["labels"]])) %>%
+  ggplot(aes(x=Taxon.mnemonic, y=Description, size = log10.p.adjust, fill = log10.p.adjust)) +
+  geom_point(aes(color = not_found_in_perm2), shape = 21) +
+  geom_point(data = . %>% filter(Motiff_bound), shape = 4) +
+  theme_classic() +
+  guides(size=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         color=guide_legend("Not found in\npermuted sets")) +
+  scale_fill_gradientn(colors=c("dodgerblue", "red"), name = "-log10 Transformed\nAdjusted p-values") +
+  scale_color_manual(values = c( "00FFFFFF", "black")) +
+  theme(panel.grid.major = element_line(color="grey", size=0.1), 
+        axis.text.x = element_text(angle=90, vjust = 0.5, hjust=1),
+        axis.text.y = element_text(size = 10),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  ylab(" ") + 
+  scale_y_discrete(position = "right")
+
+gg1
+
+gg1 %>% insert_bottom(gg_tree + coord_flip(), height =  c(0.07))
+ggsave(paste0(out_dir, "Figure4A.pdf"), width = 12, height = 10)
+
+write.csv(gg1$data, paste0(out_dir, "Figure4a_datapoints.csv"))
+```
+
+### Panel 5A
+
+```{r}
+#| warning: false
+filter_nonsig_clusterProfiler <- function(out_list, threshold = 0.05, pathway_list){
+  for(i in 1:length(out_list)){
+    out_list[[i]]@result <- out_list[[i]]@result %>% filter(p.adjust <= threshold)
+    if(nrow(out_list[[i]]@result) == 0){
+       names(out_list)[i] <- paste0(names(out_list[i]), "Remove")
+    } else {
+      out_list[[i]]@geneSets <- out_list[[i]]@geneSets[names(out_list[[i]]@geneSets) %in% out_list[[i]]@result$ID]
+    }
+    
+  }
+  
+  if(!missing(pathway_list)){
+    for(i in 1:length(out_list)){
+      out_list[[i]]@result <- out_list[[i]]@result %>% filter(ID %in% pathway_list)
+      if(nrow(out_list[[i]]@result) == 0){
+         names(out_list)[i] <- paste0(names(out_list[i]), "Remove")
+      } else {
+        out_list[[i]]@geneSets <- out_list[[i]]@geneSets[names(out_list[[i]]@geneSets) %in% out_list[[i]]@result$ID]
+      }
+    
+   }
+  }
+  
+  out_list <- out_list[!grepl("Remove", names(out_list) )]
+}
+
+out_final <- readRDS("../output/KEGG_results_2024-02-24.rds")
+pathways_selected <- plot.data %>%
+  filter(ID %in% freq_df$Var1[freq_df$Freq >= 3])
+out_final_filtered <- filter_nonsig_clusterProfiler(out_final, threshold = 0.001, pathway_list = pathways_selected$ID)
+## Because of the way we are running the pie charts, the viruses
+## need to be sorted by viral families
+out_final_filtered <- out_final_filtered[order(metadata$Family_Viral_Zone[ match(names(out_final_filtered), metadata$`Proteome.ID`)])]
+total_enrichment <- merge_result(out_final_filtered)
+
+color_vec <- rep(NA, length(out_final_filtered))
+names(color_vec) <- levels(total_enrichment@compareClusterResult$Cluster)
+color_vec <- metadata$Family_Viral_Zone[match(names(color_vec), metadata$`Proteome.ID`)]
+color_vec_r <- Family_palette_v2[match(color_vec, names(Family_palette_v2))]
+color_vec_r[is.na(color_vec_r)] <- "lightgray"
+names(color_vec_r) <- levels(total_enrichment@compareClusterResult$Cluster)
+
+cnetplot(total_enrichment, node_label="category",
+         cex_category = 10,
+         cex_line = 0.25, shadowtext = "none",
+         cex.params = list(category_label = 1.2,edge = TRUE), showCategory =25,
+         layout = "kk") +
+  scale_fill_manual(values = color_vec_r)+
+  theme(legend.position = "none")
+ggsave(paste0(out_dir, "Figure5A.pdf"), width = 5, height = 5)
+```
+
+## Autosome, X, and Y Chromosome encoding analysis
+
+### Actual Chromosome Mapping
+
+```{r}
+#| warning: false
+#| message: false
+#| eval: false
+setwd("../../12mer_annotated/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".csv.gz", files_to_read)]
+## For testing purposes use this subset
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+
+X_Y = FALSE
+
+out_final <- list()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file))
+  active_data <- fread(active_file, nThread = 10)
+  if(nrow(active_data) == 0){
+    next
+  }
+  
+  ## Filter out any duplicated proteins, identified in 
+  ## ../../Scripts/Duplicate_Protein_Screen.R
+  active_data <- active_data %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    as.data.frame() %>%
+    dplyr::select(-chromosome_name) %>%
+    left_join(human_protein_metadata %>% distinct(entry.human, proteomes.human) %>%
+                mutate(chromosome_name = gsub(".* ", "", proteomes.human)) %>%
+                dplyr::select(entry.human, chromosome_name), by = c("uniprot" = "entry.human"))
+
+  if(X_Y){
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      group_by(query, query_seqname, query_start) %>%
+      dplyr::summarize(chromosome_name = paste(chromosome_name, collapse = "&")) %>%
+      mutate(chromosome_name = gsub("&Unplaced", "", chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  } else {
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  }
+   ## These lines basically say if a 12mer mimics multiple things and one thing is a mimic and the others are not, then ignore then call the 12mer a mTEC mimic
+    active_data_chromo <- active_data %>%
+      group_by(query_seqname, query_start) %>%
+      slice_min(mismatches) %>%
+      distinct(query_seqname, query_start, mismatches) %>%
+      left_join(chrome_unique) %>%
+      filter(!is.na(chromosome_name)) %>%
+     group_by(chromosome_name, mismatches) %>%
+     dplyr::summarize(count = n()) %>%
+      mutate(pathogen = active_file)
+   
+  out_final <- rbind.data.frame(out_final, active_data_chromo)
+
+}
+
+write.csv(out_final, "../output/true_chromosome_mapping.csv")
+```
+
+### Permutation Evaluations
+
+##### Permutation 1
+
+```{r}
+#| warning: false
+#| message: false
+#| eval: false
+### Now do the rate count in the Permuted Proteomes
+setwd("../../../epitope_alignment/Results/Permutation_exp1/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+## For testing purposes use this subset
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+X_Y = FALSE
+out_final_perm1 <- data.frame()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " ",
+               match(active_file, files_to_read), "/", length(files_to_read)))
+  active_data <- read_tsv(active_file)
+  if(nrow(active_data) == 0){
+    next
+  }
+  active_data$mismatches <- apply(active_data, 1, function(x){DNA_Diff(x[1], x[6])})
+  active_data$mismatches <- factor(active_data$mismatches, c("0", "1", "2", "3"))
+  active_data$uniprot <- sapply(strsplit(active_data$target_seqname, split="\\|"), function(x) paste(x[2]))
+  active_data$viral_id <- sapply(strsplit(active_data$query_seqname, split="\\|"), function(x) paste(x[2]))
+   ## Filter out any duplicated proteins, identified in 
+  ## ../../Scripts/Duplicate_Protein_Screen.R
+  active_data <- active_data %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    as.data.frame() %>%
+    left_join(human_protein_metadata %>% distinct(entry.human, proteomes.human) %>%
+                mutate(chromosome_name = gsub(".* ", "", proteomes.human)) %>%
+                dplyr::select(entry.human, chromosome_name), by = c("uniprot" = "entry.human"))
+
+    if(X_Y){
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      group_by(query, query_seqname, query_start) %>%
+      dplyr::summarize(chromosome_name = paste(chromosome_name, collapse = "&")) %>%
+      mutate(chromosome_name = gsub("&Unplaced", "", chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  } else {
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  }
+  
+   ## These lines basically say if a 12mer mimics multiple things and one thing is a mimic and the others are not, then ignore then call the 12mer a mTEC mimic
+    active_data_chromo <- active_data %>%
+      group_by(query_seqname, query_start) %>%
+      slice_min(mismatches) %>%
+      distinct(query_seqname, query_start, mismatches) %>%
+      left_join(chrome_unique) %>%
+      filter(!is.na(chromosome_name)) %>%
+     group_by(chromosome_name, mismatches) %>%
+     dplyr::summarize(count = n()) %>%
+      mutate(pathogen = active_file)
+   
+  out_final_perm1 <- rbind.data.frame(out_final_perm1, active_data_chromo)
+
+}
+write.csv(out_final_perm1, "../output/perm1_random_chromosome.csv")
+```
+
+##### Permutation 2
+
+```{r}
+#| warning: false
+#| message: false
+#| eval: false
+### Now do the rate count in the Permuted Proteomes
+setwd("../../../epitope_alignment/Results/Permutation_exp2/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+## For testing purposes use this subset
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+X_Y = FALSE
+out_final_perm2 <- data.frame()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " ",
+               match(active_file, files_to_read), "/", length(files_to_read)))
+  active_data <- read_tsv(active_file)
+  if(nrow(active_data) == 0){
+    next
+  }
+  active_data$mismatches <- apply(active_data, 1, function(x){DNA_Diff(x[1], x[6])})
+  active_data$mismatches <- factor(active_data$mismatches, c("0", "1", "2", "3"))
+  active_data$uniprot <- sapply(strsplit(active_data$target_seqname, split="\\|"), function(x) paste(x[2]))
+  active_data$viral_id <- sapply(strsplit(active_data$query_seqname, split="\\|"), function(x) paste(x[2]))
+   ## Filter out any duplicated proteins, identified in 
+  ## ../../Scripts/Duplicate_Protein_Screen.R
+  active_data <- active_data %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    as.data.frame() %>%
+    left_join(human_protein_metadata %>% distinct(entry.human, proteomes.human) %>%
+                mutate(chromosome_name = gsub(".* ", "", proteomes.human)) %>%
+                dplyr::select(entry.human, chromosome_name), by = c("uniprot" = "entry.human"))
+
+    if(X_Y){
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      group_by(query, query_seqname, query_start) %>%
+      dplyr::summarize(chromosome_name = paste(chromosome_name, collapse = "&")) %>%
+      mutate(chromosome_name = gsub("&Unplaced", "", chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  } else {
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  }
+  
+   ## These lines basically say if a 12mer mimics multiple things and one thing is a mimic and the others are not, then ignore then call the 12mer a mTEC mimic
+    active_data_chromo <- active_data %>%
+      group_by(query_seqname, query_start) %>%
+      slice_min(mismatches) %>%
+      distinct(query_seqname, query_start, mismatches) %>%
+      left_join(chrome_unique) %>%
+      filter(!is.na(chromosome_name)) %>%
+     group_by(chromosome_name, mismatches) %>%
+     dplyr::summarize(count = n()) %>%
+      mutate(pathogen = active_file)
+   
+  out_final_perm2 <- rbind.data.frame(out_final_perm2, active_data_chromo)
+
+}
+write.csv(out_final_perm2, "../output/perm2_rev_chromosome.csv")
+```
+
+##### Permutation 3
+
+```{r}
+#| warning: false
+#| message: false
+#| eval: false
+### Now do the rate count in the Permuted Proteomes
+setwd("../../../epitope_alignment/Results/Permutation_exp3/")
+files_to_read <- list.files()
+files_to_read <- files_to_read[grepl(".tsv", files_to_read)]
+## For testing purposes use this subset
+files_to_read <- files_to_read[grepl(paste(metadata$Proteome.ID[metadata$superkingdom == "Viruses"], collapse = "|"), files_to_read)]
+X_Y = FALSE
+out_final_perm3 <- data.frame()
+for(active_file in files_to_read){
+  print(paste0("Starting ", active_file, " ",
+               match(active_file, files_to_read), "/", length(files_to_read)))
+  active_data <- read_tsv(active_file)
+  if(nrow(active_data) == 0){
+    next
+  }
+  active_data$mismatches <- apply(active_data, 1, function(x){DNA_Diff(x[1], x[6])})
+  active_data$mismatches <- factor(active_data$mismatches, c("0", "1", "2", "3"))
+  active_data$uniprot <- sapply(strsplit(active_data$target_seqname, split="\\|"), function(x) paste(x[2]))
+  active_data$viral_id <- sapply(strsplit(active_data$query_seqname, split="\\|"), function(x) paste(x[2]))
+   ## Filter out any duplicated proteins, identified in 
+  ## ../../Scripts/Duplicate_Protein_Screen.R
+  active_data <- active_data %>%
+    filter(!viral_id %in% duplicated_proteins$viral_uniprot) %>%
+    filter(!uniprot %in% human_duplicated_proteins$uniprot) %>%
+    as.data.frame() %>%
+    left_join(human_protein_metadata %>% distinct(entry.human, proteomes.human) %>%
+                mutate(chromosome_name = gsub(".* ", "", proteomes.human)) %>%
+                dplyr::select(entry.human, chromosome_name), by = c("uniprot" = "entry.human"))
+
+    if(X_Y){
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      group_by(query, query_seqname, query_start) %>%
+      dplyr::summarize(chromosome_name = paste(chromosome_name, collapse = "&")) %>%
+      mutate(chromosome_name = gsub("&Unplaced", "", chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  } else {
+    chrome_unique <- active_data %>% distinct(query, query_seqname, query_start, chromosome_name) %>%
+      mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+      distinct(query, query_seqname, query_start, chromosome_name) %>%
+      arrange(query, query_seqname, query_start, chromosome_name) %>%
+      filter(!is.na(chromosome_name)) %>%
+      filter(chromosome_name != "Unplaced")
+  }
+  
+   ## These lines basically say if a 12mer mimics multiple things and one thing is a mimic and the others are not, then ignore then call the 12mer a mTEC mimic
+    active_data_chromo <- active_data %>%
+      group_by(query_seqname, query_start) %>%
+      slice_min(mismatches) %>%
+      distinct(query_seqname, query_start, mismatches) %>%
+      left_join(chrome_unique) %>%
+      filter(!is.na(chromosome_name)) %>%
+     group_by(chromosome_name, mismatches) %>%
+     dplyr::summarize(count = n()) %>%
+      mutate(pathogen = active_file)
+   
+  out_final_perm3 <- rbind.data.frame(out_final_perm3, active_data_chromo)
+
+}
+write.csv(out_final_perm3, "../output/perm3_class_shuffle_chromosome.csv")
+```
+
+### Panel 5b
+
+```{r, fig.width = 7, fig.height = 4}
+#| warning: false
+out_final <- read.csv("../output/true_chromosome_mapping.csv", row.names = 1)
+out_final$Proteome.ID <- gsub(".*_UP", "UP", gsub("_12mer.*", "", out_final$pathogen))
+out_final_perm2 <- read.csv("../output/perm2_rev_chromosome.csv", row.names = 1)
+out_final_perm2$Proteome.ID <- gsub(".*_UP", "UP", gsub("_12mer.*", "", out_final_perm2$pathogen))
+
+reversed_results <- out_final %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c("1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+  left_join(out_final_perm2 %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c( "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum( `1`, `2`, `3`,na.rm = T),
+         `2` = sum( `1`, `2`,na.rm = T),
+         `1` = sum( `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c( "1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+    dplyr::select(-pathogen), by = c("chromosome_name","Proteome.ID", "mismatches"), suffix = c(".true", ".permuted")) %>%
+  mutate(count.true = ifelse(is.na(count.true), 0, count.true))%>%
+  mutate(count.permuted = ifelse(is.na(count.permuted), 0, count.permuted)) %>%
+  mutate(FC = (count.true + 3)/(count.permuted + 3)) %>%
+ # filter(chromosome_name %in% c(1:22, "Y", "X")) %>%
+  #mutate(chromosome_name = ifelse(chromosome_name %in% c(1:22), "Auto", chromosome_name)) %>%
+  group_by(chromosome_name, mismatches, Proteome.ID) %>%
+  dplyr::summarize(median = median(FC))
+
+pd <- position_dodge(0.4)
+
+testing_data <- out_final %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c("1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+  left_join(out_final_perm2 %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c( "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum( `1`, `2`, `3`,na.rm = T),
+         `2` = sum( `1`, `2`,na.rm = T),
+         `1` = sum( `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c( "1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+    dplyr::select(-pathogen), by = c("chromosome_name","Proteome.ID", "mismatches"), suffix = c(".true", ".permuted")) %>%
+  mutate(count.true = ifelse(is.na(count.true), 0, count.true))%>%
+  mutate(count.permuted = ifelse(is.na(count.permuted), 0, count.permuted)) %>%
+  mutate(FC = (count.true + 3)/(count.permuted + 3)) %>%
+  left_join(metadata, by = c("Proteome.ID")) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  arrange(Proteome.ID, Family_Viral_Zone, chromosome_name) %>%
+  filter(chromosome_name != "Mitochondrion") %>%
+  mutate(mismatches = paste0("≤", mismatches, " mismatches")) 
+
+supp_data <- testing_data %>%
+  #filter(!(count.true == 0 & count.permuted == 0)) %>%
+  distinct(chromosome_name, FC, pathogen, Proteome.ID, mismatches) %>%
+  pivot_wider(names_from = chromosome_name, values_from = FC, id_cols = c(pathogen, Proteome.ID, mismatches))
+check <- compare_means(data = supp_data %>%pivot_longer(cols = c(Auto, X, Y)), value ~ name, paired = TRUE,
+                       group.by = "mismatches") %>%
+  mutate(y.position = c(2.75, 2.5, 2.25, 2.75, 2.5, 2.25,2.75, 2.5, 2.25)) %>%
+  add_significance("p.adj")
+
+xlsx::write.xlsx(supp_data, paste0(out_dir, "SupplementalData6_part1.xlsx"), sheetName = "Perm2_Chr_Data",  append = FALSE)
+
+## sort dataframe by group then by x
+reversed_results %>%
+  left_join(metadata, by = c("Proteome.ID")) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  arrange(Proteome.ID, Family_Viral_Zone, chromosome_name) %>%
+  filter(chromosome_name != "Mitochondrion") %>%
+  mutate(mismatches = paste0("≤", mismatches, " mismatches")) %>%
+  ggplot(aes(x=chromosome_name, y=median, group = Proteome.ID)) +
+  geom_line(alpha = 0.1,position = pd) +
+  geom_point(alpha = 0.8, aes(color = Family_Viral_Zone), position = pd) +
+  scale_color_manual(values = Family_palette_v2) +
+  theme_classic() +
+  facet_wrap(~mismatches,ncol = 2) +
+  scale_y_continuous(trans = log10_trans(),
+     breaks = trans_breaks("log10", function(x) round(10^x, 3))) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  ylab("FC of 12mers compared\nto Perm 2") +
+  xlab("Chromosome") +
+  #stat_compare_means(comparisons = list(c("Auto", "Y"), c("X", "Y"))) +
+  stat_pvalue_manual(check,label = "p.adj.signif") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+        legend.key.height= unit(0.4, 'cm'),
+        legend.key.width= unit(0.4, 'cm'),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  coord_cartesian(ylim = c(0.316,800))
+ggsave(paste0(out_dir, "Figure5B.pdf"), width =5.5, height = 5)
+```
+
+## Supplemental Materials
+
+## Figure S4
+
+```{r}
+
+taxa <- metadata %>% as.data.frame() %>%
+  mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+  filter(Proteome.ID %in% plot.data$virus) %>%
+  column_to_rownames("Taxon.mnemonic") %>%
+  dplyr::select(family, order, class, phylum, kingdom) %>%
+  as.data.frame()
+taxa[taxa$family == "Anelloviridae",] <- "Anelloviridae"
+taxa[taxa$family == "Kolmioviridae",] <- "Kolmioviridae"
+
+check <- as.data.frame(lapply(taxa, as.factor), stringsAsFactors =TRUE)
+rownames(check) <- rownames(taxa)
+check <- check[complete.cases(check),]
+tmp <- taxo2phylog(as.taxo(check), root="Root", abbrev=F)
+tax.phy <- as.phylo(tmp)
+
+gg_tree <- ggtree(tax.phy, branch.length='none')
+gg_tree[["data"]] <- gg_tree[["data"]] %>% 
+  left_join(metadata %>%
+               mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `Proteome.ID`, Taxon.mnemonic)) %>%
+    dplyr::select(Taxon.mnemonic, family), by = c("label" = "Taxon.mnemonic"))
+
+gg_tree <-  gg_tree + geom_hilight(mapping=aes(subset = family %in% names(Family_palette_v2),fill = family), alpha = 0.8) +
+   scale_fill_manual(values = Family_palette_v2)
+
+ggsupp <- plot.data %>%
+  left_join(motiff_enrichment_res %>% distinct(virus, Description) %>% mutate(Motiff_bound = TRUE)) %>%
+  left_join(metadata %>% dplyr::select(Proteome.ID, Pathogen, `Taxon.mnemonic`, `Organism`, Family_Viral_Zone) %>%
+              dplyr::rename("virus" = "Proteome.ID")) %>%
+   mutate(Taxon.mnemonic = ifelse(is.na(Taxon.mnemonic),
+                                 "Simian virus 5", Taxon.mnemonic)) %>%
+  mutate(Taxon.mnemonic = ifelse(Taxon.mnemonic == "null",
+                                 `virus`, Taxon.mnemonic)) %>%
+  arrange(Family_Viral_Zone) %>%
+  mutate(Description = factor(Description, heir_cluster[["labels"]])) %>%
+  ggplot(aes(x=Taxon.mnemonic, y=Description, size = log10.p.adjust, fill = log10.p.adjust)) +
+  geom_point(aes(color = not_found_in_perm2), shape = 21) +
+  geom_point(data = . %>% filter(Motiff_bound), shape = 4) +
+  theme_classic() +
+  guides(size=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         #fill=guide_legend("-log10 Transformed\nAdjusted p-values"),
+         color=guide_legend("Not found in\npermuted sets")) +
+  scale_fill_gradientn(colors=c("dodgerblue", "red"), name = "-log10 Transformed\nAdjusted p-values") +
+  scale_color_manual(values = c( "00FFFFFF", "black")) +
+  scale_y_discrete(limits=rev) +
+  theme(panel.grid.major = element_line(color="grey", size=0.1), 
+        axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5),
+        axis.title.x = element_blank())
+
+ggsupp
+
+ggsupp %>% insert_bottom(gg_tree +coord_flip(),height =  c(0.05))
+ggsave(paste0(out_dir, "FigureS4.pdf"), width = 12, height = 24)
+
+```
+
+## Figure S5
+
+Heatmap of mimicry of human proteins by cell type, tissue, and organ system, using mapping from the human protein atlas. The code for this supplemental figure is in the other quato markdown document in this folder.
+
+## Figure S6
+
+### Permutation 1
+
+```{r}
+#| warning: false
+out_final <- read.csv("../output/true_chromosome_mapping.csv", row.names = 1)
+out_final$Proteome.ID <- gsub(".*_UP", "UP", gsub("_12mer.*", "", out_final$pathogen))
+out_final_perm1 <- read.csv("../output/perm1_random_chromosome.csv", row.names = 1)
+out_final_perm1$Proteome.ID <- gsub(".*_UP", "UP", gsub("_12mer.*", "", out_final_perm1$pathogen))
+
+reversed_results <- out_final %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c("1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+  left_join(out_final_perm1 %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c( "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum( `1`, `2`, `3`,na.rm = T),
+         `2` = sum( `1`, `2`,na.rm = T),
+         `1` = sum( `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c( "1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+    dplyr::select(-pathogen), by = c("chromosome_name","Proteome.ID", "mismatches"), suffix = c(".true", ".permuted")) %>%
+  mutate(count.true = ifelse(is.na(count.true), 0, count.true))%>%
+  mutate(count.permuted = ifelse(is.na(count.permuted), 0, count.permuted)) %>%
+  mutate(FC = (count.true + 3)/(count.permuted + 3)) %>%
+  group_by(chromosome_name, mismatches, Proteome.ID) %>%
+  dplyr::summarize(median = median(FC))
+
+pd <- position_dodge(0.4)
+
+testing_data <- out_final %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c("1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+  left_join(out_final_perm1 %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c( "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum( `1`, `2`, `3`,na.rm = T),
+         `2` = sum( `1`, `2`,na.rm = T),
+         `1` = sum( `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c( "1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+    dplyr::select(-pathogen), by = c("chromosome_name","Proteome.ID", "mismatches"), suffix = c(".true", ".permuted")) %>%
+  mutate(count.true = ifelse(is.na(count.true), 0, count.true))%>%
+  mutate(count.permuted = ifelse(is.na(count.permuted), 0, count.permuted)) %>%
+  mutate(FC = (count.true + 3)/(count.permuted + 3)) %>%
+  left_join(metadata, by = c("Proteome.ID")) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  arrange(Proteome.ID, Family_Viral_Zone, chromosome_name) %>%
+  filter(chromosome_name != "Mitochondrion") %>%
+  mutate(mismatches = paste0("≤", mismatches, " mismatches")) 
+
+write.csv(testing_data %>% dplyr::select(Proteome.ID, Pathogen, chromosome_name, mismatches, FC), paste0(out_dir, "FigureS6a_datapoints.csv"))
+
+supp_data <- testing_data %>%
+  #filter(!(count.true == 0 & count.permuted == 0)) %>%
+  distinct(chromosome_name, FC, pathogen, Proteome.ID, mismatches) %>%
+  pivot_wider(names_from = chromosome_name, values_from = FC, id_cols = c(pathogen, Proteome.ID, mismatches))
+check <- compare_means(data = supp_data %>%pivot_longer(cols = c(Auto, X, Y)), value ~ name, paired = TRUE,
+                       group.by = "mismatches") %>%
+  mutate(y.position = c(2.75, 2.5, 2.25, 2.75, 2.5, 2.25,2.75, 2.5, 2.25)) %>%
+  add_significance("p.adj")
+
+xlsx::write.xlsx(supp_data, paste0(out_dir, "SupplementalData6_part1.xlsx"),
+                  sheetName = "Perm1_Chr_Data", append = TRUE)
+
+## sort dataframe by group then by x
+ggS6A <- reversed_results %>%
+  left_join(metadata, by = c("Proteome.ID")) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  arrange(Proteome.ID, Family_Viral_Zone, chromosome_name) %>%
+  filter(chromosome_name != "Mitochondrion") %>%
+  mutate(mismatches = paste0("≤", mismatches, " mismatches")) %>%
+  ggplot(aes(x=chromosome_name, y=median, group = Proteome.ID)) +
+  geom_line(alpha = 0.1,position = pd) +
+  geom_point(alpha = 0.8, aes(color = Family_Viral_Zone), position = pd) +
+  scale_color_manual(values = Family_palette_v2) +
+  theme_classic() +
+  facet_wrap(~mismatches,ncol = 2) +
+  scale_y_continuous(trans = log10_trans(),
+     breaks = trans_breaks("log10", function(x) round(10^x, 3))) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  ylab("FC of 12mers compared\nto Perm 1") +
+  xlab("Chromosome") +
+  stat_pvalue_manual(check,label = "p.adj.signif") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+        legend.key.height= unit(0.4, 'cm'),
+        legend.key.width= unit(0.4, 'cm'),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  coord_cartesian(ylim = c(0.316,800))
+ggS6A
+ggsave(paste0(out_dir, "FigureS6A.pdf"), width =5.5, height = 5)
+```
+
+### Permutation 3
+
+```{r}
+#| warning: false
+out_final <- read.csv("../output/true_chromosome_mapping.csv", row.names = 1)
+out_final$Proteome.ID <- gsub(".*_UP", "UP", gsub("_12mer.*", "", out_final$pathogen))
+out_final_perm3 <- read.csv("../output/perm3_class_shuffle_chromosome.csv", row.names = 1)
+out_final_perm3$Proteome.ID <- gsub(".*_UP", "UP", gsub("_12mer.*", "", out_final_perm3$pathogen))
+
+reversed_results <- out_final %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c("1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+  left_join(out_final_perm3 %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c( "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum( `1`, `2`, `3`,na.rm = T),
+         `2` = sum( `1`, `2`,na.rm = T),
+         `1` = sum( `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c( "1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+    dplyr::select(-pathogen), by = c("chromosome_name","Proteome.ID", "mismatches"), suffix = c(".true", ".permuted")) %>%
+  mutate(count.true = ifelse(is.na(count.true), 0, count.true))%>%
+  mutate(count.permuted = ifelse(is.na(count.permuted), 0, count.permuted)) %>%
+  mutate(FC = (count.true + 3)/(count.permuted + 3)) %>%
+  group_by(chromosome_name, mismatches, Proteome.ID) %>%
+  dplyr::summarize(median = median(FC))
+
+pd <- position_dodge(0.4)
+
+testing_data <- out_final %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c("0", "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum(`0`, `1`, `2`, `3`,na.rm = T),
+         `2` = sum(`0`, `1`, `2`,na.rm = T),
+         `1` = sum(`0`, `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c("1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+  left_join(out_final_perm3 %>%
+  pivot_wider(names_from = mismatches, values_from = count) %>%
+  mutate_at(c( "1", "2", "3"), as.numeric) %>%
+  rowwise() %>%
+  mutate(`3` = sum( `1`, `2`, `3`,na.rm = T),
+         `2` = sum( `1`, `2`,na.rm = T),
+         `1` = sum( `1`,na.rm = T)) %>%
+  ungroup() %>%
+  pivot_longer(cols = c( "1", "2", "3"), names_to="mismatches", values_to="count") %>%
+  mutate(mismatches = ifelse(is.na(mismatches), 0, mismatches)) %>%
+    dplyr::select(-pathogen), by = c("chromosome_name","Proteome.ID", "mismatches"), suffix = c(".true", ".permuted")) %>%
+  mutate(count.true = ifelse(is.na(count.true), 0, count.true))%>%
+  mutate(count.permuted = ifelse(is.na(count.permuted), 0, count.permuted)) %>%
+  mutate(FC = (count.true + 3)/(count.permuted + 3)) %>%
+  left_join(metadata, by = c("Proteome.ID")) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  arrange(Proteome.ID, Family_Viral_Zone, chromosome_name) %>%
+  filter(chromosome_name != "Mitochondrion") %>%
+  mutate(mismatches = paste0("≤", mismatches, " mismatches")) 
+
+write.csv(testing_data %>% dplyr::select(Proteome.ID, Pathogen, chromosome_name, mismatches, FC), paste0(out_dir, "FigureS6b_datapoints.csv"))
+
+supp_data <- testing_data %>%
+  #filter(!(count.true == 0 & count.permuted == 0)) %>%
+  distinct(chromosome_name, FC, pathogen, Proteome.ID, mismatches) %>%
+  pivot_wider(names_from = chromosome_name, values_from = FC, id_cols = c(pathogen, Proteome.ID, mismatches))
+check <- compare_means(data = supp_data %>%pivot_longer(cols = c(Auto, X, Y)), value ~ name, paired = TRUE,
+                       group.by = "mismatches") %>%
+  mutate(y.position = c(2.75, 2.5, 2.25, 2.75, 2.5, 2.25,2.75, 2.5, 2.25)) %>%
+  add_significance("p.adj")
+
+xlsx::write.xlsx(supp_data, paste0(out_dir, "SupplementalData6_part1.xlsx"),
+                 sheetName = "Perm3_Chr_Data", append = TRUE)
+
+## sort dataframe by group then by x
+ggS6B <- reversed_results %>%
+  left_join(metadata, by = c("Proteome.ID")) %>%
+  filter(Family_Viral_Zone %in% names(Family_palette_v2)) %>%
+  arrange(Proteome.ID, Family_Viral_Zone, chromosome_name) %>%
+  filter(chromosome_name != "Mitochondrion") %>%
+  mutate(mismatches = paste0("≤", mismatches, " mismatches")) %>%
+  ggplot(aes(x=chromosome_name, y=median, group = Proteome.ID)) +
+  geom_line(alpha = 0.1,position = pd) +
+  geom_point(alpha = 0.8, aes(color = Family_Viral_Zone), position = pd) +
+  scale_color_manual(values = Family_palette_v2) +
+  theme_classic() +
+  facet_wrap(~mismatches,ncol = 2) +
+  scale_y_continuous(trans = log10_trans(),
+     breaks = trans_breaks("log10", function(x) round(10^x, 3))) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  ylab("FC of 12mers compared\nto Perm 3") +
+  xlab("Chromosome") +
+  stat_pvalue_manual(check,label = "p.adj.signif") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+        legend.key.height= unit(0.4, 'cm'),
+        legend.key.width= unit(0.4, 'cm'),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  coord_cartesian(ylim = c(0.316,800))
+ggS6B
+ggsave(paste0(out_dir, "FigureS6B.pdf"), width =5.5, height = 5)
+```
+
+```{r}
+#| warning: false
+ggarrange(ggS6A, ggS6B, align = "hv", nrow = 1, ncol =2, common.legend = TRUE)
+ggsave(paste0(out_dir, "FigureS6.pdf"), width =8, height = 6)
+
+```
